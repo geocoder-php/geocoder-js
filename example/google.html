@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+    <script src="../src/ProviderBase.js"></script>
+    <script src="../src/GoogleProvider.js"></script>
+    <script src="../src/Geocoded.js"></script>
+    <script>
+      var googleGeocoder = new GoogleProvider();
+      var result = googleGeocoder.geocode('1600 Pennsylvania Ave, Washington, DC');
+      console.log(result);
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>
