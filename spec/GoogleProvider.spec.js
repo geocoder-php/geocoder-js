@@ -12,6 +12,21 @@ describe("Google Geocoder Provider raw result to Geocoded mapping tests", functi
       long_name: "Pennsylvania Avenue Northwest",
       short_name: "Pennsylvania Avenue NW",
       types: ["route"]
+    },
+    {
+      long_name: "Washington, D.C.",
+      short_name: "Washington, D.C.",
+      types: ["locality", "political"]
+    },
+    {
+      long_name: "District of Columbia",
+      short_name: "DC",
+      types: ["administrative_area_level_1", "political"]
+    },
+    {
+      long_name: "20050",
+      short_name: "20050",
+      types: ["postal_code"]
     }],
     geometry: {
       location: {
@@ -40,5 +55,17 @@ describe("Google Geocoder Provider raw result to Geocoded mapping tests", functi
 
   it ("maps street name correctly", function() {
     expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue Northwest");
+  });
+
+  it ("maps city correctly", function() {
+    expect(geocoded.getCity()).toEqual("Washington, D.C.");
+  });
+
+  it ("maps region correctly", function() {
+    expect(geocoded.getRegion()).toEqual("District of Columbia");
+  });
+
+  it ("maps postal code correctly", function() {
+    expect(geocoded.getZipcode()).toEqual("20050");
   });
 });

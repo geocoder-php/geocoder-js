@@ -45,6 +45,9 @@ describe("Geocoded returns data properly", function() {
   geocoded.longitude = -77.0365123;
   geocoded.streetNumber = "1600";
   geocoded.streetName = "Pennsylvania Avenue Northwest";
+  geocoded.city = "Washington";
+  geocoded.region = "DC";
+  geocoded.postal_code = "20050";
 
   it ("Geocoded returns proper coordinates", function() {
     var expectedCoordinates = [38.8978378, -77.0365123];
@@ -62,6 +65,18 @@ describe("Geocoded returns data properly", function() {
 
   it ("Geocoded returns proper Street Name", function() {
     expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue Northwest");
+  });
+
+  it ("Geocoded returns proper City", function() {
+    expect(geocoded.getCity()).toEqual("Washington");
+  });
+
+  it ("Geocoded returns proper Region", function() {
+    expect(geocoded.getRegion()).toEqual("DC");
+  });
+
+  it ("Geocoded returns proper Postal Code", function() {
+    expect(geocoded.getZipcode()).toEqual("20050");
   });
 
 });

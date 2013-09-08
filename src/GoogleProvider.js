@@ -3,11 +3,14 @@ var GoogleProvider = function() {};
 GoogleProvider.prototype = new ProviderBase();
 GoogleProvider.prototype.constructor = GoogleProvider;
 
-GoogleProvider.prototype.geocode = function(searchString) {
+GoogleProvider.prototype.geocode = function(searchString, callback) {
   var that = this;
+  that.callback = callback;
   var geocoder = new google.maps.Geocoder();
   geocoder.geocode({'address': searchString}, function(results, status) {
+    console.log(results);
     var geoCoded = that.mapToGeocoded(results[0]);
+    that.callback(geoCoded);
   });
 };
 
@@ -16,12 +19,30 @@ GoogleProvider.prototype.prepareCall = function() {
 };
 
 GoogleProvider.prototype.mapToGeocoded = function(result) {
-  console.log(result);
   var geocoded = new Geocoded();
   geocoded.latitude = result.geometry.location.lat();
   geocoded.longitude = result.geometry.location.lng();
 
-  geocoded.streetNumber = result.address_components[0].long_name;
-  geocoded.streetName = result.address_components[1].long_name;
+  for (var i in result.address_components) {
+    for (var j in result.address_components[i].types) {
+      switch (result.address_components[i].types[j]) {
+        case "street_number":
+          geocoded.streetNumber = result.address_components[i].long_name;
+          break;
+        case "route":
+          geocoded.streetName = result.address_components[i].long_name;
+          break;
+        case "locality":
+          geocoded.city = result.address_components[i].long_name;
+          break;
+        case "administrative_area_level_1":
+          geocoded.region = result.address_components[i].long_name;
+          break;
+        case "postal_code":
+          geocoded.postal_code = result.address_components[i].long_name;
+          break;
+      }
+    }
+  }
   return geocoded;
 };
