@@ -1,40 +1,67 @@
 describe("Geocoded method access", function() {
-  var provider = new Geocoded();
+  var geocoded = new Geocoded();
 
-  it ("ProviderBase has getCoordinates method", function() {
-    expect(provider.getCoordinates).toBeDefined();
+  it ("Geocoded has getCoordinates method", function() {
+    expect(geocoded.getCoordinates).toBeDefined();
   });
-  it ("ProviderBase has getLatitude method", function() {
-    expect(provider.getLatitude).toBeDefined();
+  it ("Geocoded has getLatitude method", function() {
+    expect(geocoded.getLatitude).toBeDefined();
   });
-  it ("ProviderBase has getLongitude method", function() {
-    expect(provider.getLongitude).toBeDefined();
+  it ("Geocoded has getLongitude method", function() {
+    expect(geocoded.getLongitude).toBeDefined();
   });
-  it ("ProviderBase has getBounds method", function() {
-    expect(provider.getBounds).toBeDefined();
+  it ("Geocoded has getBounds method", function() {
+    expect(geocoded.getBounds).toBeDefined();
   });
-  it ("ProviderBase has getStreetNumber method", function() {
-    expect(provider.getStreetNumber).toBeDefined();
+  it ("Geocoded has getStreetNumber method", function() {
+    expect(geocoded.getStreetNumber).toBeDefined();
   });
-  it ("ProviderBase has getStreetName method", function() {
-    expect(provider.getStreetName).toBeDefined();
+  it ("Geocoded has getStreetName method", function() {
+    expect(geocoded.getStreetName).toBeDefined();
   });
-  it ("ProviderBase has getCity method", function() {
-    expect(provider.getCity).toBeDefined();
+  it ("Geocoded has getCity method", function() {
+    expect(geocoded.getCity).toBeDefined();
   });
-  it ("ProviderBase has getZipcode method", function() {
-    expect(provider.getZipcode).toBeDefined();
+  it ("Geocoded has getZipcode method", function() {
+    expect(geocoded.getZipcode).toBeDefined();
   });
-  it ("ProviderBase has getCityDistrict method", function() {
-    expect(provider.getCityDistrict).toBeDefined();
+  it ("Geocoded has getCityDistrict method", function() {
+    expect(geocoded.getCityDistrict).toBeDefined();
   });
-  it ("ProviderBase has getCounty method", function() {
-    expect(provider.getCounty).toBeDefined();
+  it ("Geocoded has getCounty method", function() {
+    expect(geocoded.getCounty).toBeDefined();
   });
-  it ("ProviderBase has getCountyCode method", function() {
-    expect(provider.getCountyCode).toBeDefined();
+  it ("Geocoded has getCountyCode method", function() {
+    expect(geocoded.getCountyCode).toBeDefined();
   });
-  it ("ProviderBase has getRegion method", function() {
-    expect(provider.getRegion).toBeDefined();
+  it ("Geocoded has getRegion method", function() {
+    expect(geocoded.getRegion).toBeDefined();
   });
+});
+
+describe("Geocoded returns data properly", function() {
+  var geocoded = new Geocoded();
+  geocoded.latitude = 38.8978378;
+  geocoded.longitude = -77.0365123;
+  geocoded.streetNumber = "1600";
+  geocoded.streetName = "Pennsylvania Avenue Northwest";
+
+  it ("Geocoded returns proper coordinates", function() {
+    var expectedCoordinates = [38.8978378, -77.0365123];
+    expect(geocoded.getCoordinates()).toEqual(expectedCoordinates);
+  });
+
+  it ("Geocoded returns latitude/longitude individually", function() {
+    expect(geocoded.getLatitude()).toEqual(38.8978378);
+    expect(geocoded.getLongitude()).toEqual(-77.0365123);
+  });
+
+  it ("Geocoded returns proper Street Number", function() {
+    expect(geocoded.getStreetNumber()).toEqual("1600");
+  });
+
+  it ("Geocoded returns proper Street Name", function() {
+    expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue Northwest");
+  });
+
 });
