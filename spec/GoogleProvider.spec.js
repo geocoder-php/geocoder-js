@@ -41,6 +41,7 @@ describe("Google Geocoder Provider raw result to Geocoded mapping tests", functi
   }];
 
   beforeEach(function() {
+    console.log(provider);
     geocoded = provider.mapToGeocoded(stubGoogleResult[0]);
   });
 
