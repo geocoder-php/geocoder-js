@@ -9,6 +9,7 @@
     "grunt-contrib-jshint": "~0.6.4"
   },
   "scripts": {
-    "build": "grunt --verbose"
+    "build": "grunt --verbose",
+    "test": "grunt test --verbose"
   }
 }
