@@ -14,13 +14,14 @@ module.exports = function (grunt) {
     },
     jasmine: {
       src: [
-        'src/ProviderBase.js',
+        'src/GeocoderJS.js',
+        'src/providers/ProviderBase.js',
         'src/Geocoded.js',
         'src/GeoJSONDumper.js',
-        'src/GoogleProvider.js'
+        'src/providers/GoogleProvider.js'
       ],
       options: {
-        specs: 'spec/*.js'
+        specs: ['spec/*.js', 'spec/providers/*.js']
       }
     },
     jshint: {

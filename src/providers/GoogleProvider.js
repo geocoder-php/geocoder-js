@@ -1,9 +1,9 @@
-var GoogleProvider = function() {};
+GeocoderJS.GoogleProvider = function() {};
 
-GoogleProvider.prototype = new ProviderBase();
-GoogleProvider.prototype.constructor = GoogleProvider;
+GeocoderJS.GoogleProvider.prototype = new GeocoderJS.ProviderBase();
+GeocoderJS.GoogleProvider.prototype.constructor = GeocoderJS.GoogleProvider;
 
-GoogleProvider.prototype.geocode = function(searchString, callback) {
+GeocoderJS.GoogleProvider.prototype.geocode = function(searchString, callback) {
   var that = this;
   that.callback = callback;
   var geocoder = new google.maps.Geocoder();
@@ -14,12 +14,12 @@ GoogleProvider.prototype.geocode = function(searchString, callback) {
   });
 };
 
-GoogleProvider.prototype.prepareCall = function() {
+GeocoderJS.GoogleProvider.prototype.prepareCall = function() {
 
 };
 
-GoogleProvider.prototype.mapToGeocoded = function(result) {
-  var geocoded = new Geocoded();
+GeocoderJS.GoogleProvider.prototype.mapToGeocoded = function(result) {
+  var geocoded = new GeocoderJS.Geocoded();
   geocoded.latitude = result.geometry.location.lat();
   geocoded.longitude = result.geometry.location.lng();
 

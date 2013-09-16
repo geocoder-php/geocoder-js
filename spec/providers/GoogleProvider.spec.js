@@ -1,5 +1,5 @@
 describe("Google Geocoder Provider raw result to Geocoded mapping tests", function() {
-  var provider = new GoogleProvider();
+  var provider = new GeocoderJS.GoogleProvider();
   var geocoded;
 
   var stubGoogleResult = [{

@@ -1,6 +1,6 @@
-var Geocoded = function() {};
+GeocoderJS.Geocoded = function() {};
 
-Geocoded.prototype = {
+GeocoderJS.Geocoded.prototype = {
   getCoordinates: function() {return[this.latitude, this.longitude];},
   getLatitude: function() {return this.latitude;},
   getLongitude: function() {return this.longitude;},

@@ -3,11 +3,12 @@
   <head>
     <title>Geocoder.js: Google Example</title>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
-    <script src="../src/ProviderBase.js"></script>
-    <script src="../src/GoogleProvider.js"></script>
+    <script src="../src/GeocoderJS.js"></script>
+    <script src="../src/providers/ProviderBase.js"></script>
+    <script src="../src/providers/GoogleProvider.js"></script>
     <script src="../src/Geocoded.js"></script>
     <script>
-      var googleGeocoder = new GoogleProvider();
+      var googleGeocoder = new GeocoderJS.GoogleProvider();
       googleGeocoder.geocode('1600 Pennsylvania Ave, Washington, DC', function(result) {
         console.log(result);
       });

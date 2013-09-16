@@ -1,5 +1,5 @@
 describe("Geocoded method access", function() {
-  var geocoded = new Geocoded();
+  var geocoded = new GeocoderJS.Geocoded();
 
   it ("Geocoded has getCoordinates method", function() {
     expect(geocoded.getCoordinates).toBeDefined();
@@ -40,7 +40,7 @@ describe("Geocoded method access", function() {
 });
 
 describe("Geocoded returns data properly", function() {
-  var geocoded = new Geocoded();
+  var geocoded = new GeocoderJS.Geocoded();
   geocoded.latitude = 38.8978378;
   geocoded.longitude = -77.0365123;
   geocoded.streetNumber = "1600";

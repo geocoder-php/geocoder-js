@@ -1,4 +1,4 @@
-var GeoJSONDumper = function() {
+GeocoderJS.GeoJSONDumper = function() {
   var baseGeoJSON = {
     "type": "Feature",
     "properties": {},
