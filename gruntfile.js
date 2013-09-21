@@ -21,7 +21,8 @@ module.exports = function (grunt) {
         'src/providers/GoogleProvider.js'
       ],
       options: {
-        specs: ['spec/*.js', 'spec/providers/*.js']
+        specs: ['spec/*.js', 'spec/providers/*.js'],
+        helpers : 'spec/helpers/*.js',
       }
     },
     jshint: {
