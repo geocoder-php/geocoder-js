@@ -1,5 +1,13 @@
-GeocoderJS.ProviderBase = function() {};
+;(function (GeocoderJS) {
+    "use strict";
 
-GeocoderJS.ProviderBase.prototype = {
-  geocode: function(searchString, callback) {}
-};
+    GeocoderJS.ProviderBase = function() {};
+
+    GeocoderJS.ProviderBase.prototype = {
+      geocode: function(searchString, callback) {}
+    };
+   
+})(GeocoderJS);
+
+
+

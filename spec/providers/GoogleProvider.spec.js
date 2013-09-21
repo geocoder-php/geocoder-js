@@ -1,7 +1,7 @@
 describe("Google Geocoder Provider raw result to Geocoded mapping tests", function() {
   var provider = new GeocoderJS.GoogleProvider();
-  var geocoded;
-
+  var geocoded; 
+  var googleStub = provider.getGeocoder();
   var stubGoogleResult = [{
     address_components: [{
       long_name: "1600",
@@ -42,7 +42,15 @@ describe("Google Geocoder Provider raw result to Geocoded mapping tests", functi
 
   beforeEach(function() {
     console.log(provider);
+    spyOn(googleStub, 'geocode').andReturn(stubGoogleResult);
     geocoded = provider.mapToGeocoded(stubGoogleResult[0]);
+  });
+
+      
+  it ("calls the google geocoder", function() {
+    provider.geocode('New York, New York', function(result) {
+    });
+    expect(googleStub.geocode).toHaveBeenCalled();
   });
 
   it ("maps coordinates correctly", function() {
