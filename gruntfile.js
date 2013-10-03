@@ -18,11 +18,12 @@ module.exports = function (grunt) {
         'src/providers/ProviderBase.js',
         'src/Geocoded.js',
         'src/GeoJSONDumper.js',
-        'src/providers/GoogleProvider.js'
+        'src/providers/*.js'
       ],
       options: {
         specs: ['spec/*.js', 'spec/providers/*.js'],
         helpers : 'spec/helpers/*.js',
+        keepRunner: true
       }
     },
     jshint: {

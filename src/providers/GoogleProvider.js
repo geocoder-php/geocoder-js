@@ -55,5 +55,3 @@
     };
    
 })(GeocoderJS, new google.maps.Geocoder());
-
-
