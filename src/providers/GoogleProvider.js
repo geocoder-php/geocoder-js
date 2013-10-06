@@ -1,3 +1,7 @@
+if (typeof GeocoderJS === "undefined" && typeof require === "function") {
+  var GeocoderJS = require("../GeocoderJS.js");
+}
+
 ;(function (GeocoderJS, GoogleGeocoder) {
     "use strict";
 
@@ -53,5 +57,5 @@
     GeocoderJS.GoogleProvider.prototype.getGeocoder = function() {
       return GoogleGeocoder;
     };
-   
+
 })(GeocoderJS, new google.maps.Geocoder());

@@ -1,3 +1,7 @@
+if (typeof GeocoderJS === "undefined" && typeof require === "function") {
+  var GeocoderJS = require("../GeocoderJS.js");
+}
+
 ;(function (GeocoderJS) {
     "use strict";
 
@@ -8,6 +12,3 @@
     };
    
 })(GeocoderJS);
-
-
-
