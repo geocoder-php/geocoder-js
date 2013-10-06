@@ -8,7 +8,8 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     GeocoderJS.ProviderBase = function() {};
 
     GeocoderJS.ProviderBase.prototype = {
-      geocode: function(searchString, callback) {}
+      geocode: function(searchString, callback) {},
+      geodecode: function(latitude, longitude, callback) {}
     };
-   
+
 })(GeocoderJS);
