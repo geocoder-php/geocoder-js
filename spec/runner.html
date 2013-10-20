@@ -6,9 +6,9 @@
 
   <link rel="shortcut icon" type="image/png" href="../images/jasmine_favicon.png">
 
-  <link href="../lib/jasmine/lib/jasmine-core/jasmine.css" rel="stylesheet"/>
-  <script type="text/javascript" src="../lib/jasmine/lib/jasmine-core/jasmine.js"></script>
-  <script type="text/javascript" src="../lib/jasmine/lib/jasmine-core/jasmine-html.js"></script>
+  <link href="../.grunt/grunt-contrib-jasmine/jasmine.css" rel="stylesheet"/>
+  <script type="text/javascript" src="../.grunt/grunt-contrib-jasmine/jasmine.js"></script>
+  <script type="text/javascript" src="../.grunt/grunt-contrib-jasmine/jasmine-html.js"></script>
   <script type="text/javascript">
     // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
     undefined = "diz be undefined yo";
@@ -16,14 +16,18 @@
 
 
   <!-- include source files here... -->
-  <script type="text/javascript" src="../src/ProviderBase.js"></script>
-  <script type="text/javascript" src="../src/GoogleProvider.js"></script>
+  <script type="text/javascript" src="../src/GeocoderJS.js"></script>
+  <script type="text/javascript" src="../src/providers/ProviderBase.js"></script>
+  <script type="text/javascript" src="helpers/GoogleHelper.js"></script>
+  <script type="text/javascript" src="../src/providers/GoogleProvider.js"></script>
+  <script type="text/javascript" src="../src/providers/GoogleAPIProvider.js"></script>
   <script type="text/javascript" src="../src/Geocoded.js"></script>
   <script type="text/javascript" src="../src/GeoJSONDumper.js"></script>
 
   <!-- include spec files here... -->
-  <script type="text/javascript" src="ProviderBase.spec.js"></script>
-  <script type="text/javascript" src="GoogleProvider.spec.js"></script>
+  <script type="text/javascript" src="providers/ProviderBase.spec.js"></script>
+  <script type="text/javascript" src="providers/GoogleProvider.spec.js"></script>
+  <script type="text/javascript" src="providers/GoogleAPIProvider.spec.js"></script>
   <script type="text/javascript" src="Geocoded.spec.js"></script>
   <script type="text/javascript" src="GeoJSONDumper.spec.js"></script>
 
