@@ -13,8 +13,7 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "requirejs": "~2.1.8",
+  "devDependencies": {
     "jasmine": "~v1.3.1"
   }
 }
