@@ -3,6 +3,44 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
   var provider = new GeocoderJS.GoogleAPIProvider(),
     geocoded;
 
+  var stubGoogleResult = [{
+    address_components: [{
+      long_name: "1600",
+      short_name: "1600",
+      types: ["street_number"]
+    },
+    {
+      long_name: "Pennsylvania Avenue Northwest",
+      short_name: "Pennsylvania Avenue NW",
+      types: ["route"]
+    },
+    {
+      long_name: "Washington, D.C.",
+      short_name: "Washington, D.C.",
+      types: ["locality", "political"]
+    },
+    {
+      long_name: "District of Columbia",
+      short_name: "DC",
+      types: ["administrative_area_level_1", "political"]
+    },
+    {
+      long_name: "20050",
+      short_name: "20050",
+      types: ["postal_code"]
+    }],
+    geometry: {
+      location: {
+        lat: function() {
+          return 38.8978378;
+        },
+        lng: function() {
+          return -77.0365123;
+        }
+      }
+    }
+  }];
+
   function beforeAll() {
     runs(function () {
       provider.geocode("1600 Pennsylvania Ave, Washington, DC", function(result) {
