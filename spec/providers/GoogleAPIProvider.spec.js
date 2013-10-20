@@ -31,33 +31,15 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
     }],
     geometry: {
       location: {
-        lat: function() {
-          return 38.8978378;
-        },
-        lng: function() {
-          return -77.0365123;
-        }
+        lat: 38.8978378,
+        lng: -77.0365123
       }
     }
   }];
 
-  function beforeAll() {
-    runs(function () {
-      provider.geocode("1600 Pennsylvania Ave, Washington, DC", function(result) {
-        if (result && result.length) {
-          geocoded = result[0];
-        }
-      });
-    });
-    waitsFor(function () {
-      return geocoded;
-    }, "Timed out while trying to fetch geocode data.", 1000);
-  };
-
   beforeEach(function () {
-    if (!geocoded) {
-      beforeAll();
-    }
+    spyOn(provider, 'executeRequest').andReturn(stubGoogleResult);
+    geocoded = provider.mapToGeocoded(stubGoogleResult[0]);
   });
 
   it ("receives results from the google geocoder", function() {
@@ -77,7 +59,7 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
   });
 
   it ("maps city correctly", function() {
-    expect(geocoded.getCity()).toEqual("Washington");
+    expect(geocoded.getCity()).toEqual("Washington, D.C.");
   });
 
   it ("maps region correctly", function() {
@@ -85,6 +67,6 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
   });
 
   it ("maps postal code correctly", function() {
-    expect(geocoded.getZipcode()).toEqual("20500");
+    expect(geocoded.getZipcode()).toEqual("20050");
   });
 });

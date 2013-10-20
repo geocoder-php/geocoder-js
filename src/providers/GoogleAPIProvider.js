@@ -17,14 +17,31 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
   GeocoderJS.GoogleAPIProvider.prototype.constructor = GeocoderJS.GoogleAPIProvider;
 
   GeocoderJS.GoogleAPIProvider.prototype.geocode = function(searchString, callback) {
-    executeRequest({"address": searchString}, callback);
+    this.executeRequest({"address": searchString}, callback);
   };
 
   GeocoderJS.GoogleAPIProvider.prototype.geodecode = function(latitude, longitude, callback) {
-    executeRequest({"latlng": latitude + "," + longitude}, callback);
+    this.executeRequest({"latlng": latitude + "," + longitude}, callback);
   };
 
-  function mapToGeocoded(result) {
+  GeocoderJS.GoogleAPIProvider.prototype.executeRequest = function(params, callback) {
+    if (typeof XMLHttpRequest !== "undefined") {
+      return executeDOMRequest(params, callback);
+    }
+
+    try {
+      var url = require("url"),
+        http = useSSL ? require("https") : require("http");
+      return executeNodeRequest(params, callback);
+    }
+    catch (err) {
+      // Intentionally empty.
+    }
+
+    return callback(null);
+  };
+
+  GeocoderJS.GoogleAPIProvider.prototype.mapToGeocoded = function(result) {
     var geocoded = new GeocoderJS.Geocoded();
     geocoded.latitude = result.geometry.location.lat;
     geocoded.longitude = result.geometry.location.lng;
@@ -52,23 +69,6 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     }
     return geocoded;
   };
-
-  function executeRequest(params, callback) {
-    if (typeof XMLHttpRequest !== "undefined") {
-      return executeDOMRequest(params, callback);
-    }
-
-    try {
-      var url = require("url"),
-        http = useSSL ? require("https") : require("http");
-      return executeNodeRequest(params, callback);
-    }
-    catch (err) {
-      // Intentionally empty.
-    }
-
-    return callback(null);
-  }
 
   function executeNodeRequest(params, callback) {
     var url = require("url"),
@@ -121,7 +121,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
           }
           else if (data.status === "OK" && data.results) {
             for (; i < data.results.length; i++) {
-              results.push(mapToGeocoded(data.results[i]));
+              results.push(GeocoderJS.GoogleAPIProvider.prototype.mapToGeocoded(data.results[i]));
             }
             return callback(results);
           }
@@ -175,7 +175,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
         }
         else if (data.status === "OK" && data.results) {
           for (; i < data.results.length; i++) {
-            results.push(mapToGeocoded(data.results[i]));
+            results.push(GeocoderJS.GoogleAPIProvider.prototype.mapToGeocoded(data.results[i]));
           }
           return callback(results);
         }
