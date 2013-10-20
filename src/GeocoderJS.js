@@ -4,7 +4,12 @@ var container = (typeof window === "object") ? window : (typeof exports === "obj
     "use strict";
 
     var GeocoderJS = {};
-    GeocoderJS.version = '0.1-dev';
+    GeocoderJS.version = '0.0.0';
+
+    GeocoderJS.createGeocoder = function(options) {
+      var factory = new GeocoderJS.ProviderFactory();
+      return factory.createProvider(options);
+    };
 
     container.GeocoderJS = GeocoderJS;
 

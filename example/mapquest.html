@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geocoder.js: Google Simple Example</title>
+    <script src="../src/GeocoderJS.js"></script>
+    <script src="../src/providers/ProviderBase.js"></script>
+    <script src="../src/providers/MapQuestProvider.js"></script>
+    <script src="../src/Geocoded.js"></script>
+    <script>
+      var mapQuestGeocoder = new GeocoderJS.MapQuestProvider();
+      mapQuestGeocoder.geocode('1600 Pennsylvania Ave, Washington, DC', function(result) {
+        console.log(result);
+      });
+
+      mapQuestGeocoder.geodecode("44.915", "-93.21", function(result) {
+        console.log(result);
+      });
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>
