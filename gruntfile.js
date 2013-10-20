@@ -18,6 +18,7 @@ module.exports = function (grunt) {
         'src/providers/ProviderBase.js',
         'src/Geocoded.js',
         'src/GeoJSONDumper.js',
+        'src/GeocoderProviderFactory.js',
         'src/providers/*.js'
       ],
       options: {

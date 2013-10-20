@@ -12,7 +12,6 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     GeocoderJS.MapquestProvider.prototype.mapToGeocoded = function(result) {
       var geocoded = new GeocoderJS.Geocoded();
-      console.log("BLAH " + result);
       geocoded.latitude = result.latLng.lat;
       geocoded.longitude = result.latLng.lng;
 

@@ -87,7 +87,6 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     http.get(requestUrl, function(res) {
       if (res.statusCode != 200) {
         throw("Received HTTP status code " + res.statusCode + " when attempting geocoding request.");
-        return callback(null);
       }
 
       res.data = "";
@@ -100,7 +99,6 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       res.on("end", function () {
         if (!res.data || !res.data.length) {
           throw("Received empty data when attempting geocoding request.");
-          return callback(null);
         }
 
         var data = false,
@@ -111,13 +109,11 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
         }
         catch(e) {
           throw("Received invalid JSON data when attempting geocoding request.");
-          return callback(null);
         }
 
         if (data && data.status) {
           if (data.status === "OVER_QUERY_LIMIT") {
             throw("Exceeded daily quota when attempting geocoding request.");
-            return callback(null);
           }
           else if (data.status === "OK" && data.results) {
             for (; i < data.results.length; i++) {
@@ -128,13 +124,11 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
         }
 
         throw("Received unexpected JSON data when attempting geocoding request.");
-        return callback(null);
       });
     }).on("error", function(err) {
-      throw(err)
-      return callback(null);
+      throw(err);
     });
-  };
+  }
 
   function executeDOMRequest(params, callback) {
     var req = new XMLHttpRequest(),
@@ -183,7 +177,8 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
       console.log("Received unexpected JSON data when attempting geocoding request.");
       return callback(null);
-    }
+    };
+
     req.open("GET", requestUrl);
     req.send();
   }

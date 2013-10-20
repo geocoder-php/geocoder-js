@@ -5,19 +5,24 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 ;(function (GeocoderJS) {
   "use strict";
 
-  Geocoder.ProviderFactory = function() {};
+  GeocoderJS.ProviderFactory = function() {};
 
   /**
-   * 
+   * Creates new Geocoder Provider instances.
+   * @options
+   *   Either a string representing the registered provider, or an object with the
+   *   following settings for instigating providers.
+   *     - provider: A string representing the registered provider.
+   * @return
+   *   An object compatable with the ProviderBase class, or undefined if there's
+   *   not a registered provider.
    */
-  Geocoder.ProviderFactory.prototype.createProvider = function(options) {
+  GeocoderJS.ProviderFactory.prototype.createProvider = function(options) {
     if (typeof options === "string") {
       options = {
         'provider': options
       };
     }
-
-    console.log(options);
 
     var provider;
 

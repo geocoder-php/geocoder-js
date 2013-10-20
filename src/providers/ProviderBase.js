@@ -11,6 +11,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       geocode: function(searchString, callback) {},
       geodecode: function(latitude, longitude, callback) {},
       mapToGeocoded: function(result) {},
+      executeRequest: function(params, callback) {}
     };
 
 })(GeocoderJS);

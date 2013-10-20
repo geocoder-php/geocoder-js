@@ -1,4 +1,3 @@
-
 describe("Google API Geocoder Provider raw result to Geocoded mapping tests", function() {
   var provider = new GeocoderJS.GoogleAPIProvider(),
     geocoded;
