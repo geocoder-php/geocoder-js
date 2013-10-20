@@ -1,67 +1,53 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!doctype html>
 <html>
 <head>
-  <title>Jasmine Spec Runner: Geocoded JS</title>
+  <meta charset="utf-8">
+  <title>Jasmine Spec Runner</title>
 
-  <link rel="shortcut icon" type="image/png" href="../images/jasmine_favicon.png">
-
-  <link href="../.grunt/grunt-contrib-jasmine/jasmine.css" rel="stylesheet"/>
-  <script type="text/javascript" src="../.grunt/grunt-contrib-jasmine/jasmine.js"></script>
-  <script type="text/javascript" src="../.grunt/grunt-contrib-jasmine/jasmine-html.js"></script>
-  <script type="text/javascript">
-    // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
-    undefined = "diz be undefined yo";
-  </script>
+  <link rel="stylesheet" type="text/css" href="../.grunt/grunt-contrib-jasmine/jasmine.css">
 
 
-  <!-- include source files here... -->
-  <script type="text/javascript" src="../src/GeocoderJS.js"></script>
-  <script type="text/javascript" src="../src/providers/ProviderBase.js"></script>
-  <script type="text/javascript" src="helpers/GoogleHelper.js"></script>
-  <script type="text/javascript" src="../src/providers/GoogleProvider.js"></script>
-  <script type="text/javascript" src="../src/providers/GoogleAPIProvider.js"></script>
-  <script type="text/javascript" src="../src/Geocoded.js"></script>
-  <script type="text/javascript" src="../src/GeoJSONDumper.js"></script>
-
-  <!-- include spec files here... -->
-  <script type="text/javascript" src="providers/ProviderBase.spec.js"></script>
-  <script type="text/javascript" src="providers/GoogleProvider.spec.js"></script>
-  <script type="text/javascript" src="providers/GoogleAPIProvider.spec.js"></script>
-  <script type="text/javascript" src="Geocoded.spec.js"></script>
-  <script type="text/javascript" src="GeoJSONDumper.spec.js"></script>
-
-  <script type="text/javascript">
-    (function() {
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.updateInterval = 250;
-
-      var htmlReporter = new jasmine.HtmlReporter();
-
-      jasmineEnv.addReporter(htmlReporter);
-
-      jasmineEnv.specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
-      };
-
-      var currentWindowOnload = window.onload;
-
-      window.onload = function() {
-        if (currentWindowOnload) {
-          currentWindowOnload();
-        }
-        execJasmine();
-      };
-
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
-
-    })();
-  </script>
+  
+  <script src="../.grunt/grunt-contrib-jasmine/phantom-polyfill.js"></script>
+  
+  <script src="../.grunt/grunt-contrib-jasmine/jasmine.js"></script>
+  
+  <script src="../.grunt/grunt-contrib-jasmine/jasmine-html.js"></script>
+  
+  <script src="helpers/GoogleHelper.js"></script>
+  
+  <script src="../src/GeocoderJS.js"></script>
+  
+  <script src="../src/providers/ProviderBase.js"></script>
+  
+  <script src="../src/Geocoded.js"></script>
+  
+  <script src="../src/GeoJSONDumper.js"></script>
+  
+  <script src="../src/providers/GoogleAPIProvider.js"></script>
+  
+  <script src="../src/providers/GoogleProvider.js"></script>
+  
+  <script src="../src/providers/MapquestProvider.js"></script>
+  
+  <script src="GeoJSONDumper.spec.js"></script>
+  
+  <script src="Geocoded.spec.js"></script>
+  
+  <script src="providers/GoogleAPIProvider.spec.js"></script>
+  
+  <script src="providers/GoogleProvider.spec.js"></script>
+  
+  <script src="providers/MapquestProvider.spec.js"></script>
+  
+  <script src="providers/ProviderBase.spec.js"></script>
+  
+  <script src="../.grunt/grunt-contrib-jasmine/reporter.js"></script>
+  
+  <script src="../.grunt/grunt-contrib-jasmine/jasmine-helper.js"></script>
+  
 
 </head>
-
 <body>
 </body>
 </html>

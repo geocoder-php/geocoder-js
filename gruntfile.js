@@ -23,7 +23,8 @@ module.exports = function (grunt) {
       options: {
         specs: ['spec/*.js', 'spec/providers/*.js'],
         helpers : 'spec/helpers/*.js',
-        keepRunner: true
+        keepRunner: true,
+        outfile: 'spec/runner.html',
       }
     },
     jshint: {
@@ -40,5 +41,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.registerTask('test', ['jshint', 'jasmine']);
-  grunt.registerTask('default', ['test']);
+  grunt.registerTask('build', ['uglify']);
+  grunt.registerTask('default', ['test', 'build']);
 };

@@ -8,6 +8,16 @@ client-side geocoding applications.
 [![Build
 Status](https://travis-ci.org/geocoder-php/geocoder-js.png?branch=master)](https://travis-ci.org/geocoder-php/geocoder-js)
 
+Building
+--------
+
+You can build an uglified version of the script by running 'grunt build'.
+
+Testing
+-------
+
+Unit tests are handled by Jasmine. To run unit tests from the command line, use 'grunt test'.
+
 Contributing
 ------------
 
