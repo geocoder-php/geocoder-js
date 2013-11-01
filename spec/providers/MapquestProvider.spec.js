@@ -36,6 +36,11 @@ describe("Mapquest Provider to Geocoded mapping tests", function() {
     geocoded = provider.mapToGeocoded(stubMapquestResult);
   });
 
+  it ("expects API Key to be set on initiation.", function() {
+    var testProvider = new GeocoderJS.MapquestProvider({apiKey: '[stub-api-key]'});
+    expect(testProvider.apiKey).toEqual('[stub-api-key]');
+  });
+
   it ("maps coordinates correctly", function() {
     var expectedCoordinates = [38.895115, -77.036372];
     expect(geocoded.getCoordinates()).toEqual(expectedCoordinates);
