@@ -17,4 +17,9 @@ describe("Geocoder Factory method tests", function() {
     provider = factory.createProvider('google');
     expect(provider).toBeDefined();
   });
+
+  it ("expects createProvider() to return a MapquestProvider", function() {
+    provider = factory.createProvider('mapquest');
+    expect(provider).toBeDefined();
+  });
 });

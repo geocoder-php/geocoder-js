@@ -4,7 +4,14 @@ module.exports = function (grunt) {
   grunt.initConfig({
     uglify: {
       files: {
-        src: 'src/*.js',
+        src: [
+          'src/GeocoderJS.js',
+          'src/providers/ProviderBase.js',
+          'src/Geocoded.js',
+          'src/GeoJSONDumper.js',
+          'src/GeocoderProviderFactory.js',
+          'src/providers/*.js'
+        ],
         dest: 'dist/geocoder.js',
         flatten: true,
       },

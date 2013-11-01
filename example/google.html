@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Geocoder.js: Google Example</title>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
-    <script src="../src/GeocoderJS.js"></script>
-    <script src="../src/providers/ProviderBase.js"></script>
-    <script src="../src/providers/GoogleProvider.js"></script>
-    <script src="../src/Geocoded.js"></script>
+    <title>Geocoder.js: Google Simple Example</title>
+    <script src="../dist/geocoder.js"></script>
     <script>
-      var googleGeocoder = new GeocoderJS.GoogleProvider();
+      var googleGeocoder = new GeocoderJS.createGeocoder('google');
       googleGeocoder.geocode('1600 Pennsylvania Ave, Washington, DC', function(result) {
+        console.log(result);
+      });
+
+      googleGeocoder.geodecode("44.915", "-93.21", function(result) {
         console.log(result);
       });
     </script>
