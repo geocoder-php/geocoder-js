@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Geocoder.js: Google Simple Example</title>
+    <title>Geocoder.js: Mapquest Simple Example</title>
     <script src="../src/GeocoderJS.js"></script>
     <script src="../src/providers/ProviderBase.js"></script>
     <script src="../src/providers/MapQuestProvider.js"></script>
     <script src="../src/Geocoded.js"></script>
     <script>
-      var mapQuestGeocoder = new GeocoderJS.MapQuestProvider();
-      mapQuestGeocoder.geocode('1600 Pennsylvania Ave, Washington, DC', function(result) {
+      var mapQuestGeocoder = new GeocoderJS.MapquestProvider();
+      mapQuestGeocoder.geocode('Washington, DC', function(result) {
         console.log(result);
       });
 

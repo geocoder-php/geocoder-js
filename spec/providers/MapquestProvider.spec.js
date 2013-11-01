@@ -2,9 +2,12 @@ describe("Mapquest Provider to Geocoded mapping tests", function() {
   var provider = new GeocoderJS.MapquestProvider();
   var geocoded;
 
-  var stubMapquestResult = {
-    "locations": [
+  var stubMapquestResult =  [
       {
+        "adminArea1": "US",
+        "adminArea1Type": "Country",
+        "adminArea3": "",
+        "adminArea3Type": "State",
         "latLng": {
           "lng": -77.036372,
           "lat": 38.895115
@@ -14,8 +17,6 @@ describe("Mapquest Provider to Geocoded mapping tests", function() {
         "adminArea4Type": "County",
         "adminArea5": "Washington",
         "street": "",
-        "adminArea1": "US",
-        "adminArea3": "",
         "type": "s",
         "displayLatLng": {
           "lng": -77.036372,
@@ -25,24 +26,26 @@ describe("Mapquest Provider to Geocoded mapping tests", function() {
         "postalCode": "",
         "sideOfStreet": "N",
         "dragPoint": false,
-        "adminArea1Type": "Country",
         "geocodeQuality": "CITY",
-        "geocodeQualityCode": "A5XCX",
-        "adminArea3Type": "State"
+        "geocodeQualityCode": "A5XCX"
       }
-    ],
-    "providedLocation": {
-      "location": "Washington DC"
-    }
-  };
+    ];
 
-  beforeEach(function() {
-    console.log(stubMapquestResult);
-    geocoded = provider.mapToGeocoded(stubMapquestResult.locations[0]);
+  beforeEach(function () {
+    spyOn(provider, 'executeRequest').andReturn(stubMapquestResult);
+    geocoded = provider.mapToGeocoded(stubMapquestResult);
   });
 
   it ("maps coordinates correctly", function() {
     var expectedCoordinates = [38.895115, -77.036372];
     expect(geocoded.getCoordinates()).toEqual(expectedCoordinates);
+  });
+
+  it ("maps city correctly", function() {
+    expect(geocoded.getCity()).toEqual("Washington");
+  });
+
+  it ("maps region correctly", function() {
+    expect(geocoded.getRegion()).toEqual("District of Columbia");
   });
 });
