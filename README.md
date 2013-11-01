@@ -47,13 +47,13 @@ The following table summarizes the features of each:
     <tr>
       <td>Google Maps</td>
       <td>yes</td>
-      <td>no</td>
-      <td>no</td>
+      <td>yes</td>
+      <td>yes</td>
     </tr>
     <tr>
-      <td>Google API</td>
+      <td>Mapquest</td>
       <td>yes</td>
-      <td>yes</td>
+      <td>untested</td>
       <td>yes</td>
     </tr>
   </tbody>
