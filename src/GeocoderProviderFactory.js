@@ -28,10 +28,10 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     switch (options.provider) {
       case 'google':
-        provider = new GeocoderJS.GoogleAPIProvider();
+        provider = new GeocoderJS.GoogleAPIProvider(options);
         break;
       case 'mapquest':
-        provider = new GeocoderJS.MapquestProvider();
+        provider = new GeocoderJS.MapquestProvider(options);
         break;
     }
 
