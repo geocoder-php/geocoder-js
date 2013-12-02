@@ -1,6 +1,4 @@
-var container = (typeof window === "object") ? window : (typeof exports === "object") ? exports : {};
-
-;(function (container) {
+;(function () {
     "use strict";
 
     var GeocoderJS = {};
@@ -11,9 +9,9 @@ var container = (typeof window === "object") ? window : (typeof exports === "obj
       return factory.createProvider(options);
     };
 
+    var container = (typeof window === "object") ? window : (typeof exports === "object") ? exports : {};
     container.GeocoderJS = GeocoderJS;
-
-})(container);
+})();
 
 // Define GeocoderJS as an AMD module.
 if (typeof define === 'function' && define.amd) {
