@@ -10,10 +10,11 @@ module.exports = function (grunt) {
           'src/Geocoded.js',
           'src/GeoJSONDumper.js',
           'src/GeocoderProviderFactory.js',
+          'src/ExternalURILoader.js',
           'src/providers/*.js'
         ],
         dest: 'dist/geocoder.js',
-        flatten: true,
+        beautify: true,
       },
       watch: {
         js: {files: 'src/*.js', tasks: ['uglify'] },
@@ -26,6 +27,7 @@ module.exports = function (grunt) {
         'src/Geocoded.js',
         'src/GeoJSONDumper.js',
         'src/GeocoderProviderFactory.js',
+        'src/ExternalURILoader.js',
         'src/providers/*.js'
       ],
       options: {

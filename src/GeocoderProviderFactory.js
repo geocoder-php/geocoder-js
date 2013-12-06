@@ -1,5 +1,6 @@
 if (typeof GeocoderJS === "undefined" && typeof require === "function") {
   var GeocoderJS = require("../GeocoderJS.js");
+  require("../ExternalURILoader.js");
 }
 
 ;(function (GeocoderJS) {
@@ -25,6 +26,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     }
 
     var provider;
+    var externalLoader = new GeocoderJS.ExternalURILoader();
 
     switch (options.provider) {
       case 'google':
@@ -32,6 +34,9 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
         break;
       case 'mapquest':
         provider = new GeocoderJS.MapquestProvider(options);
+        break;
+      case 'openstreetmap':
+        provider = new GeocoderJS.OpenStreetMapProvider(externalLoader, options);
         break;
     }
 

@@ -1,5 +1,5 @@
-GeocoderJS 0.0.0
-================
+GeocoderJS
+==========
 
 **GeocoderJS** is a JavaScript port of the [Geocoder
 PHP](http://geocoder-php.org/Geocoder/) library. It's meant as a compliment for
@@ -58,6 +58,12 @@ The following table summarizes the features of each:
       <td>Mapquest</td>
       <td>yes</td>
       <td>untested</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <td>OpenStreetMap</td>
+      <td>yes</td>
+      <td>no</td>
       <td>yes</td>
     </tr>
   </tbody>
