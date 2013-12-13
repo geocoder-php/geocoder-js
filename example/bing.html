@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geocoder.js: Bing Example</title>
+    <script src="../dist/geocoder.js"></script>
+    <script>
+      var openStreetMapGeocoder = GeocoderJS.createGeocoder({
+        provider: 'bing',
+        apiKey: 'As11PsBXYvAoGEXmz59ZWl93T8_OACdXi2QnRKWMRIUK6hzOXgN3BcZHnbKyPZYo'
+      });
+      console.log(openStreetMapGeocoder.apiKey);
+      openStreetMapGeocoder.geocode('1600 Pennsylvania Ave NW, Washington, DC', function(result) {
+        console.log(result);
+      });
+
+      openStreetMapGeocoder.geodecode("44.915", "-93.21", function(result) {
+        console.log(result);
+      });
+      function theCallback(data) {
+        console.log(data);
+      }
+    </script>
+    <script src="http://dev.virtualearth.net/REST/v1/Locations/point?point=44.915%2C%20-93.21&key=As11PsBXYvAoGEXmz59ZWl93T8_OACdXi2QnRKWMRIUK6hzOXgN3BcZHnbKyPZYo&jsonp=theCallback"></script>
+  </head>
+  <body>
+
+  </body>
+</html>

@@ -38,6 +38,9 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       case 'openstreetmap':
         provider = new GeocoderJS.OpenStreetMapProvider(externalLoader, options);
         break;
+      case 'bing':
+        provider = new GeocoderJS.BingProvider(externalLoader, options);
+        break;
     }
 
     return provider;
