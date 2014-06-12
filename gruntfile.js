@@ -64,6 +64,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-complexity');
 
   grunt.registerTask('test', ['jshint', 'complexity', 'jasmine']);
+  grunt.registerTask('ci', ['jshint', 'jasmine']);
   grunt.registerTask('build', ['uglify']);
   grunt.registerTask('default', ['test', 'build']);
 };
