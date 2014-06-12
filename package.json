@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "grunt --verbose",
-    "test": "grunt test --verbose"
+    "test": "grunt ci --verbose"
   },
   "dependencies": {
     "grunt-complexity": "~0.1.3"
