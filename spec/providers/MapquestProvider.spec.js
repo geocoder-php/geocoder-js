@@ -32,7 +32,6 @@ describe("Mapquest Provider to Geocoded mapping tests", function() {
     ];
 
   beforeEach(function () {
-    spyOn(provider, 'executeRequest').andReturn(stubMapquestResult);
     geocoded = provider.mapToGeocoded(stubMapquestResult);
   });
 

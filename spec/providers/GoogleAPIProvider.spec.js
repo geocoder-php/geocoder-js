@@ -37,7 +37,6 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
   }];
 
   beforeEach(function () {
-    spyOn(provider, 'executeRequest').andReturn(stubGoogleResult);
     geocoded = provider.mapToGeocoded(stubGoogleResult[0]);
   });
 

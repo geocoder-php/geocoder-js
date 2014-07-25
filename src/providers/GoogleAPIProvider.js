@@ -67,6 +67,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
         }
       }
     }
+
     return geocoded;
   };
 
