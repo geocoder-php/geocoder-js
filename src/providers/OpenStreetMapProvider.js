@@ -13,10 +13,10 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       throw "No external loader defined.";
     }
     this.externalLoader = _externalLoader;
-
-    GeocoderJS.OpenStreetMapProvider.prototype = new GeocoderJS.ProviderBase();
-    GeocoderJS.OpenStreetMapProvider.prototype.constructor = GeocoderJS.GoogleAPIProvider;
   };
+
+  GeocoderJS.OpenStreetMapProvider.prototype = new GeocoderJS.ProviderBase();
+  GeocoderJS.OpenStreetMapProvider.prototype.constructor = GeocoderJS.OpenStreetMapProvider;
 
   GeocoderJS.OpenStreetMapProvider.prototype.geocode = function(searchString, callback) {
     this.externalLoader.setOptions({
