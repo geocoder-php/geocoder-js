@@ -15,6 +15,10 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     useSSL = (options.useSSL) ? options.useSSL : false;
     apiKey = (options.apiKey) ? options.apiKey : null;
+
+    if (apiKey) {
+      useSSL = true;
+    }
   };
 
   GeocoderJS.GoogleAPIProvider.prototype = new GeocoderJS.ProviderBase();
@@ -151,7 +155,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     for (var key in params) {
       if (params.hasOwnProperty(key)) {
-        requestUrl += encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
+        requestUrl += encodeURIComponent(key) + "=" + encodeURIComponent(params[key]) + '&';
       }
     }
 
