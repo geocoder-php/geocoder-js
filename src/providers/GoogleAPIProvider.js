@@ -7,21 +7,35 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 ;(function (GeocoderJS) {
   "use strict";
 
-  var useSSL = false;
+  var useSSL;
+  var apiKey;
 
-  GeocoderJS.GoogleAPIProvider = function(_useSSL) {
-    useSSL = _useSSL;
+  GeocoderJS.GoogleAPIProvider = function(options) {
+    options = (options) ? options : {};
+
+    useSSL = (options.useSSL) ? options.useSSL : false;
+    apiKey = (options.apiKey) ? options.apiKey : null;
   };
 
   GeocoderJS.GoogleAPIProvider.prototype = new GeocoderJS.ProviderBase();
   GeocoderJS.GoogleAPIProvider.prototype.constructor = GeocoderJS.GoogleAPIProvider;
 
   GeocoderJS.GoogleAPIProvider.prototype.geocode = function(searchString, callback) {
-    this.executeRequest({"address": searchString}, callback);
+    var options = {"address": searchString};
+    if (apiKey) {
+      options["key"] = apiKey;
+    }
+
+    this.executeRequest(options, callback);
   };
 
   GeocoderJS.GoogleAPIProvider.prototype.geodecode = function(latitude, longitude, callback) {
-    this.executeRequest({"latlng": latitude + "," + longitude}, callback);
+    var options = {"latlng": latitude + "," + longitude};
+    if (apiKey) {
+      options["key"] = apiKey;
+    }
+
+    this.executeRequest(options, callback);
   };
 
   GeocoderJS.GoogleAPIProvider.prototype.executeRequest = function(params, callback) {
