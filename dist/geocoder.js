@@ -105,7 +105,12 @@ if (function(a) {
 
 if (function(a, b) {
     "use strict";
-    var c = [];
+    function c(a) {
+        var c = Date.now(), d = "jsonp" + Math.round(c + 1000001 * Math.random());
+        return b[d] = function(c) {
+            a(c), delete b[d];
+        }, d;
+    }
     a.ExternalURILoader = function(a) {
         this.options = {}, void 0 === a && (a = {}), this.setOptions(a);
     }, a.ExternalURILoader.prototype.setOptions = function(a) {
@@ -150,8 +155,7 @@ if (function(a, b) {
         }
         function f(a, b) {
             var d, e = new XMLHttpRequest(), f = g.options.protocol + "://" + g.options.host + "/" + g.options.pathname + "?", h = [];
-            a.JSONPCallback && (d = a.JSONPCallback, delete a.JSONPCallback, a[d] = "GeocoderJSJSONPCallback", 
-            c.push(b));
+            a.JSONPCallback && (d = a.JSONPCallback, delete a.JSONPCallback, a[d] = c(b));
             for (var i in a) a.hasOwnProperty(i) && h.push(i + "=" + a[i]);
             if (f += h.join("&"), d) {
                 var j = document.createElement("script");
@@ -181,10 +185,7 @@ if (function(a, b) {
             return e(b, d);
         } catch (h) {}
         return d(null);
-    }, void 0 !== b && (b.GeocoderJSJSONPCallback = function(a) {
-        var b = c.shift();
-        b && b(a);
-    });
+    };
 }(GeocoderJS, window), "undefined" == typeof GeocoderJS && "function" == typeof require) {
     var GeocoderJS = require("../GeocoderJS.js");
     require("../Geocoded.js"), require("../providers/ProviderBase.js");

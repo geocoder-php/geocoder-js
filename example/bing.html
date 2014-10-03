@@ -9,11 +9,9 @@
         console.log(result);
       });
 
-      setTimeout(function() {
-        bingGeocoder.geodecode("44.915", "-93.21", function(result) {
-          console.log(result);
-        });
-      }, 100);
+      bingGeocoder.geodecode("44.915", "-93.21", function(result) {
+        console.log(result);
+      });
     </script>
   </head>
   <body>

@@ -10,8 +10,6 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 ;(function (GeocoderJS, window) {
   "use strict";
 
-  var JSONPCallbacks = [];
-
   GeocoderJS.ExternalURILoader = function(options) {
     this.options = {};
 
@@ -120,9 +118,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       if (params.JSONPCallback) {
         JSONPCallback = params.JSONPCallback;
         delete params.JSONPCallback;
-        params[JSONPCallback] = 'GeocoderJSJSONPCallback';
-
-        JSONPCallbacks.push(callback);
+        params[JSONPCallback] = generateJSONPCallback(callback);
       }
 
       for (var key in params) {
@@ -181,13 +177,26 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
   };
 
-  if (window !== undefined) {
-    window.GeocoderJSJSONPCallback = function(data) {
-      var callback = JSONPCallbacks.shift();
-      if (callback) {
-        callback(data);
-      }
+  /**
+   * Generates randomly-named function to use as a callback for JSONP requests.
+   * From https://github.com/OscarGodson/JSONP
+   * @returns {string} - Function name
+   */
+  function generateJSONPCallback(callback) {
+    //Use timestamp + a random factor to account for a lot of requests in a short time
+    //e.g. jsonp1394571775161
+    var timestamp = Date.now();
+    var generatedFunction = 'jsonp'+Math.round(timestamp+Math.random()*1000001);
+
+    //Generate the temp JSONP function using the name above
+    //First, call the function the user defined in the callback param [callback(json)]
+    //Then delete the generated function from the window [delete window[generatedFunction]]
+    window[generatedFunction] = function(json){
+      callback(json);
+      delete window[generatedFunction];
     };
+
+    return generatedFunction;
   }
 
 })(GeocoderJS, window);
