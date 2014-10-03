@@ -94,6 +94,10 @@ if (function(a) {
 
           case "openstreetmap":
             c = new a.OpenStreetMapProvider(d, b);
+            break;
+
+          case "bing":
+            c = new a.BingProvider(d, b);
         }
         return c;
     };
@@ -182,6 +186,54 @@ if (function(a, b) {
         b && b(a);
     });
 }(GeocoderJS, window), "undefined" == typeof GeocoderJS && "function" == typeof require) {
+    var GeocoderJS = require("../GeocoderJS.js");
+    require("../Geocoded.js"), require("../providers/ProviderBase.js");
+}
+
+if (function(a) {
+    "use strict";
+    var b, c;
+    a.BingProvider = function(a, d) {
+        if (void 0 === a) throw "No external loader defined.";
+        this.externalLoader = a, d = d ? d : {}, b = d.useSSL ? d.useSSL : !1, c = d.apiKey ? d.apiKey : null, 
+        c && (b = !0);
+    }, a.BingProvider.prototype = new a.ProviderBase(), a.BingProvider.prototype.constructor = a.BingProvider, 
+    a.BingProvider.prototype.geocode = function(a, d) {
+        this.externalLoader.setOptions({
+            protocol: b === !0 ? "https" : "http",
+            host: "dev.virtualearth.net",
+            pathname: "REST/v1/Locations/" + a
+        });
+        var e = {
+            key: c,
+            JSONPCallback: "jsonp"
+        };
+        this.executeRequest(e, d);
+    }, a.BingProvider.prototype.geodecode = function(a, d, e) {
+        this.externalLoader.setOptions({
+            protocol: b === !0 ? "https" : "http",
+            host: "dev.virtualearth.net",
+            pathname: "REST/v1/Locations/" + a + "," + d
+        });
+        var f = {
+            key: c,
+            JSONPCallback: "jsonp"
+        };
+        this.executeRequest(f, e);
+    }, a.BingProvider.prototype.executeRequest = function(a, b) {
+        var c = this;
+        this.externalLoader.executeRequest(a, function(a) {
+            var d = [];
+            for (var e in a.resourceSets[0].resources) d.push(c.mapToGeocoded(a.resourceSets[0].resources[e]));
+            b(d);
+        });
+    }, a.BingProvider.prototype.mapToGeocoded = function(b) {
+        var c = new a.Geocoded();
+        return c.latitude = b.point.coordinates[0], c.longitude = b.point.coordinates[1], 
+        c.streetName = b.address.addressLine, c.city = b.address.locality, c.region = b.address.adminDistrict, 
+        c.postal_code = b.address.postalCode, c;
+    };
+}(GeocoderJS), "undefined" == typeof GeocoderJS && "function" == typeof require) {
     var GeocoderJS = require("../GeocoderJS.js");
     require("../Geocoded.js"), require("../providers/ProviderBase.js");
 }
