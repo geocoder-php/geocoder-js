@@ -274,16 +274,29 @@ if (function(a) {
             JSONPCallback: "callback"
         };
         this.executeRequest(c, b);
+    }, a.MapquestProvider.prototype.geodecode = function(a, b, c) {
+        this.externalLoader.setOptions({
+            protocol: "http",
+            host: "www.mapquestapi.com",
+            pathname: "geocoding/v1/reverse"
+        });
+        var d = {
+            key: this.apiKey,
+            outputFormat: "json",
+            JSONPCallback: "callback",
+            location: a + "," + b
+        };
+        this.executeRequest(d, c);
     }, a.MapquestProvider.prototype.mapToGeocoded = function(b) {
-        console.log(b);
         var c = new a.Geocoded();
         return c.latitude = b.latLng.lat, c.longitude = b.latLng.lng, c.city = b.adminArea5, 
-        c.region = b.adminArea4, c;
+        c.region = b.adminArea4, c.streetName = b.street, c.postal_code = b.postalCode, 
+        c;
     }, a.MapquestProvider.prototype.executeRequest = function(a, b) {
         var c = this;
         this.externalLoader.executeRequest(a, function(a) {
             var d = [];
-            if (console.log(a), a.results[0].locations.length) for (var e in a.results[0].locations) d.push(c.mapToGeocoded(a.results[0].locations[e]));
+            if (a.results[0].locations.length) for (var e in a.results[0].locations) d.push(c.mapToGeocoded(a.results[0].locations[e]));
             b(d);
         });
     };

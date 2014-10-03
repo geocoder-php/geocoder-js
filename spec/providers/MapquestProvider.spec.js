@@ -15,14 +15,14 @@ describe("Mapquest Provider to Geocoded mapping tests", function() {
     "adminArea5Type": "City",
     "adminArea4Type": "County",
     "adminArea5": "Washington",
-    "street": "",
+    "street": "1600 Pennsylvania Ave",
     "type": "s",
     "displayLatLng": {
       "lng": -77.036372,
       "lat": 38.895115
     },
     "linkId": 0,
-    "postalCode": "",
+    "postalCode": "20050",
     "sideOfStreet": "N",
     "dragPoint": false,
     "geocodeQuality": "CITY",
@@ -43,11 +43,19 @@ describe("Mapquest Provider to Geocoded mapping tests", function() {
     expect(geocoded.getCoordinates()).toEqual(expectedCoordinates);
   });
 
+  it ("maps street correctly", function() {
+    expect(geocoded.getStreetName()).toEqual("1600 Pennsylvania Ave");
+  });
+
   it ("maps city correctly", function() {
     expect(geocoded.getCity()).toEqual("Washington");
   });
 
   it ("maps region correctly", function() {
     expect(geocoded.getRegion()).toEqual("District of Columbia");
+  });
+
+  it ("maps zipcode correctly", function() {
+    expect(geocoded.getZipcode()).toEqual("20050");
   });
 });
