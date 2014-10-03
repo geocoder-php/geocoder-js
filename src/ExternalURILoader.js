@@ -10,9 +10,6 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 ;(function (GeocoderJS) {
   "use strict";
 
-  // @TODO: Tmp useSSL variable, left over from older implementation. Use setting (or //example.com style urls) instead.
-  var useSSL = false;
-
   GeocoderJS.ExternalURILoader = function(options) {
     this.options = {};
 
@@ -43,8 +40,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     }
 
     try {
-      var url = require("url"),
-        http = useSSL ? require("https") : require("http");
+      var url = require("url");
       return executeNodeRequest(params, callback);
     }
     catch (err) {
@@ -55,16 +51,15 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     function executeNodeRequest(params, callback) {
       var url = require("url"),
-        http = useSSL ? require("https") : require("http"),
+        http = require(_this.options.protocol),
         urlObj = {
-          "protocol": useSSL ? "https" : "http",
+          "protocol": _this.options.protocol,
           "host": _this.options.host,
           "pathname": _this.options.pathname,
           "query": params
         },
         requestUrl;
 
-      urlObj.query.sensor = "false";
       requestUrl = url.format(urlObj);
 
       http.get(requestUrl, function(res) {
@@ -115,13 +110,17 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     function executeDOMRequest(params, callback) {
       var req = new XMLHttpRequest(),
-        requestUrl = "//" + _this.options.host + "/" + _this.options.pathname + "?";
+        requestUrl = _this.options.protocol + "://" + _this.options.host + "/" + _this.options.pathname + "?";
+
+      var paramsList = [];
 
       for (var key in params) {
         if (params.hasOwnProperty(key)) {
-          requestUrl += encodeURIComponent(key) + "=" + encodeURIComponent(params[key]) + "&";
+          paramsList.push(encodeURIComponent(key) + "=" + encodeURIComponent(params[key]));
         }
       }
+
+      requestUrl += paramsList.join('&');
 
       req.onload = function () {
         if (this.status != 200) {

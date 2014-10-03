@@ -10,7 +10,12 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
   var useSSL;
   var apiKey;
 
-  GeocoderJS.GoogleAPIProvider = function(options) {
+  GeocoderJS.GoogleAPIProvider = function(_externalLoader, options) {
+    if (_externalLoader === undefined) {
+      throw "No external loader defined.";
+    }
+    this.externalLoader = _externalLoader;
+
     options = (options) ? options : {};
 
     useSSL = (options.useSSL) ? options.useSSL : false;
@@ -25,38 +30,53 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
   GeocoderJS.GoogleAPIProvider.prototype.constructor = GeocoderJS.GoogleAPIProvider;
 
   GeocoderJS.GoogleAPIProvider.prototype.geocode = function(searchString, callback) {
-    var options = {"address": searchString};
+    this.externalLoader.setOptions({
+      protocol: (useSSL === true) ? 'https' : 'http',
+      host: 'maps.googleapis.com',
+      pathname: 'maps/api/geocode/json'
+    });
+
+    var options = {
+      sensor: false,
+      address: searchString
+    };
+
     if (apiKey) {
       options["key"] = apiKey;
     }
 
-    this.executeRequest(options, callback);
+    this.externalLoader.executeRequest(options, callback);
   };
 
   GeocoderJS.GoogleAPIProvider.prototype.geodecode = function(latitude, longitude, callback) {
-    var options = {"latlng": latitude + "," + longitude};
+    this.externalLoader.setOptions({
+      protocol: (useSSL) ? 'https' : 'http',
+      host: 'maps.googleapis.com',
+      pathname: 'maps/api/geocode/json'
+    });
+
+    var options = {
+      "sensor": false,
+      "latlng": latitude + "," + longitude
+    };
+
     if (apiKey) {
       options["key"] = apiKey;
     }
 
-    this.executeRequest(options, callback);
+    this.externalLoader.executeRequest(options, callback);
   };
 
   GeocoderJS.GoogleAPIProvider.prototype.executeRequest = function(params, callback) {
-    if (typeof XMLHttpRequest !== "undefined") {
-      return executeDOMRequest(params, callback);
-    }
+    var _this = this;
 
-    try {
-      var url = require("url"),
-        http = useSSL ? require("https") : require("http");
-      return executeNodeRequest(params, callback);
-    }
-    catch (err) {
-      // Intentionally empty.
-    }
-
-    return callback(null);
+    this.externalLoader.executeRequest(params, function(data) {
+      var results = [];
+      for (var i in data) {
+        results.push(_this.mapToGeocoded(data[i]));
+      }
+      callback(results);
+    });
   };
 
   GeocoderJS.GoogleAPIProvider.prototype.mapToGeocoded = function(result) {

@@ -51,11 +51,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     var _this = this;
 
-    this.externalLoader.executeRequest(params, function(data) {
-      var results = [];
-      results.push(_this.mapToGeocoded(data));
-      callback(results);
-    });
+    this.executeRequest(params, callback);
   };
 
   GeocoderJS.OpenStreetMapProvider.prototype.executeRequest = function(params, callback) {
