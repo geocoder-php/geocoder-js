@@ -45,7 +45,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       options["key"] = apiKey;
     }
 
-    this.externalLoader.executeRequest(options, callback);
+    this.executeRequest(options, callback);
   };
 
   GeocoderJS.GoogleAPIProvider.prototype.geodecode = function(latitude, longitude, callback) {
@@ -64,7 +64,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       options["key"] = apiKey;
     }
 
-    this.externalLoader.executeRequest(options, callback);
+    this.executeRequest(options, callback);
   };
 
   GeocoderJS.GoogleAPIProvider.prototype.executeRequest = function(params, callback) {
@@ -72,8 +72,8 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     this.externalLoader.executeRequest(params, function(data) {
       var results = [];
-      for (var i in data) {
-        results.push(_this.mapToGeocoded(data[i]));
+      for (var i in data.results) {
+        results.push(_this.mapToGeocoded(data.results[i]));
       }
       callback(results);
     });

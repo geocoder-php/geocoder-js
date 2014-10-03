@@ -59,9 +59,14 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     this.externalLoader.executeRequest(params, function(data) {
       var results = [];
-      for (var i in data) {
-        results.push(_this.mapToGeocoded(data[i]));
+      if (data.length) {
+        for (var i in data) {
+          results.push(_this.mapToGeocoded(data[i]));
+        }
+      } else {
+        results.push(_this.mapToGeocoded(data));
       }
+
       callback(results);
     });
   };
