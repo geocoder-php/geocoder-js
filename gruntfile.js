@@ -1,34 +1,33 @@
 module.exports = function (grunt) {
   'use strict';
 
+  var srcFiles = [
+    'src/GeocoderJS.js',
+    'src/providers/ProviderBase.js',
+    'src/Geocoded.js',
+    'src/GeoJSONDumper.js',
+    'src/GeocoderProviderFactory.js',
+    'src/ExternalURILoader.js',
+    'src/providers/*.js'
+  ];
+
   grunt.initConfig({
     uglify: {
-      files: {
-        src: [
-          'src/GeocoderJS.js',
-          'src/providers/ProviderBase.js',
-          'src/Geocoded.js',
-          'src/GeoJSONDumper.js',
-          'src/GeocoderProviderFactory.js',
-          'src/ExternalURILoader.js',
-          'src/providers/*.js'
-        ],
+      develop: {
+        src: srcFiles,
         dest: 'dist/geocoder.js',
         options: {
           beautify: true
         }
       },
+      production: {
+        src: srcFiles,
+        dest: 'dist/geocoder.min.js',
+        options: {}
+      }
     },
     jasmine: {
-      src: [
-        'src/GeocoderJS.js',
-        'src/providers/ProviderBase.js',
-        'src/Geocoded.js',
-        'src/GeoJSONDumper.js',
-        'src/GeocoderProviderFactory.js',
-        'src/ExternalURILoader.js',
-        'src/providers/*.js'
-      ],
+      src: srcFiles,
       options: {
         specs: ['spec/*.js', 'spec/providers/*.js'],
         helpers : 'spec/helpers/*.js',
