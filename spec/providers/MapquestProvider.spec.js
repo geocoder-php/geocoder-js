@@ -1,42 +1,40 @@
 describe("Mapquest Provider to Geocoded mapping tests", function() {
-  var provider = new GeocoderJS.MapquestProvider();
+  var provider = new GeocoderJS.MapquestProvider(new GeocoderJS.ExternalURILoader());
   var geocoded;
 
-  var stubMapquestResult =  [
-      {
-        "adminArea1": "US",
-        "adminArea1Type": "Country",
-        "adminArea3": "",
-        "adminArea3Type": "State",
-        "latLng": {
-          "lng": -77.036372,
-          "lat": 38.895115
-        },
-        "adminArea4": "District of Columbia",
-        "adminArea5Type": "City",
-        "adminArea4Type": "County",
-        "adminArea5": "Washington",
-        "street": "",
-        "type": "s",
-        "displayLatLng": {
-          "lng": -77.036372,
-          "lat": 38.895115
-        },
-        "linkId": 0,
-        "postalCode": "",
-        "sideOfStreet": "N",
-        "dragPoint": false,
-        "geocodeQuality": "CITY",
-        "geocodeQualityCode": "A5XCX"
-      }
-    ];
+  var stubMapquestResult = {
+    "adminArea1": "US",
+    "adminArea1Type": "Country",
+    "adminArea3": "",
+    "adminArea3Type": "State",
+    "latLng": {
+      "lng": -77.036372,
+      "lat": 38.895115
+    },
+    "adminArea4": "District of Columbia",
+    "adminArea5Type": "City",
+    "adminArea4Type": "County",
+    "adminArea5": "Washington",
+    "street": "",
+    "type": "s",
+    "displayLatLng": {
+      "lng": -77.036372,
+      "lat": 38.895115
+    },
+    "linkId": 0,
+    "postalCode": "",
+    "sideOfStreet": "N",
+    "dragPoint": false,
+    "geocodeQuality": "CITY",
+    "geocodeQualityCode": "A5XCX"
+  };
 
   beforeEach(function () {
     geocoded = provider.mapToGeocoded(stubMapquestResult);
   });
 
   it ("expects API Key to be set on initiation.", function() {
-    var testProvider = new GeocoderJS.MapquestProvider({apiKey: '[stub-api-key]'});
+    var testProvider = new GeocoderJS.MapquestProvider(new GeocoderJS.ExternalURILoader(), {apiKey: '[stub-api-key]'});
     expect(testProvider.apiKey).toEqual('[stub-api-key]');
   });
 

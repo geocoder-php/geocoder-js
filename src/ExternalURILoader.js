@@ -7,8 +7,10 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
   var GeocoderJS = require("../GeocoderJS.js");
 }
 
-;(function (GeocoderJS) {
+;(function (GeocoderJS, window) {
   "use strict";
+
+  var JSONPCallbacks = [];
 
   GeocoderJS.ExternalURILoader = function(options) {
     this.options = {};
@@ -110,52 +112,82 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     function executeDOMRequest(params, callback) {
       var req = new XMLHttpRequest(),
-        requestUrl = _this.options.protocol + "://" + _this.options.host + "/" + _this.options.pathname + "?";
+        requestUrl = _this.options.protocol + "://" + _this.options.host + "/" + _this.options.pathname + "?",
+        JSONPCallback;
 
       var paramsList = [];
 
+      if (params.JSONPCallback) {
+        JSONPCallback = params.JSONPCallback;
+        delete params.JSONPCallback;
+        params[JSONPCallback] = 'GeocoderJSJSONPCallback';
+
+        JSONPCallbacks.push(callback);
+      }
+
       for (var key in params) {
         if (params.hasOwnProperty(key)) {
-          paramsList.push(encodeURIComponent(key) + "=" + encodeURIComponent(params[key]));
+            paramsList.push(key + "=" + params[key]);
+          //}
         }
       }
 
       requestUrl += paramsList.join('&');
 
-      req.onload = function () {
-        if (this.status != 200) {
-          console.log("Received HTTP status code " + this.status + " when attempting geocoding request.");
+      if (JSONPCallback) {
+        // Create a new script element
+        var script_element = document.createElement('script');
+
+        // Set its source to the JSONP API
+        script_element.src = requestUrl;
+
+        // Stick the script element in the page <head>
+        document.getElementsByTagName('head')[0].appendChild(script_element);
+      } else {
+        req.onload = function () {
+          if (this.status != 200) {
+            console.log("Received HTTP status code " + this.status + " when attempting geocoding request.");
+            return callback(null);
+          }
+
+          if (!this.responseText || !this.responseText.length) {
+            console.log("Received empty data when attempting geocoding request.");
+            return callback(null);
+          }
+
+          var data = false,
+            i = 0,
+            results = [];
+          try {
+            data = JSON.parse(this.responseText);
+          }
+          catch(e) {
+            console.log("Received invalid JSON data when attempting geocoding request.");
+            return callback(null);
+          }
+
+          if (data) {
+            return callback(data);
+          }
+
+          console.log("Received unexpected JSON data when attempting geocoding request.");
           return callback(null);
-        }
+        };
 
-        if (!this.responseText || !this.responseText.length) {
-          console.log("Received empty data when attempting geocoding request.");
-          return callback(null);
-        }
-
-        var data = false,
-          i = 0,
-          results = [];
-        try {
-          data = JSON.parse(this.responseText);
-        }
-        catch(e) {
-          console.log("Received invalid JSON data when attempting geocoding request.");
-          return callback(null);
-        }
-
-        if (data) {
-          return callback(data);
-        }
-
-        console.log("Received unexpected JSON data when attempting geocoding request.");
-        return callback(null);
-      };
-
-      req.open("GET", requestUrl);
-      req.send();
+        req.open("GET", requestUrl);
+        req.send();
+      }
     }
 
   };
 
-})(GeocoderJS);
+  if (window !== undefined) {
+    window.GeocoderJSJSONPCallback = function(data) {
+      var callback = JSONPCallbacks.shift();
+      if (callback) {
+        callback(data);
+      }
+    };
+  }
+
+})(GeocoderJS, window);

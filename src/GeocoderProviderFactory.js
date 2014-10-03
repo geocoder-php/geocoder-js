@@ -33,7 +33,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
         provider = new GeocoderJS.GoogleAPIProvider(externalLoader, options);
         break;
       case 'mapquest':
-        provider = new GeocoderJS.MapquestProvider(options);
+        provider = new GeocoderJS.MapquestProvider(externalLoader, options);
         break;
       case 'openstreetmap':
         provider = new GeocoderJS.OpenStreetMapProvider(externalLoader, options);

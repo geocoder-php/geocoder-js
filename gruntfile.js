@@ -14,7 +14,9 @@ module.exports = function (grunt) {
           'src/providers/*.js'
         ],
         dest: 'dist/geocoder.js',
-        beautify: true,
+        options: {
+          beautify: true
+        }
       },
     },
     jasmine: {
