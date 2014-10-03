@@ -29,7 +29,7 @@ Contibution libraries are installed by Bower. Unit tests are covered by Jasmine.
 Pull requests will **not** be accepted without:
 
 * a) all unit/functional tests working
-* b) any potentially effected example files still functional
+* b) any potentially affected example files still functional
 * c) any additional functionality covered by unit/functional tests.
 
 Providers
