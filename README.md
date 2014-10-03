@@ -63,7 +63,13 @@ The following table summarizes the features of each:
     <tr>
       <td>OpenStreetMap</td>
       <td>yes</td>
-      <td>no</td>
+      <td>untested</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <td>Bing</td>
+      <td>yes</td>
+      <td>untested</td>
       <td>yes</td>
     </tr>
   </tbody>
