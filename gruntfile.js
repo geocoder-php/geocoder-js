@@ -46,8 +46,8 @@ module.exports = function (grunt) {
       generic: {
         src: ['src/**/*.js'],
         options: {
-          cyclomatic: [3, 7, 12],          // or optionally a single value, like 3
-          halstead: [8, 13, 20],           // or optionally a single value, like 8
+          cyclomatic: [10, 30, 50],          // or optionally a single value, like 3
+          halstead: [25, 30, 40],           // or optionally a single value, like 8
           maintainability: 100
         }
       }
