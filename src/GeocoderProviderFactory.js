@@ -41,6 +41,9 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       case 'bing':
         provider = new GeocoderJS.BingProvider(externalLoader, options);
         break;
+      case 'yandex':
+        provider = new GeocoderJS.YandexProvider(externalLoader, options);
+        break;
     }
 
     return provider;

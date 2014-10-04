@@ -98,6 +98,10 @@ if (function(a) {
 
           case "bing":
             c = new a.BingProvider(d, b);
+            break;
+
+          case "yandex":
+            c = new a.YandexProvider(d, b);
         }
         return c;
     };
@@ -358,7 +362,7 @@ if (function(a) {
     require("../Geocoded.js"), require("../ExternalURILoader.js"), require("../providers/ProviderBase.js");
 }
 
-!function(a) {
+if (function(a) {
     "use strict";
     a.OpenStreetMapProvider = function(a) {
         if (void 0 === a) throw "No external loader defined.";
@@ -402,5 +406,60 @@ if (function(a) {
         return c.latitude = 1 * b.lat, c.longitude = 1 * b.lon, c.streetNumber = void 0 !== b.address.house_number ? b.address.house_number : void 0, 
         c.streetName = b.address.road, c.city = b.address.city, c.region = b.address.state, 
         c.postal_code = b.address.postcode, c;
+    };
+}(GeocoderJS), "undefined" == typeof GeocoderJS && "function" == typeof require) {
+    var GeocoderJS = require("../GeocoderJS.js");
+    require("../Geocoded.js"), require("../providers/ProviderBase.js");
+}
+
+!function(a) {
+    "use strict";
+    var b;
+    a.YandexProvider = function(a, c) {
+        if (void 0 === a) throw "No external loader defined.";
+        this.externalLoader = a, c = c ? c : {}, b = c.useSSL ? c.useSSL : !1, this.lang = c.lang ? c.lang : "en-US";
+    }, a.YandexProvider.prototype = new a.ProviderBase(), a.YandexProvider.prototype.constructor = a.YandexProvider, 
+    a.YandexProvider.prototype.geocode = function(a, c) {
+        this.externalLoader.setOptions({
+            protocol: b === !0 ? "https" : "http",
+            host: "geocode-maps.yandex.ru",
+            pathname: "1.x"
+        });
+        var d = {
+            format: "json",
+            geocode: a,
+            JSONPCallback: "callback",
+            lang: this.lang
+        };
+        this.executeRequest(d, c);
+    }, a.YandexProvider.prototype.geodecode = function(a, c, d) {
+        this.externalLoader.setOptions({
+            protocol: b === !0 ? "https" : "http",
+            host: "geocode-maps.yandex.ru",
+            pathname: "1.x"
+        });
+        var e = {
+            format: "json",
+            geocode: c + "," + a,
+            JSONPCallback: "callback",
+            lang: this.lang
+        };
+        this.executeRequest(e, d);
+    }, a.YandexProvider.prototype.executeRequest = function(a, b) {
+        var c = this;
+        this.externalLoader.executeRequest(a, function(a) {
+            var d = [];
+            for (var e in a.response.GeoObjectCollection.featureMember) d.push(c.mapToGeocoded(a.response.GeoObjectCollection.featureMember[e].GeoObject));
+            b(d);
+        });
+    }, a.YandexProvider.prototype.mapToGeocoded = function(b) {
+        var c = new a.Geocoded(), d = b.Point.pos.split(" ");
+        if (c.latitude = d[1], c.longitude = d[0], b.metaDataProperty.GeocoderMetaData.AddressDetails.Country) {
+            var e = b.metaDataProperty.GeocoderMetaData.AddressDetails.Country;
+            e.AdministrativeArea && (e = e.AdministrativeArea, c.region = e.AdministrativeAreaName, 
+            e.SubAdministrativeArea && (e = e.SubAdministrativeArea, e.Locality && (e = e.Locality, 
+            c.city = e.LocalityName, e.Thoroughfare && (e = e.Thoroughfare, c.streetName = e.ThoroughfareName))));
+        }
+        return c;
     };
 }(GeocoderJS);

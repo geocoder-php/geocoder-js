@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geocoder.js: Yandex Simple Example</title>
+    <script src="../dist/geocoder.js"></script>
+    <script>
+      var yandexGeocoder = new GeocoderJS.createGeocoder('yandex');
+      yandexGeocoder.geocode('1600 Pennsylvania Ave, Washington, DC', function(result) {
+        console.log(result);
+      });
+
+      yandexGeocoder.geodecode("44.915", "-93.21", function(result) {
+        console.log(result);
+      });
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>

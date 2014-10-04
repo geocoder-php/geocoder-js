@@ -72,6 +72,12 @@ The following table summarizes the features of each:
       <td>untested</td>
       <td>yes</td>
     </tr>
+    <tr>
+      <td>Yandex</td>
+      <td>yes</td>
+      <td>untested</td>
+      <td>yes</td>
+    </tr>
   </tbody>
 </table>
 
