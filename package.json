@@ -1,5 +1,6 @@
 {
   "name": "geocoder-js",
+  "main": "./dist/geocoder.min.js",
   "version": "0.0.0",
   "devDependencies": {
     "grunt": "~0.4.1",
