@@ -9,7 +9,7 @@
       return factory.createProvider(options);
     };
 
-    var container = (typeof window === "object") ? window : (typeof exports === "object") ? exports : {};
+    var container = (typeof exports === "object") ? exports : (typeof window === "object") ? window : {};
     container.GeocoderJS = GeocoderJS;
 })();
 
