@@ -19,7 +19,8 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     getCityDistrict: function() {},
     getCounty: function() {},
     getCountyCode: function() {},
-    getRegion: function() {return this.region;}
+    getRegion: function() {return this.region;},
+    getFormatted: function() {return this.formatted;}
   };
 
 })(GeocoderJS);
