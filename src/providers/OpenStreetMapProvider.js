@@ -82,8 +82,9 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     geocoded.city = result.address.city;
     geocoded.region = result.address.state;
     geocoded.postal_code = result.address.postcode;
+    geocoded.formatted = result.display_name;
 
     return geocoded;
   };
-  
+
 })(GeocoderJS);

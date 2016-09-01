@@ -65,4 +65,9 @@ describe("OpenStreetMap raw result to Geocoded mapping tests", function() {
   it ("maps postal code correctly", function() {
     expect(geocoded.getZipcode()).toEqual("20500");
   });
+
+  it ("maps formatted address correctly", function() {
+    expect(geocoded.getFormatted())
+      .toEqual("The White House, 1600, Pennsylvania Avenue Northwest, Foggy Bottom, Farragut Square, Washington, District of Columbia, 20500, United States of America");
+  });
 });
