@@ -3,6 +3,7 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
     geocoded;
 
   var stubGoogleResult = [{
+    formatted_address: "1600 Pennsylvania Avenue Northwest, Washington DC 20050",
     address_components: [{
       long_name: "1600",
       short_name: "1600",
@@ -66,5 +67,10 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
 
   it ("maps postal code correctly", function() {
     expect(geocoded.getZipcode()).toEqual("20050");
+  });
+
+  it ("maps formatted address correctly", function() {
+    expect(geocoded.getFormatted())
+      .toEqual("1600 Pennsylvania Avenue Northwest, Washington DC 20050");
   });
 });

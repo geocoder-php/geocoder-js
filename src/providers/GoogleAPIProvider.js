@@ -83,6 +83,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     var geocoded = new GeocoderJS.Geocoded();
     geocoded.latitude = result.geometry.location.lat;
     geocoded.longitude = result.geometry.location.lng;
+    geocoded.formatted = result.formatted_address;
 
     for (var i in result.address_components) {
       for (var j in result.address_components[i].types) {
