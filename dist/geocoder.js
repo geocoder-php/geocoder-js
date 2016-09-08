@@ -365,36 +365,38 @@ if (function(a) {
 
 if (function(a) {
     "use strict";
-    a.OpenStreetMapProvider = function(a) {
+    var b, c;
+    a.OpenStreetMapProvider = function(a, d) {
         if (void 0 === a) throw "No external loader defined.";
-        this.externalLoader = a;
+        this.externalLoader = a, d = d ? d : {}, b = !!d.useSSL && d.useSSL, c = d.email ? d.email : null;
     }, a.OpenStreetMapProvider.prototype = new a.ProviderBase(), a.OpenStreetMapProvider.prototype.constructor = a.OpenStreetMapProvider, 
-    a.OpenStreetMapProvider.prototype.geocode = function(a, b) {
+    a.OpenStreetMapProvider.prototype.geocode = function(a, d) {
         this.externalLoader.setOptions({
-            protocol: "http",
+            protocol: b ? "https" : "http",
             host: "nominatim.openstreetmap.org",
             pathname: "search"
         });
-        var c = {
+        var e = {
             format: "json",
             q: a,
             addressdetails: 1
         };
-        this.executeRequest(c, b);
-    }, a.OpenStreetMapProvider.prototype.geodecode = function(a, b, c) {
+        c && (e.email = c), this.executeRequest(e, d);
+    }, a.OpenStreetMapProvider.prototype.geodecode = function(a, d, e) {
         this.externalLoader.setOptions({
-            protocol: "http",
+            protocol: b ? "https" : "http",
             host: "nominatim.openstreetmap.org",
             pathname: "reverse"
         });
-        var d = {
+        var f = {
             format: "json",
             lat: a,
-            lon: b,
+            lon: d,
             addressdetails: 1,
             zoom: 18
         };
-        this.executeRequest(d, c);
+        c && (f.email = c);
+        this.executeRequest(f, e);
     }, a.OpenStreetMapProvider.prototype.executeRequest = function(a, b) {
         var c = this;
         this.externalLoader.executeRequest(a, function(a) {

@@ -8,11 +8,19 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 ;(function (GeocoderJS) {
   "use strict";
 
-  GeocoderJS.OpenStreetMapProvider = function(_externalLoader) {
+  var useSSL;
+  var email;
+
+  GeocoderJS.OpenStreetMapProvider = function(_externalLoader, options) {
     if (_externalLoader === undefined) {
       throw "No external loader defined.";
     }
     this.externalLoader = _externalLoader;
+
+    options = (options) ? options : {};
+
+    useSSL = (options.useSSL) ? options.useSSL : false;
+    email = (options.email) ? options.email : null;
   };
 
   GeocoderJS.OpenStreetMapProvider.prototype = new GeocoderJS.ProviderBase();
@@ -20,7 +28,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
   GeocoderJS.OpenStreetMapProvider.prototype.geocode = function(searchString, callback) {
     this.externalLoader.setOptions({
-      protocol: 'http',
+      protocol: (useSSL) ? 'https' : 'http',
       host: 'nominatim.openstreetmap.org',
       pathname: 'search'
     });
@@ -31,12 +39,16 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       addressdetails: 1
     };
 
+    if (email) {
+      params.email = email;
+    }
+
     this.executeRequest(params, callback);
   };
 
   GeocoderJS.OpenStreetMapProvider.prototype.geodecode = function(latitude, longitude, callback) {
     this.externalLoader.setOptions({
-      protocol: 'http',
+      protocol: (useSSL) ? 'https' : 'http',
       host: 'nominatim.openstreetmap.org',
       pathname: 'reverse'
     });
@@ -48,6 +60,10 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
       addressdetails: 1,
       zoom: 18
     };
+
+    if (email) {
+      params.email = email;
+    }
 
     var _this = this;
 
