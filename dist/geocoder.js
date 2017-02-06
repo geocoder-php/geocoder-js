@@ -12,10 +12,10 @@ if (function() {
 if (function(a) {
     "use strict";
     a.ProviderBase = function() {}, a.ProviderBase.prototype = {
-        geocode: function() {},
-        geodecode: function() {},
-        mapToGeocoded: function() {},
-        executeRequest: function() {}
+        geocode: function(a, b) {},
+        geodecode: function(a, b, c) {},
+        mapToGeocoded: function(a) {},
+        executeRequest: function(a, b) {}
     };
 }(GeocoderJS), "undefined" == typeof GeocoderJS && "function" == typeof require) var GeocoderJS = require("./GeocoderJS.js");
 
@@ -141,7 +141,7 @@ if (function(a, b) {
                     var d = !1, e = 0, f = [];
                     try {
                         d = JSON.parse(b.data);
-                    } catch (g) {
+                    } catch (a) {
                         throw "Received invalid JSON data when attempting geocoding request.";
                     }
                     if (d && d.status) {
@@ -172,7 +172,7 @@ if (function(a, b) {
                 var a = !1;
                 try {
                     a = JSON.parse(this.responseText);
-                } catch (c) {
+                } catch (a) {
                     return console.log("Received invalid JSON data when attempting geocoding request."), 
                     b(null);
                 }
@@ -183,11 +183,9 @@ if (function(a, b) {
         var g = this;
         if ("undefined" != typeof XMLHttpRequest) return f(b, d);
         try {
-            {
-                require("url");
-            }
+            require("url");
             return e(b, d);
-        } catch (h) {}
+        } catch (a) {}
         return d(null);
     };
 }(GeocoderJS, window), "undefined" == typeof GeocoderJS && "function" == typeof require) {
@@ -200,7 +198,7 @@ if (function(a) {
     var b, c;
     a.BingProvider = function(a, d) {
         if (void 0 === a) throw "No external loader defined.";
-        this.externalLoader = a, d = d ? d : {}, b = d.useSSL ? d.useSSL : !1, c = d.apiKey ? d.apiKey : null, 
+        this.externalLoader = a, d = d ? d : {}, b = !!d.useSSL && d.useSSL, c = d.apiKey ? d.apiKey : null, 
         c && (b = !0);
     }, a.BingProvider.prototype = new a.ProviderBase(), a.BingProvider.prototype.constructor = a.BingProvider, 
     a.BingProvider.prototype.geocode = function(a, d) {
@@ -248,7 +246,7 @@ if (function(a) {
     var b, c;
     a.GoogleAPIProvider = function(a, d) {
         if (void 0 === a) throw "No external loader defined.";
-        this.externalLoader = a, d = d ? d : {}, b = d.useSSL ? d.useSSL : !1, c = d.apiKey ? d.apiKey : null, 
+        this.externalLoader = a, d = d ? d : {}, b = !!d.useSSL && d.useSSL, c = d.apiKey ? d.apiKey : null, 
         c && (b = !0);
     }, a.GoogleAPIProvider.prototype = new a.ProviderBase(), a.GoogleAPIProvider.prototype.constructor = a.GoogleAPIProvider, 
     a.GoogleAPIProvider.prototype.geocode = function(a, d) {
@@ -370,7 +368,7 @@ if (function(a) {
     }, a.OpenStreetMapProvider.prototype = new a.ProviderBase(), a.OpenStreetMapProvider.prototype.constructor = a.OpenStreetMapProvider, 
     a.OpenStreetMapProvider.prototype.geocode = function(a, b) {
         this.externalLoader.setOptions({
-            protocol: "http",
+            protocol: "https",
             host: "nominatim.openstreetmap.org",
             pathname: "search"
         });
@@ -382,7 +380,7 @@ if (function(a) {
         this.executeRequest(c, b);
     }, a.OpenStreetMapProvider.prototype.geodecode = function(a, b, c) {
         this.externalLoader.setOptions({
-            protocol: "http",
+            protocol: "https",
             host: "nominatim.openstreetmap.org",
             pathname: "reverse"
         });
@@ -417,7 +415,7 @@ if (function(a) {
     var b;
     a.YandexProvider = function(a, c) {
         if (void 0 === a) throw "No external loader defined.";
-        this.externalLoader = a, c = c ? c : {}, b = c.useSSL ? c.useSSL : !1, this.lang = c.lang ? c.lang : "en-US";
+        this.externalLoader = a, c = c ? c : {}, b = !!c.useSSL && c.useSSL, this.lang = c.lang ? c.lang : "en-US";
     }, a.YandexProvider.prototype = new a.ProviderBase(), a.YandexProvider.prototype.constructor = a.YandexProvider, 
     a.YandexProvider.prototype.geocode = function(a, c) {
         this.externalLoader.setOptions({
@@ -454,7 +452,7 @@ if (function(a) {
         });
     }, a.YandexProvider.prototype.mapToGeocoded = function(b) {
         var c = new a.Geocoded(), d = b.Point.pos.split(" ");
-        if (c.latitude = d[1], c.longitude = d[0], b.metaDataProperty.GeocoderMetaData.AddressDetails.Country) {
+        if (c.latitude = 1 * d[1], c.longitude = 1 * d[0], b.metaDataProperty.GeocoderMetaData.AddressDetails.Country) {
             var e = b.metaDataProperty.GeocoderMetaData.AddressDetails.Country;
             e.AdministrativeArea && (e = e.AdministrativeArea, c.region = e.AdministrativeAreaName, 
             e.SubAdministrativeArea && (e = e.SubAdministrativeArea, e.Locality && (e = e.Locality, 
