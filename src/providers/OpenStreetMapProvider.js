@@ -20,7 +20,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
   GeocoderJS.OpenStreetMapProvider.prototype.geocode = function(searchString, callback) {
     this.externalLoader.setOptions({
-      protocol: 'http',
+      protocol: 'https',
       host: 'nominatim.openstreetmap.org',
       pathname: 'search'
     });
@@ -36,7 +36,7 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
   GeocoderJS.OpenStreetMapProvider.prototype.geodecode = function(latitude, longitude, callback) {
     this.externalLoader.setOptions({
-      protocol: 'http',
+      protocol: 'https',
       host: 'nominatim.openstreetmap.org',
       pathname: 'reverse'
     });
