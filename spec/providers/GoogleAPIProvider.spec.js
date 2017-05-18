@@ -32,6 +32,27 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
       location: {
         lat: 38.8978378,
         lng: -77.0365123
+      },
+      bounds: {
+        northeast: {
+          lat: 38.8989583802915,
+          lng: -77.03538596970849
+        },
+        southwest: {
+          lat: 38.8962604197085,
+          lng: -77.0380839302915
+        }
+      },
+      location_type: "ROOFTOP",
+      viewport: {
+        northeast: {
+          lat: 38.8989583802915,
+          lng: -77.03538596970849
+        },
+        southwest: {
+          lat: 38.8962604197085,
+          lng: -77.0380839302915
+        }
       }
     }
   }];
@@ -46,6 +67,10 @@ describe("Google API Geocoder Provider raw result to Geocoded mapping tests", fu
 
   it ("maps coordinates correctly", function() {
     expect(geocoded.getCoordinates()).toEqual([38.8978378, -77.0365123]);
+  });
+
+  it ("maps bounds correctly", function() {
+      expect(geocoded.getBounds()).toEqual([[ 38.8962604197085, -77.0380839302915], [38.8989583802915, -77.03538596970849]]);
   });
 
   it ("maps street number correctly", function() {
