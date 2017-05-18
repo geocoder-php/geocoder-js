@@ -48,6 +48,14 @@ describe("Geocoded returns data properly", function() {
   geocoded.city = "Washington";
   geocoded.region = "DC";
   geocoded.postal_code = "20050";
+  geocoded.countryName = "France";
+  geocoded.bounds = [[48.8718,2.301097], [48.874597,2.30523]];
+
+
+  it ("Geocoded returns proper Bounds", function() {
+      var expectedBounds =  [[48.8718,2.301097], [48.874597,2.30523]];
+      expect(geocoded.getBounds()).toEqual(expectedBounds);
+  });
 
   it ("Geocoded returns proper coordinates", function() {
     var expectedCoordinates = [38.8978378, -77.0365123];
@@ -71,6 +79,10 @@ describe("Geocoded returns data properly", function() {
     expect(geocoded.getCity()).toEqual("Washington");
   });
 
+    it ("Geocoded returns proper Country", function() {
+        expect(geocoded.getCounty()).toEqual("France");
+    });
+
   it ("Geocoded returns proper Region", function() {
     expect(geocoded.getRegion()).toEqual("DC");
   });
@@ -78,5 +90,4 @@ describe("Geocoded returns data properly", function() {
   it ("Geocoded returns proper Postal Code", function() {
     expect(geocoded.getZipcode()).toEqual("20050");
   });
-
 });
