@@ -84,6 +84,10 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
     geocoded.latitude = result.geometry.location.lat;
     geocoded.longitude = result.geometry.location.lng;
 
+    if(result.geometry.bounds) {
+      geocoded.bounds = parseBounds(result.geometry.bounds);
+    }
+
     for (var i in result.address_components) {
       for (var j in result.address_components[i].types) {
         switch (result.address_components[i].types[j]) {
@@ -108,4 +112,17 @@ if (typeof GeocoderJS === "undefined" && typeof require === "function") {
 
     return geocoded;
   };
+
+  function parseBounds(boundsData) {
+    var sw, ne;
+
+    sw = boundsData.southwest;
+    ne = boundsData.northeast;
+
+    return [
+        [sw.lat, sw.lng],
+        [ne.lat, ne.lng]
+    ];
+  }
+
 })(GeocoderJS);
