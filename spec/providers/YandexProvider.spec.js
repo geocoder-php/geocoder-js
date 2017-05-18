@@ -8,6 +8,15 @@ describe("Yandex Geocoder Provider raw result to Geocoded mapping tests", functi
           "kind": "house",
           "text": "United States, District of Columbia, Washington, Pennsylvania Ave NW, 1600",
           "precision": "exact",
+          "Address": {
+            "Components": [
+              {"kind": "country", "name": "United States"},
+              {"kind": "province", "name": "District of Columbia"},
+              {"kind": "locality", "name": "Washington"},
+              {"kind": "district", "name": "Washington district"},
+              {"kind": "street", "name": "Pennsylvania Ave NW"}
+            ]
+          },
           "AddressDetails": {
             "Country": {
               "AddressLine": "District of Columbia, Washington, Pennsylvania Ave NW, 1600",
@@ -67,5 +76,9 @@ describe("Yandex Geocoder Provider raw result to Geocoded mapping tests", functi
 
   it ("maps region correctly", function() {
     expect(geocoded.getRegion()).toEqual("District of Columbia");
+  });
+
+  it ("maps boundary correctly", function() {
+      expect(geocoded.getBounds()).toEqual([[38.891265, -77.046921], [38.904125, -77.030464]]);
   });
 });
