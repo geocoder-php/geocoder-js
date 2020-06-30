@@ -1,5 +1,2 @@
-.idea
-lib
 node_modules
-.grunt
-.DS_Store
+dist

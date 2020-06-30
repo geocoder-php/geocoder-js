@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "declaration": true,
+    "declarationDir": "types",
+    "declarationMap": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES5"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"GeocoderJS.d.ts","sourceRoot":"","sources":["../src/GeocoderJS.ts"],"names":[],"mappings":"AAAA,OAAwB,EACtB,8BAA8B,EAC/B,MAAM,yBAAyB,CAAC;AACjC,OAAO,EAAE,iBAAiB,EAAE,MAAM,WAAW,CAAC;AAE9C,MAAM,CAAC,OAAO,OAAO,UAAU;IACtB,OAAO,SAAW;WAEX,cAAc,CAC1B,OAAO,EAAE,MAAM,GAAG,8BAA8B,GAC/C,iBAAiB,GAAG,SAAS;CAGjC"}
