@@ -20,4 +20,4 @@ export { default as GeocoderProviderFactory } from "GeocoderProviderFactory";
 export * from "GeocoderProviderFactory";
 export { default as GeoJSONDumper } from "GeoJSONDumper";
 export * from "GeoJSONDumper";
-export { default } from "GeocoderJS";
+export { default } from "UniversalGeocoder";

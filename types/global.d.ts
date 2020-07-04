@@ -1,7 +1,7 @@
-import GeocoderJS from "GeocoderJS";
+import UniversalGeocoder from "UniversalGeocoder";
 declare global {
     interface Window {
-        GeocoderJS: typeof GeocoderJS;
+        UniversalGeocoder: typeof UniversalGeocoder;
     }
 }
 //# sourceMappingURL=global.d.ts.map

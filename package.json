@@ -1,5 +1,5 @@
 {
-  "name": "geocoder-js",
+  "name": "universal-geocoder",
   "description": "Universal geocoding abstraction with multiple built-in providers",
   "version": "0.1.0",
   "keywords": [
@@ -18,11 +18,11 @@
   "contributors": [
     "Alan Poulain <contact@alanpoulain.eu>"
   ],
-  "homepage": "https://github.com/geocoder-php/geocoder-js#readme",
-  "bugs": "https://github.com/geocoder-php/geocoder-js/issues",
+  "homepage": "https://github.com/alanpoulain/universal-geocoder#readme",
+  "bugs": "https://github.com/alanpoulain/universal-geocoder/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/geocoder-php/geocoder-js.git"
+    "url": "git+https://github.com/alanpoulain/universal-geocoder.git"
   },
   "main": "dist/index.js",
   "types": "types/index.d.ts",

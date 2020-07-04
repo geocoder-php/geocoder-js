@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Geocoder.js: Yandex Example</title>
-    <script src="../dist/geocoder.js"></script>
+    <title>Universal Geocoder: Yandex Example</title>
+    <script src="../dist/universal-geocoder.js"></script>
     <script>
-      var yandexGeocoder = GeocoderJS.createGeocoder("yandex");
+      var yandexGeocoder = UniversalGeocoder.createGeocoder("yandex");
       yandexGeocoder.geocode("1600 Pennsylvania Ave, Washington, DC", function(result) {
         console.log(result);
       });

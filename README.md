@@ -1,13 +1,13 @@
-GeocoderJS
-==========
+Universal Geocoder
+==================
 
-[![Build Status](https://travis-ci.org/geocoder-php/geocoder-js.png?branch=master)](https://travis-ci.org/geocoder-php/geocoder-js)
-[![Dependency Status](https://david-dm.org/geocoder-php/geocoder-js.png)](https://david-dm.org/geocoder-php/geocoder-js)
-[![devDependency Status](https://david-dm.org/geocoder-php/geocoder-js/dev-status.png)](https://david-dm.org/geocoder-php/geocoder-js#info=devDependencies)
+[![Build Status](https://travis-ci.com/alanpoulain/universal-geocoder.png?branch=main)](https://travis-ci.com/alanpoulain/universal-geocoder)
 
-GeocoderJS is a universal JavaScript library for client-side geocoding applications with multiple built-in providers.
+Universal Geocoder is a universal JavaScript library for client-side geocoding applications with multiple built-in providers.
 
-It is a port of the [Geocoder PHP](https://geocoder-php.org/) library.
+Need geocoding 🌍️ in your website or application? Don't want to be vendor-locked to a service? ✨️ Universal Geocoder ✨️ is for you!
+
+Universal Geocoder is a TypeScript fork of [GeocoderJS](https://github.com/geocoder-php/geocoder-js), itself a port of the [Geocoder PHP](https://geocoder-php.org/) library.
 
 This library is platform agnostic: it is available either server-side (Node) or client-side (browsers, React Native).
 
@@ -17,7 +17,7 @@ Installation
 Add the library to your project:
 
 ```shell
-npm install --save geocoder-js
+npm install --save universal-geocoder
 ```
 
 > ⚠️ **Warning**: If you need to use this library in an environment not supporting the Promise API such as Internet Explorer, you must install an ES6 Promise compatible polyfill like [es6-promise](https://github.com/jakearchibald/es6-promise).
@@ -25,26 +25,26 @@ npm install --save geocoder-js
 Usage
 -----
 
-You can either use GeocoderJS as a module or as a direct dependency.
+You can either use Universal Geocoder as a module or as a direct dependency.
 
 As a module:
 
 ```javascript
-import GeocoderJS from "geocoder-js";
+import UniversalGeocoder from "universal-geocoder";
 
-const openStreetMapGeocoder = GeocoderJS.createGeocoder("openstreetmap");
+const openStreetMapGeocoder = UniversalGeocoder.createGeocoder("openstreetmap");
 
 openStreetMapGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", (result) => {
   console.log(result);
 });
 ```
 
-If you want to use the library as a direct dependecy, copy `dist/geocoder.js` or `dist/geocoder.min.js` to your dependencies.
+If you want to use the library as a direct dependecy, copy `dist/universal-geocoder.js` or `dist/universal-geocoder.min.js` to your dependencies.
 
-GeocoderJS will be available in the global environment:
+Universal Geocoder will be available in the global environment:
 
 ```javascript
-const openStreetMapGeocoder = GeocoderJS.createGeocoder("openstreetmap");
+const openStreetMapGeocoder = UniversalGeocoder.createGeocoder("openstreetmap");
 
 openStreetMapGeocoder.geodecode("44.915", "-93.21", (result) => {
   console.log(result);
@@ -54,9 +54,9 @@ openStreetMapGeocoder.geodecode("44.915", "-93.21", (result) => {
 For a more advanced usage, see the example below:
 
 ```javascript
-import GeocoderJS, { ReverseQuery } from "geocoder-js";
+import UniversalGeocoder, { ReverseQuery } from "universal-geocoder";
 
-const googleGeocoder = GeocoderJS.createGeocoder({
+const googleGeocoder = UniversalGeocoder.createGeocoder({
   provider: "google",
   apiKey: "YOUR_API_KEY",
   useSsl: true,
@@ -87,7 +87,7 @@ googleGeocoder.geodecode(reverseQuery, (result) => {
 Providers
 ---------
 
-GeocoderJS comes with modules to integrate with various geocoding providers.
+Universal Geocoder comes with modules to integrate with various geocoding providers.
 
 The following table summarizes the features of each:
 

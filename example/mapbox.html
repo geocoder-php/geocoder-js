@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Geocoder.js: Mapbox Example</title>
-    <script src="../dist/geocoder.js"></script>
+    <title>Universal Geocoder: Mapbox Example</title>
+    <script src="../dist/universal-geocoder.js"></script>
     <script>
-      var mapboxGeocoder = GeocoderJS.createGeocoder({ provider: "mapbox" });
+      var mapboxGeocoder = UniversalGeocoder.createGeocoder({ provider: "mapbox" });
       mapboxGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", function(result) {
         console.log(result);
       });

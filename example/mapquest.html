@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Geocoder.js: Mapquest Example</title>
-    <script src="../dist/geocoder.js"></script>
+    <title>Universal Geocoder: Mapquest Example</title>
+    <script src="../dist/universal-geocoder.js"></script>
     <script>
-      var mapQuestGeocoder = GeocoderJS.createGeocoder({ provider: "mapquest", apiKey: "Fmjtd%7Cluurnu6al1%2Cbg%3Do5-9wbg94" });
+      var mapQuestGeocoder = UniversalGeocoder.createGeocoder({ provider: "mapquest", apiKey: "Fmjtd%7Cluurnu6al1%2Cbg%3Do5-9wbg94" });
       mapQuestGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", function(result) {
         console.log(result);
       });

@@ -4,6 +4,6 @@ const common = require("./webpack.common.js");
 module.exports = merge(common, {
   mode: "production",
   output: {
-    filename: "geocoder.min.js",
+    filename: "universal-geocoder.min.js",
   },
 });

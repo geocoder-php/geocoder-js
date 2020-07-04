@@ -3,7 +3,7 @@ import ProviderFactory, {
 } from "GeocoderProviderFactory";
 import { ProviderInterface } from "providers";
 
-export default class GeocoderJS {
+export default class UniversalGeocoder {
   public version = "0.1.0";
 
   public static createGeocoder(

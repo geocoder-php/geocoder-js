@@ -1,16 +1,16 @@
-import GeocoderJS from "GeocoderJS";
+import UniversalGeocoder from "UniversalGeocoder";
 
 interface Container {
-  GeocoderJS: typeof GeocoderJS;
+  UniversalGeocoder: typeof UniversalGeocoder;
 }
 
 declare global {
   interface Window {
-    GeocoderJS: typeof GeocoderJS;
+    UniversalGeocoder: typeof UniversalGeocoder;
   }
 }
 
 const container: Window | Container =
   typeof window === "object" ? window : ({} as Container);
 
-container.GeocoderJS = GeocoderJS;
+container.UniversalGeocoder = UniversalGeocoder;
