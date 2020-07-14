@@ -20,5 +20,5 @@ export { default as GeocoderProviderFactory } from "GeocoderProviderFactory";
 export * from "GeocoderProviderFactory";
 export { default as GeoJsonDumper } from "GeoJsonDumper";
 export * from "GeoJsonDumper";
-export { default } from "UniversalGeocoder";
+export { default } from "GeocoderJS";
 //# sourceMappingURL=index.d.ts.map

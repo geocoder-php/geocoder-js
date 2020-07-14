@@ -5,6 +5,6 @@ module.exports = merge(common, {
   devtool: "inline-source-map",
   mode: "development",
   output: {
-    filename: "universal-geocoder.js",
+    filename: "geocoder.js",
   },
 });
