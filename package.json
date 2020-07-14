@@ -27,7 +27,8 @@
   "types": "types/index.d.ts",
   "files": [
     "/dist",
-    "/src"
+    "/src",
+    "/types"
   ],
   "dependencies": {
     "cross-fetch": "^3.0.0"
