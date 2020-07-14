@@ -22,7 +22,8 @@ interface YandexRequestParams {
   readonly apikey?: string;
   readonly geocode: string;
   readonly format: string;
-  readonly lang: string;
+  readonly lang?: string;
+  readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
   readonly JSONPCallback?: string;
 }
 
@@ -83,14 +84,10 @@ interface YandexFlattenedAddressDetails {
   PremiseNumber?: string;
 }
 
-interface YandexProviderOptionsInterface extends ProviderOptionsInterface {
-  readonly lang: string;
+export interface YandexProviderOptionsInterface
+  extends ProviderOptionsInterface {
+  readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
 }
-
-export const defaultYandexProviderOptions = {
-  ...defaultProviderOptions,
-  lang: "en-US",
-};
 
 export default class YandexProvider implements ProviderInterface {
   private externalLoader: ExternalLoaderInterface;
@@ -99,10 +96,10 @@ export default class YandexProvider implements ProviderInterface {
 
   public constructor(
     _externalLoader: ExternalLoaderInterface,
-    options: YandexProviderOptionsInterface = defaultYandexProviderOptions
+    options: YandexProviderOptionsInterface = defaultProviderOptions
   ) {
     this.externalLoader = _externalLoader;
-    this.options = { ...defaultYandexProviderOptions, ...options };
+    this.options = { ...defaultProviderOptions, ...options };
   }
 
   public geocode(
@@ -121,7 +118,7 @@ export default class YandexProvider implements ProviderInterface {
       apikey: this.options.apiKey,
       geocode: geocodeQuery.getText(),
       format: "json",
-      lang: this.options.lang,
+      lang: geocodeQuery.getLocale(),
       JSONPCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
@@ -154,7 +151,8 @@ export default class YandexProvider implements ProviderInterface {
         reverseQuery.getCoordinates().latitude
       }`,
       format: "json",
-      lang: this.options.lang,
+      lang: reverseQuery.getLocale(),
+      toponym: this.options.toponym,
       JSONPCallback: this.options.useJsonp ? "callback" : undefined,
     };
 

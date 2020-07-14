@@ -48,7 +48,7 @@ export default class GeocodeQuery {
   }
 
   public static create(object: GeocodeQueryObjectCreate): GeocodeQuery {
-    return new GeocodeQuery(object);
+    return new this(object);
   }
 
   public toObject(): GeocodeQueryObject {
@@ -64,7 +64,10 @@ export default class GeocodeQuery {
   }
 
   public withText(text: string): GeocodeQuery {
-    return new GeocodeQuery({ ...this.toObject(), text });
+    return (<typeof GeocodeQuery>this.constructor).create({
+      ...this.toObject(),
+      text,
+    });
   }
 
   public withBounds(
@@ -73,7 +76,7 @@ export default class GeocodeQuery {
     north?: number,
     east?: number
   ): GeocodeQuery {
-    return new GeocodeQuery({
+    return (<typeof GeocodeQuery>this.constructor).create({
       ...this.toObject(),
       south,
       west,
@@ -83,11 +86,17 @@ export default class GeocodeQuery {
   }
 
   public withLocale(locale: string): GeocodeQuery {
-    return new GeocodeQuery({ ...this.toObject(), locale });
+    return (<typeof GeocodeQuery>this.constructor).create({
+      ...this.toObject(),
+      locale,
+    });
   }
 
   public withLimit(limit: number): GeocodeQuery {
-    return new GeocodeQuery({ ...this.toObject(), limit });
+    return (<typeof GeocodeQuery>this.constructor).create({
+      ...this.toObject(),
+      limit,
+    });
   }
 
   public getText(): string {

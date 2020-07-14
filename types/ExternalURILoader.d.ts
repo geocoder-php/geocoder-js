@@ -1,15 +1,18 @@
 export interface ExternalLoaderInterface {
     setOptions(options: ExternalLoaderOptions): void;
-    executeRequest(params: ExternalLoaderParams, callback: ResponseCallback): void;
+    executeRequest(params: ExternalLoaderParams, callback: ResponseCallback, headers?: ExternalLoaderHeaders): void;
 }
 export interface ExternalLoaderOptions {
-    readonly protocol: null | string;
-    readonly host: null | string;
-    readonly pathname: null | string;
+    readonly protocol: string;
+    readonly host?: string;
+    readonly pathname?: string;
 }
 export interface ExternalLoaderParams {
     [param: string]: string | undefined;
     JSONPCallback?: string;
+}
+export interface ExternalLoaderHeaders {
+    [header: string]: string;
 }
 declare type ResponseCallback = (response: any) => void;
 /**
@@ -19,7 +22,7 @@ export default class ExternalURILoader implements ExternalLoaderInterface {
     private options;
     constructor(options?: ExternalLoaderOptions);
     setOptions(options: ExternalLoaderOptions): void;
-    executeRequest(params: ExternalLoaderParams, callback: ResponseCallback): void;
+    executeRequest(params: ExternalLoaderParams, callback: ResponseCallback, externalLoaderHeaders?: ExternalLoaderHeaders): void;
     private static runJsonpCallback;
     /**
      * Generates randomly-named function to use as a callback for JSONP requests.

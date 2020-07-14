@@ -16,7 +16,7 @@ export default class MapboxReverseQuery extends ReverseQuery {
   }
 
   public static create(object: MapboxReverseQueryObject): MapboxReverseQuery {
-    return new MapboxReverseQuery(object);
+    return new this(object);
   }
 
   public toObject(): MapboxReverseQueryObject {

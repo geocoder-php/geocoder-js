@@ -4,7 +4,7 @@
     <title>Universal Geocoder: Nominatim Example</title>
     <script src="../dist/universal-geocoder.js"></script>
     <script>
-      var openStreetMapGeocoder = UniversalGeocoder.createGeocoder("openstreetmap");
+      var openStreetMapGeocoder = UniversalGeocoder.createGeocoder({ provider: "openstreetmap", userAgent: "Universal Geocoder Example" });
       openStreetMapGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", function(result) {
         console.log(result);
       });

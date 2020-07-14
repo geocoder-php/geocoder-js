@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+
+* Better Nominatim support
+* Better GeoJSON support
+
 ## 0.1.0
 
 * Library rewritten in TypeScript

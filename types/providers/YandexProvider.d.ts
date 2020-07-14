@@ -44,15 +44,9 @@ export interface YandexResult {
         pos: string;
     };
 }
-interface YandexProviderOptionsInterface extends ProviderOptionsInterface {
-    readonly lang: string;
+export interface YandexProviderOptionsInterface extends ProviderOptionsInterface {
+    readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
 }
-export declare const defaultYandexProviderOptions: {
-    lang: string;
-    useSsl: boolean;
-    useJsonp: boolean;
-    apiKey?: string | undefined;
-};
 export default class YandexProvider implements ProviderInterface {
     private externalLoader;
     private options;
@@ -63,5 +57,4 @@ export default class YandexProvider implements ProviderInterface {
     static mapToGeocoded(result: YandexResult): Geocoded;
     private static flattenObject;
 }
-export {};
 //# sourceMappingURL=YandexProvider.d.ts.map

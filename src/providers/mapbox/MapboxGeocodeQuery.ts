@@ -16,7 +16,7 @@ export default class MapboxGeocodeQuery extends GeocodeQuery {
   }
 
   public static create(object: MapboxGeocodeQueryObject): MapboxGeocodeQuery {
-    return new MapboxGeocodeQuery(object);
+    return new this(object);
   }
 
   public toObject(): MapboxGeocodeQueryObject {

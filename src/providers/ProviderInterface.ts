@@ -1,4 +1,4 @@
-import { ExternalLoaderParams } from "ExternalURILoader";
+import { ExternalLoaderHeaders, ExternalLoaderParams } from "ExternalURILoader";
 import Geocoded from "Geocoded";
 import {
   GeocodeQuery,
@@ -34,6 +34,7 @@ export default interface ProviderInterface {
   ): void;
   executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders
   ): void;
 }

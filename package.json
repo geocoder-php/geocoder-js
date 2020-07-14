@@ -10,8 +10,7 @@
     "universal",
     "node",
     "browser",
-    "react",
-    "native"
+    "react-native"
   ],
   "license": "(MIT AND GPL-2.0)",
   "author": "Brandon Morrison <brandon@brandonmorrison.com>",
@@ -56,7 +55,7 @@
     "webpack-merge": "^4.2.0"
   },
   "scripts": {
-    "build": "webpack --config webpack.dev.js && webpack --config webpack.prod.js && tsc",
+    "build": "rm -rf types && webpack --config webpack.dev.js && webpack --config webpack.prod.js && tsc",
     "lint": "eslint --fix --ext .ts .",
     "prepublish": "npm run build",
     "serve": "http-server",

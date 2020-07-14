@@ -1,6 +1,7 @@
 import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalURILoader";
 import { GeocodedResultsCallback, MapboxGeocodeQuery, MapboxGeocodeQueryObject, MapboxReverseQuery, MapboxReverseQueryObject, ProviderInterface, ProviderOptionsInterface } from "providers";
 import Geocoded from "Geocoded";
+import { Box } from "types";
 interface MapboxFeatureContextProperties {
     id: string;
     text: string;
@@ -27,7 +28,7 @@ export interface MapboxResult {
     matching_text?: string;
     matching_place_name?: string;
     language?: string;
-    bbox?: [number, number, number, number];
+    bbox?: Box;
     center: [number, number];
     geometry: {
         type: "Point";
@@ -44,10 +45,9 @@ export declare enum GEOCODING_MODES {
     GEOCODING_MODE_PLACES = "mapbox.places",
     GEOCODING_MODE_PLACES_PERMANENT = "mapbox.places-permanent"
 }
-interface MapboxProviderOptionsInterface extends ProviderOptionsInterface {
+export interface MapboxProviderOptionsInterface extends ProviderOptionsInterface {
     readonly geocodingMode: GEOCODING_MODES;
     readonly country?: string;
-    readonly language?: string;
 }
 export declare const defaultMapboxProviderOptions: {
     geocodingMode: GEOCODING_MODES;

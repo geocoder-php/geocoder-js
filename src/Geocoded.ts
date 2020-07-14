@@ -1,4 +1,7 @@
+import AdminLevel from "AdminLevel";
+
 export interface GeocodedObject {
+  readonly [property: string]: string | number | AdminLevel[] | undefined;
   readonly latitude?: number;
   readonly longitude?: number;
   readonly south?: number;
@@ -12,6 +15,7 @@ export interface GeocodedObject {
   readonly locality?: string;
   readonly postalCode?: string;
   readonly region?: string;
+  readonly adminLevels?: AdminLevel[];
   readonly country?: string;
   readonly countryCode?: string;
 }
@@ -43,11 +47,13 @@ export default class Geocoded {
 
   private readonly region?: string;
 
+  private readonly adminLevels: AdminLevel[];
+
   private readonly country?: string;
 
   private readonly countryCode?: string;
 
-  private constructor({
+  protected constructor({
     latitude,
     longitude,
     south,
@@ -61,6 +67,7 @@ export default class Geocoded {
     locality,
     postalCode,
     region,
+    adminLevels,
     country,
     countryCode,
   }: GeocodedObject) {
@@ -77,12 +84,13 @@ export default class Geocoded {
     this.locality = locality;
     this.postalCode = postalCode;
     this.region = region;
+    this.adminLevels = adminLevels || [];
     this.country = country;
     this.countryCode = countryCode;
   }
 
   public static create(object: GeocodedObject): Geocoded {
-    return new Geocoded(object);
+    return new this(object);
   }
 
   public toObject(): GeocodedObject {
@@ -100,6 +108,7 @@ export default class Geocoded {
       locality: this.locality,
       postalCode: this.postalCode,
       region: this.region,
+      adminLevels: this.adminLevels,
       country: this.country,
       countryCode: this.countryCode,
     };
@@ -111,7 +120,7 @@ export default class Geocoded {
     north?: number,
     east?: number
   ): Geocoded {
-    return new Geocoded({
+    return (<typeof Geocoded>this.constructor).create({
       ...this.toObject(),
       south,
       west,
@@ -121,7 +130,7 @@ export default class Geocoded {
   }
 
   public withCoordinates(latitude?: number, longitude?: number): Geocoded {
-    return new Geocoded({
+    return (<typeof Geocoded>this.constructor).create({
       ...this.toObject(),
       latitude,
       longitude,
@@ -175,6 +184,14 @@ export default class Geocoded {
 
   public getRegion(): undefined | string {
     return this.region;
+  }
+
+  public addAdminLevel(adminLevel: AdminLevel): void {
+    this.adminLevels.push(adminLevel);
+  }
+
+  public getAdminLevels(): AdminLevel[] {
+    return this.adminLevels;
   }
 
   public getCountry(): undefined | string {

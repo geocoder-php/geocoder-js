@@ -16,6 +16,7 @@ import {
   ReverseQuery,
   ReverseQueryObject,
 } from "query";
+import { Box } from "types";
 
 interface BingRequestParams {
   [param: string]: string | undefined;
@@ -25,7 +26,7 @@ interface BingRequestParams {
 
 export interface BingResult {
   __type: string;
-  bbox: [number, number, number, number];
+  bbox: Box;
   name: string;
   point: {
     type: string;

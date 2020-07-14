@@ -1,4 +1,6 @@
+import AdminLevel from "AdminLevel";
 export interface GeocodedObject {
+    readonly [property: string]: string | number | AdminLevel[] | undefined;
     readonly latitude?: number;
     readonly longitude?: number;
     readonly south?: number;
@@ -12,6 +14,7 @@ export interface GeocodedObject {
     readonly locality?: string;
     readonly postalCode?: string;
     readonly region?: string;
+    readonly adminLevels?: AdminLevel[];
     readonly country?: string;
     readonly countryCode?: string;
 }
@@ -29,9 +32,10 @@ export default class Geocoded {
     private readonly locality?;
     private readonly postalCode?;
     private readonly region?;
+    private readonly adminLevels;
     private readonly country?;
     private readonly countryCode?;
-    private constructor();
+    protected constructor({ latitude, longitude, south, west, north, east, formattedAddress, streetNumber, streetName, subLocality, locality, postalCode, region, adminLevels, country, countryCode, }: GeocodedObject);
     static create(object: GeocodedObject): Geocoded;
     toObject(): GeocodedObject;
     withBounds(south?: number, west?: number, north?: number, east?: number): Geocoded;
@@ -47,6 +51,8 @@ export default class Geocoded {
     getLocality(): undefined | string;
     getPostalCode(): undefined | string;
     getRegion(): undefined | string;
+    addAdminLevel(adminLevel: AdminLevel): void;
+    getAdminLevels(): AdminLevel[];
     getCountry(): undefined | string;
     getCountryCode(): undefined | string;
 }

@@ -1,6 +1,6 @@
 import { ProviderInterface, ProviderOptionsInterface } from "providers";
 export interface GeocoderProviderFactoryOptions extends ProviderOptionsInterface {
-    provider: "bing" | "google" | "mapbox" | "mapquest" | "openstreetmap" | "yandex";
+    provider: "bing" | "google" | "mapbox" | "mapquest" | "nominatim" | "openstreetmap" | "yandex";
 }
 export default class ProviderFactory {
     /**

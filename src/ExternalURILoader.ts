@@ -4,14 +4,15 @@ export interface ExternalLoaderInterface {
   setOptions(options: ExternalLoaderOptions): void;
   executeRequest(
     params: ExternalLoaderParams,
-    callback: ResponseCallback
+    callback: ResponseCallback,
+    headers?: ExternalLoaderHeaders
   ): void;
 }
 
 export interface ExternalLoaderOptions {
-  readonly protocol: null | string;
-  readonly host: null | string;
-  readonly pathname: null | string;
+  readonly protocol: string;
+  readonly host?: string;
+  readonly pathname?: string;
 }
 
 export interface ExternalLoaderParams {
@@ -19,13 +20,15 @@ export interface ExternalLoaderParams {
   JSONPCallback?: string;
 }
 
+export interface ExternalLoaderHeaders {
+  [header: string]: string;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ResponseCallback = (response: any) => void;
 
 const defaultOptions: ExternalLoaderOptions = {
-  protocol: null,
-  host: null,
-  pathname: null,
+  protocol: "http",
 };
 
 /**
@@ -44,8 +47,16 @@ export default class ExternalURILoader implements ExternalLoaderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: ResponseCallback
+    callback: ResponseCallback,
+    externalLoaderHeaders?: ExternalLoaderHeaders
   ): void {
+    if (!this.options.host) {
+      throw new Error("A host is required for the external URI loader.");
+    }
+    if (!this.options.pathname) {
+      throw new Error("A pathname is required for the external URI loader.");
+    }
+
     const requestUrl = new URL(
       `${this.options.protocol}://${this.options.host}/${this.options.pathname}`
     );
@@ -67,7 +78,10 @@ export default class ExternalURILoader implements ExternalLoaderInterface {
       return;
     }
 
-    fetch(requestUrl.toString())
+    const headers = externalLoaderHeaders || {};
+    fetch(requestUrl.toString(), {
+      headers,
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error(

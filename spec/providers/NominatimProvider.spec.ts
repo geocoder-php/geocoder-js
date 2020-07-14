@@ -1,8 +1,13 @@
-import { OpenStreetMapProvider, OpenStreetMapResult } from "providers";
-import Geocoded from "Geocoded";
+import {
+  NominatimGeocoded,
+  OpenStreetMapProvider,
+  OpenStreetMapResult,
+} from "providers";
+import ExternalURILoader from "ExternalURILoader";
+import AdminLevel from "AdminLevel";
 
-describe("OpenStreetMap Geocoder Provider raw result to Geocoded mapping", () => {
-  let geocoded: Geocoded;
+describe("OpenStreetMap / Nominatim Geocoder Provider raw result to Geocoded mapping", () => {
+  let geocoded: NominatimGeocoded;
 
   const stubOpenStreetMapResult: OpenStreetMapResult[] = [
     {
@@ -21,7 +26,7 @@ describe("OpenStreetMap Geocoder Provider raw result to Geocoded mapping", () =>
       lon: "-77.0365643605898",
       display_name:
         "The White House, 1600, Pennsylvania Avenue Northwest, Foggy Bottom, Farragut Square, Washington, District of Columbia, 20500, United States of America",
-      class: "tourism",
+      category: "tourism",
       type: "attraction",
       importance: 1.5076757387296,
       icon:
@@ -45,8 +50,17 @@ describe("OpenStreetMap Geocoder Provider raw result to Geocoded mapping", () =>
     geocoded = OpenStreetMapProvider.mapToGeocoded(stubOpenStreetMapResult[0]);
   });
 
-  it("receives results from the OpenStreetMap geocoder", () => {
+  it("receives results from the OpenStreetMap / Nominatim geocoder", () => {
     expect(geocoded).toBeDefined();
+  });
+
+  it("expects User-Agent to be required on initiation", () => {
+    expect(
+      () => new OpenStreetMapProvider(new ExternalURILoader())
+    ).toThrowError(
+      Error,
+      'An User-Agent identifying your application is required for the OpenStreetMap / Nominatim provider when using the default host. Please add it in the "userAgent" option.'
+    );
   });
 
   it("maps coordinates correctly", () => {
@@ -60,6 +74,12 @@ describe("OpenStreetMap Geocoder Provider raw result to Geocoded mapping", () =>
       38.8979148864746,
       -77.036247253418,
     ]);
+  });
+
+  it("maps display name correctly", () => {
+    expect(geocoded.getDisplayName()).toEqual(
+      "The White House, 1600, Pennsylvania Avenue Northwest, Foggy Bottom, Farragut Square, Washington, District of Columbia, 20500, United States of America"
+    );
   });
 
   it("maps street number correctly", () => {
@@ -86,11 +106,39 @@ describe("OpenStreetMap Geocoder Provider raw result to Geocoded mapping", () =>
     expect(geocoded.getRegion()).toEqual("District of Columbia");
   });
 
+  it("maps admin levels correctly", () => {
+    expect(geocoded.getAdminLevels()).toEqual([
+      AdminLevel.create({ level: 1, name: "District of Columbia" }),
+    ]);
+  });
+
   it("maps country correctly", () => {
     expect(geocoded.getCountry()).toEqual("United States of America");
   });
 
   it("maps country code correctly", () => {
     expect(geocoded.getCountryCode()).toEqual("us");
+  });
+
+  it("maps OSM id correctly", () => {
+    expect(geocoded.getOsmId()).toEqual(238241022);
+  });
+
+  it("maps OSM type correctly", () => {
+    expect(geocoded.getOsmType()).toEqual("way");
+  });
+
+  it("maps category correctly", () => {
+    expect(geocoded.getCategory()).toEqual("tourism");
+  });
+
+  it("maps type correctly", () => {
+    expect(geocoded.getType()).toEqual("attraction");
+  });
+
+  it("maps attribution correctly", () => {
+    expect(geocoded.getAttribution()).toEqual(
+      "Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright"
+    );
   });
 });

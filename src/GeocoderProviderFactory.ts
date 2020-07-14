@@ -7,9 +7,9 @@ import {
   YandexProvider,
   ProviderInterface,
   ProviderOptionsInterface,
-  defaultProviderOptions,
   defaultMapboxProviderOptions,
-  defaultYandexProviderOptions,
+  defaultOpenStreetMapProviderOptions,
+  defaultProviderOptions,
 } from "providers";
 import ExternalURILoader from "ExternalURILoader";
 
@@ -20,6 +20,7 @@ export interface GeocoderProviderFactoryOptions
     | "google"
     | "mapbox"
     | "mapquest"
+    | "nominatim"
     | "openstreetmap"
     | "yandex";
 }
@@ -59,12 +60,13 @@ export default class ProviderFactory {
       case "mapquest":
         return new MapquestProvider(externalLoader, providerOptions);
       case "openstreetmap":
-        return new OpenStreetMapProvider(externalLoader, providerOptions);
-      case "yandex":
-        return new YandexProvider(externalLoader, {
-          ...defaultYandexProviderOptions,
+      case "nominatim":
+        return new OpenStreetMapProvider(externalLoader, {
+          ...defaultOpenStreetMapProviderOptions,
           ...providerOptions,
         });
+      case "yandex":
+        return new YandexProvider(externalLoader, providerOptions);
       default:
     }
 

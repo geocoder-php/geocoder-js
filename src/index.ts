@@ -12,12 +12,14 @@ export interface Coordinates {
 
 export * from "providers";
 export * from "query";
+export { default as AdminLevel } from "AdminLevel";
+export * from "AdminLevel";
 export { default as ExternalURILoader } from "ExternalURILoader";
 export * from "ExternalURILoader";
 export { default as Geocoded } from "Geocoded";
 export * from "Geocoded";
 export { default as GeocoderProviderFactory } from "GeocoderProviderFactory";
 export * from "GeocoderProviderFactory";
-export { default as GeoJSONDumper } from "GeoJSONDumper";
-export * from "GeoJSONDumper";
+export { default as GeoJsonDumper } from "GeoJsonDumper";
+export * from "GeoJsonDumper";
 export { default } from "UniversalGeocoder";

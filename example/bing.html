@@ -7,6 +7,7 @@
       var bingGeocoder = UniversalGeocoder.createGeocoder({ provider: "bing", apiKey: "As11PsBXYvAoGEXmz59ZWl93T8_OACdXi2QnRKWMRIUK6hzOXgN3BcZHnbKyPZYo" });
       bingGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", function(result) {
         console.log(result);
+        console.log("GeoJSON:", GeoJsonDumper.dump(result[0]));
       });
 
       bingGeocoder.geodecode("44.915", "-93.21", function(result) {

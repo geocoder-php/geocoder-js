@@ -5,11 +5,11 @@
     <script src="../dist/universal-geocoder.js"></script>
     <script>
       var yandexGeocoder = UniversalGeocoder.createGeocoder("yandex");
-      yandexGeocoder.geocode("1600 Pennsylvania Ave, Washington, DC", function(result) {
+      yandexGeocoder.geocode({ text: "1600 Pennsylvania Ave, Washington, DC", locale: "en-US" }, function(result) {
         console.log(result);
       });
 
-      yandexGeocoder.geodecode("44.915", "-93.21", function(result) {
+      yandexGeocoder.geodecode({ latitude: "44.915", longitude: "-93.21", locale: "en-US" }, function(result) {
         console.log(result);
       });
     </script>

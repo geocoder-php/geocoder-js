@@ -14,6 +14,7 @@ import {
   defaultProviderOptions,
 } from "providers";
 import Geocoded from "Geocoded";
+import { Box } from "types";
 
 interface MapboxRequestParams {
   [param: string]: string | undefined;
@@ -70,7 +71,7 @@ export interface MapboxResult {
   // eslint-disable-next-line camelcase
   matching_place_name?: string;
   language?: string;
-  bbox?: [number, number, number, number];
+  bbox?: Box;
   center: [number, number];
   geometry: {
     type: "Point";
@@ -90,10 +91,10 @@ export enum GEOCODING_MODES {
   GEOCODING_MODE_PLACES_PERMANENT = "mapbox.places-permanent",
 }
 
-interface MapboxProviderOptionsInterface extends ProviderOptionsInterface {
+export interface MapboxProviderOptionsInterface
+  extends ProviderOptionsInterface {
   readonly geocodingMode: GEOCODING_MODES;
   readonly country?: string;
-  readonly language?: string;
 }
 
 export const defaultMapboxProviderOptions = {
@@ -139,7 +140,7 @@ export default class MapboxProvider implements ProviderInterface {
     const params: MapboxRequestParams = {
       access_token: this.options.apiKey || "",
       country: this.options.country,
-      language: this.options.language,
+      language: geocodeQuery.getLocale(),
       limit: geocodeQuery.getLimit().toString(),
       bbox: geocodeQuery.getBounds()
         ? `${geocodeQuery.getBounds()?.west},${
@@ -186,7 +187,7 @@ export default class MapboxProvider implements ProviderInterface {
     const params: MapboxRequestParams = {
       access_token: this.options.apiKey || "",
       country: this.options.country,
-      language: this.options.language,
+      language: reverseQuery.getLocale(),
       limit: reverseQuery.getLimit().toString(),
       types: (<MapboxReverseQuery>reverseQuery).getLocationTypes()
         ? (<MapboxReverseQuery>reverseQuery).getLocationTypes()?.join(",")

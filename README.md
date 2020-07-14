@@ -95,6 +95,7 @@ The following table summarizes the features of each:
   <thead>
     <tr>
       <th>Provider</th>
+      <th>Name</th>
       <th>Works in browsers?</th>
       <th>Works in Node?</th>
       <th>Supports reverse geocoding?</th>
@@ -102,43 +103,159 @@ The following table summarizes the features of each:
   </thead>
   <tbody>
     <tr>
-      <td>Google API</td>
-      <td>yes</td>
-      <td>yes</td>
-      <td>yes</td>
+      <td>OpenStreetMap (Nominatim)</td>
+      <td>openstreetmap or nominatim</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
+      <td>✅️ yes</td>
     </tr>
     <tr>
-      <td>OpenStreetMap (Nominatim)</td>
-      <td>yes</td>
-      <td>untested</td>
-      <td>yes</td>
+      <td>Google API</td>
+      <td>google</td>
+      <td>✅️ yes</td>
+      <td>✅️ yes</td>
+      <td>✅️ yes</td>
     </tr>
     <tr>
       <td>Mapbox</td>
-      <td>yes</td>
-      <td>untested</td>
-      <td>yes</td>
+      <td>mapbox</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
+      <td>✅️ yes</td>
     </tr>
     <tr>
       <td>MapQuest</td>
-      <td>yes</td>
-      <td>untested</td>
-      <td>yes</td>
+      <td>mapquest</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
+      <td>✅️ yes</td>
     </tr>
     <tr>
       <td>Bing</td>
-      <td>yes</td>
-      <td>untested</td>
-      <td>yes</td>
+      <td>bing</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
+      <td>✅️ yes</td>
     </tr>
     <tr>
       <td>Yandex</td>
-      <td>yes</td>
-      <td>untested</td>
-      <td>yes</td>
+      <td>yandex</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
+      <td>✅️ yes</td>
     </tr>
   </tbody>
 </table>
+
+### Usage
+
+#### Common Options (`createGeocoder` method)
+
+- `useSsl`: boolean to use the HTTPS API of the providers
+- `useJsonp`: boolean to use JSONP
+- `apiKey`: the API key to use for the provider
+
+#### Common `geocode` parameters (`GeocodeQuery` object)
+
+- `text`: what is searched
+- `south`, `west`, `north`, `east` (`withBounds` method): the bounds to use
+- `locale`: the locale to use for the query
+- `limit`: the maximum number of results to have
+
+#### Common `geodecode` parameters (`ReverseQuery` object)
+
+- `latitude`, `longitude` (`withCoordinates` method): the coordinates to search for
+- `locale`: the locale to use for the query
+- `limit`: the maximum number of results to have
+
+#### Common Result Properties (`Geocoded` object)
+
+The result of a query is a `Geocoded` object which maps the following common information:
+- Coordinates (latitute and longitude)
+- Bounds (south, west, north, east)
+- Formatted address
+- Address details: street number, street name, (sub) locality, postal code, region, administration levels, country (with its code)
+
+You can either use getter methods to retrieve them or use the `toObject` method to manipulate an object containing the properties.
+
+#### Specific Provider Usage
+
+<details>
+  <summary><b>OpenStreetMap (Nominatim)</b></summary>
+
+  ##### Options
+
+  - `userAgent` (required if default host): a User-Agent identifying your application is needed to use Nominatim (see https://operations.osmfoundation.org/policies/nominatim/)
+  - `referer`: if you want to set a Referer as well
+  - `host` (default: "nominatim.openstreetmap.org"): to use another host
+
+  ##### `geocode` parameters
+
+  - `countryCodes`: a list of country codes to limit the results to one or more countries
+  - `excludePlaceIds`: for excluding some OpenStreetMap objects from the results
+  - `viewBox` ([longitude 1, latitude 1, longitude 2, latitude 2]): the preferred area to find search results
+  - `bounded` (only if `viewBox` is used): boolean to restrict the results to items within the view box
+
+  ##### `geodecode` parameters
+
+  - `zoom` (default: 18, from 0 to 18): the level of details required for the address
+
+  ##### `Geocoded` properties
+
+  - `displayName`: full comma-separated address
+  - `osmId`, `osmType`: reference to the OpenStreetMap object
+  - `category`, `type`: key and value of the main OpenStreetMap tag
+  - `attribution`: OpenStreetMap licensing information
+</details>
+
+<details>
+  <summary><b>Mapbox</b></summary>
+
+  ##### Options
+
+  - `geocodingMode` (default: "mapbox.places"): the geocoding mode to use
+  - `country`: to limit the results to one or more countries (ISO 3166 alpha 2 country codes separated by commas)
+
+  ##### `geocode` parameters
+
+  - `locationTypes` (possible values: "country", "region", "postcode", "district", "place", "locality", "neighborhood", "address", "poi"): to filter the results to a subset of location types
+
+  ##### `geodecode` parameters
+
+  - `locationTypes` (possible values: "country", "region", "postcode", "district", "place", "locality", "neighborhood", "address", "poi"): to filter the results to a subset of location types
+</details>
+
+<details>
+  <summary><b>Yandex</b></summary>
+
+  ##### Options
+
+  - `toponym`: the type of toponym ("house", "street", "metro", "district", "locality")
+</details>
+
+Dumpers
+-------
+
+Dumpers transform a `Geocoded` object to another format.
+
+### GeoJSON
+
+[GeoJSON](https://geojson.org/) is a format for encoding a variety of geographic data structures.
+
+<details>
+  <summary>Usage</summary>
+
+  ```javascript
+  import UniversalGeocoder, { GeoJsonDumper } from "universal-geocoder";
+
+  const nominatimGeocoder = UniversalGeocoder.createGeocoder("nominatim");
+
+  nominatimGeocoder.geocode("1600 Pennsylvania Ave, Washington, DC", (result) => {
+    console.log(result);
+    console.log("GeoJSON:", GeoJsonDumper.dump(result[0]));
+  });
+  ```
+</details>
 
 Building
 --------
@@ -155,3 +272,11 @@ Unit tests are handled by Jasmine. To run unit tests from the command line, use:
 ```shell
 npm test
 ```
+
+You can also check if the examples are running correctly:
+
+```shell
+npm run serve
+```
+
+Then go to http://localhost:8080/example, choose a provider and open the console.

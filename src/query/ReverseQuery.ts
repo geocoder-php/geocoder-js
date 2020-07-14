@@ -33,7 +33,7 @@ export default class ReverseQuery {
   }
 
   public static create(object: ReverseQueryObjectCreate): ReverseQuery {
-    return new ReverseQuery(object);
+    return new this(object);
   }
 
   public toObject(): ReverseQueryObject {
@@ -46,7 +46,7 @@ export default class ReverseQuery {
   }
 
   public withCoordinates(latitude: number, longitude: number): ReverseQuery {
-    return new ReverseQuery({
+    return (<typeof ReverseQuery>this.constructor).create({
       ...this.toObject(),
       latitude,
       longitude,
@@ -54,11 +54,17 @@ export default class ReverseQuery {
   }
 
   public withLocale(locale: string): ReverseQuery {
-    return new ReverseQuery({ ...this.toObject(), locale });
+    return (<typeof ReverseQuery>this.constructor).create({
+      ...this.toObject(),
+      locale,
+    });
   }
 
   public withLimit(limit: number): ReverseQuery {
-    return new ReverseQuery({ ...this.toObject(), limit });
+    return (<typeof ReverseQuery>this.constructor).create({
+      ...this.toObject(),
+      limit,
+    });
   }
 
   public getCoordinates(): Coordinates {
