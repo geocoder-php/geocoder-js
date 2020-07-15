@@ -1,4 +1,4 @@
-import { ReverseQuery, ReverseQueryObject } from "query";
+import { ReverseQuery, ReverseQueryObject } from "../../query";
 export interface MapboxReverseQueryObject extends ReverseQueryObject {
     readonly locationTypes?: string[];
 }

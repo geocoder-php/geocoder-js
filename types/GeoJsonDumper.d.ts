@@ -1,5 +1,5 @@
-import Geocoded from "Geocoded";
-import AdminLevel, { AdminLevelObject } from "AdminLevel";
+import Geocoded from "./Geocoded";
+import AdminLevel, { AdminLevelObject } from "./AdminLevel";
 export interface GeoJson {
     readonly type: "Feature";
     readonly properties: {

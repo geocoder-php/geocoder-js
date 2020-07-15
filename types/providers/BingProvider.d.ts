@@ -1,8 +1,8 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalURILoader";
-import { GeocodedResultsCallback, ProviderInterface, ProviderOptionsInterface } from "providers";
-import Geocoded from "Geocoded";
-import { GeocodeQuery, GeocodeQueryObject, ReverseQuery, ReverseQueryObject } from "query";
-import { Box } from "types";
+import { ExternalLoaderInterface, ExternalLoaderParams } from "../ExternalURILoader";
+import { GeocodedResultsCallback, ProviderInterface, ProviderOptionsInterface } from "./";
+import Geocoded from "../Geocoded";
+import { GeocodeQuery, GeocodeQueryObject, ReverseQuery, ReverseQueryObject } from "../query";
+import { Box } from "../types";
 export interface BingResult {
     __type: string;
     bbox: Box;

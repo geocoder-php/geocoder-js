@@ -1,6 +1,6 @@
-import { ExternalLoaderHeaders, ExternalLoaderParams } from "ExternalURILoader";
-import Geocoded from "Geocoded";
-import { GeocodeQuery, GeocodeQueryObject, ReverseQuery, ReverseQueryObject } from "query";
+import { ExternalLoaderHeaders, ExternalLoaderParams } from "../ExternalURILoader";
+import Geocoded from "../Geocoded";
+import { GeocodeQuery, GeocodeQueryObject, ReverseQuery, ReverseQueryObject } from "../query";
 export declare const DEFAULT_RESULT_LIMIT = 5;
 export declare const defaultProviderOptions: ProviderOptionsInterface;
 export interface ProviderOptionsInterface {

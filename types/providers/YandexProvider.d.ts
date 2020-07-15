@@ -1,7 +1,7 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalURILoader";
-import { GeocodedResultsCallback, ProviderInterface, ProviderOptionsInterface } from "providers";
-import Geocoded from "Geocoded";
-import { GeocodeQuery, GeocodeQueryObject, ReverseQuery, ReverseQueryObject } from "query";
+import { ExternalLoaderInterface, ExternalLoaderParams } from "../ExternalURILoader";
+import { GeocodedResultsCallback, ProviderInterface, ProviderOptionsInterface } from "./";
+import Geocoded from "../Geocoded";
+import { GeocodeQuery, GeocodeQueryObject, ReverseQuery, ReverseQueryObject } from "../query";
 export interface YandexResult {
     metaDataProperty: {
         GeocoderMetaData: {

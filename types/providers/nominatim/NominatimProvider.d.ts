@@ -1,5 +1,5 @@
-import { ExternalLoaderHeaders, ExternalLoaderInterface, ExternalLoaderParams } from "ExternalURILoader";
-import { GeocodedResultsCallback, NominatimGeocoded, NominatimReverseQuery, NominatimReverseQueryObject, NominatimGeocodeQueryObject, NominatimGeocodeQuery, ProviderInterface, ProviderOptionsInterface } from "providers";
+import { ExternalLoaderHeaders, ExternalLoaderInterface, ExternalLoaderParams } from "../../ExternalURILoader";
+import { GeocodedResultsCallback, NominatimGeocoded, NominatimReverseQuery, NominatimReverseQueryObject, NominatimGeocodeQueryObject, NominatimGeocodeQuery, ProviderInterface, ProviderOptionsInterface } from "./..";
 export interface NominatimResult {
     place_id: number;
     licence: string;

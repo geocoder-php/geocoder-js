@@ -1,4 +1,4 @@
-import Geocoded, { GeocodedObject } from "Geocoded";
+import Geocoded, { GeocodedObject } from "../../Geocoded";
 export interface NominatimGeocodedObject extends GeocodedObject {
     readonly displayName?: string;
     readonly osmId?: number;

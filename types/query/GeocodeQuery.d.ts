@@ -1,5 +1,5 @@
-import { PartialSome } from "types";
-import { Bounds } from "index";
+import { PartialSome } from "../types";
+import { Bounds } from "../index";
 declare type GeocodeQueryObjectCreate = PartialSome<GeocodeQueryObject, "limit">;
 export interface GeocodeQueryObject {
     readonly text: string;

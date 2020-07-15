@@ -37,6 +37,7 @@
     "@types/jasmine": "^3.5.0",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
+    "@zerollup/ts-transform-paths": "^1.7.0",
     "eslint": "^7.0.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.0.0",
@@ -50,17 +51,18 @@
     "ts-loader": "^7.0.0",
     "ts-node": "^8.10.0",
     "tsconfig-paths": "^3.9.0",
+    "ttypescript": "^1.5.0",
     "typescript": "^3.9.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.0",
     "webpack-merge": "^4.2.0"
   },
   "scripts": {
-    "build": "rm -rf types && webpack --config webpack.dev.js && webpack --config webpack.prod.js && tsc",
+    "build": "rm -rf types && webpack --config webpack.dev.js && webpack --config webpack.prod.js && ttsc",
     "lint": "eslint --fix --ext .ts .",
     "prepublish": "npm run build",
     "serve": "http-server",
-    "test": "ts-node -r tsconfig-paths/register node_modules/.bin/jasmine",
+    "test": "ts-node --compiler ttypescript -r tsconfig-paths/register node_modules/.bin/jasmine",
     "watch": "webpack --config webpack.dev.js --watch"
   }
 }

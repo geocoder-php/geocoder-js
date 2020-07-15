@@ -1,5 +1,5 @@
-import { GeocodeQuery, GeocodeQueryObject } from "query";
-import { Box } from "types";
+import { GeocodeQuery, GeocodeQueryObject } from "../../query";
+import { Box } from "../../types";
 export interface NominatimGeocodeQueryObject extends GeocodeQueryObject {
     readonly countryCodes?: string[];
     readonly excludePlaceIds?: number[];

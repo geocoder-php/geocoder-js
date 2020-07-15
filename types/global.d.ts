@@ -1,5 +1,5 @@
-import UniversalGeocoder from "UniversalGeocoder";
-import GeoJsonDumper from "GeoJsonDumper";
+import UniversalGeocoder from "./UniversalGeocoder";
+import GeoJsonDumper from "./GeoJsonDumper";
 declare global {
     interface Window {
         UniversalGeocoder: typeof UniversalGeocoder;

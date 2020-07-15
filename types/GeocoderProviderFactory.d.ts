@@ -1,4 +1,4 @@
-import { ProviderInterface, ProviderOptionsInterface } from "providers";
+import { ProviderInterface, ProviderOptionsInterface } from "./providers";
 export interface GeocoderProviderFactoryOptions extends ProviderOptionsInterface {
     provider: "bing" | "google" | "mapbox" | "mapquest" | "nominatim" | "openstreetmap" | "yandex";
 }

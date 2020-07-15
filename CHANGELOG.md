@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2
+
+* Use relative paths for build files
+
+## 0.2.1
+
+* Missing types folder when publishing
+
 ## 0.2.0
 
 * Better Nominatim support

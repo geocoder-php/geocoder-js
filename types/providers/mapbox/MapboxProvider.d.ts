@@ -1,7 +1,7 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalURILoader";
-import { GeocodedResultsCallback, MapboxGeocodeQuery, MapboxGeocodeQueryObject, MapboxReverseQuery, MapboxReverseQueryObject, ProviderInterface, ProviderOptionsInterface } from "providers";
-import Geocoded from "Geocoded";
-import { Box } from "types";
+import { ExternalLoaderInterface, ExternalLoaderParams } from "../../ExternalURILoader";
+import { GeocodedResultsCallback, MapboxGeocodeQuery, MapboxGeocodeQueryObject, MapboxReverseQuery, MapboxReverseQueryObject, ProviderInterface, ProviderOptionsInterface } from "./..";
+import Geocoded from "../../Geocoded";
+import { Box } from "../../types";
 interface MapboxFeatureContextProperties {
     id: string;
     text: string;

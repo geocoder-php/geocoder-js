@@ -1,4 +1,4 @@
-import { GeocodeQuery, GeocodeQueryObject } from "query";
+import { GeocodeQuery, GeocodeQueryObject } from "../../query";
 export interface MapboxGeocodeQueryObject extends GeocodeQueryObject {
     readonly locationTypes?: string[];
 }
