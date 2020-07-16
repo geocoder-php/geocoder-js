@@ -86,20 +86,22 @@ export interface MapboxResult {
   };
 }
 
-export enum GEOCODING_MODES {
+export enum MAPBOX_GEOCODING_MODES {
   GEOCODING_MODE_PLACES = "mapbox.places",
   GEOCODING_MODE_PLACES_PERMANENT = "mapbox.places-permanent",
 }
 
 export interface MapboxProviderOptionsInterface
   extends ProviderOptionsInterface {
-  readonly geocodingMode: GEOCODING_MODES;
+  readonly apiKey: string;
+  readonly geocodingMode?: MAPBOX_GEOCODING_MODES;
   readonly country?: string;
 }
 
 export const defaultMapboxProviderOptions = {
   ...defaultProviderOptions,
-  geocodingMode: GEOCODING_MODES.GEOCODING_MODE_PLACES,
+  apiKey: "",
+  geocodingMode: MAPBOX_GEOCODING_MODES.GEOCODING_MODE_PLACES,
 };
 
 export default class MapboxProvider implements ProviderInterface {

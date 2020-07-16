@@ -15,8 +15,8 @@ export const defaultProviderOptions: ProviderOptionsInterface = {
 };
 
 export interface ProviderOptionsInterface {
-  readonly useSsl: boolean;
-  readonly useJsonp: boolean;
+  readonly useSsl?: boolean;
+  readonly useJsonp?: boolean;
   readonly apiKey?: string;
 }
 

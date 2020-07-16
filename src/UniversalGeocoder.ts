@@ -1,14 +1,14 @@
 import ProviderFactory, {
+  GeocoderProviderByOptionsType,
   GeocoderProviderFactoryOptions,
 } from "GeocoderProviderFactory";
-import { ProviderInterface } from "providers";
 
 export default class UniversalGeocoder {
   public version = "0.1.0";
 
-  public static createGeocoder(
-    options: string | GeocoderProviderFactoryOptions
-  ): ProviderInterface | undefined {
+  public static createGeocoder<O extends GeocoderProviderFactoryOptions>(
+    options: string | O
+  ): GeocoderProviderByOptionsType<O> | undefined {
     return ProviderFactory.createProvider(options);
   }
 }

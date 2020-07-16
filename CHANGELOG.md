@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3
+
+* Fix TypeScript types for the library to be usable in a TS project
+
 ## 0.2.2
 
 * Use relative paths for build files

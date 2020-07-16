@@ -2,19 +2,20 @@ import {
   BingProvider,
   GoogleAPIProvider,
   MapboxProvider,
+  MapboxProviderOptionsInterface,
   MapquestProvider,
-  OpenStreetMapProvider,
+  NominatimProvider,
+  NominatimProviderOptionsInterface,
   YandexProvider,
-  ProviderInterface,
+  YandexProviderOptionsInterface,
   ProviderOptionsInterface,
   defaultMapboxProviderOptions,
-  defaultOpenStreetMapProviderOptions,
+  defaultNominatimProviderOptions,
   defaultProviderOptions,
 } from "providers";
 import ExternalURILoader from "ExternalURILoader";
 
-export interface GeocoderProviderFactoryOptions
-  extends ProviderOptionsInterface {
+interface ProviderOptionInterface {
   provider:
     | "bing"
     | "google"
@@ -24,6 +25,52 @@ export interface GeocoderProviderFactoryOptions
     | "openstreetmap"
     | "yandex";
 }
+
+interface ProviderFactoryOptions
+  extends ProviderOptionsInterface,
+    ProviderOptionInterface {}
+
+interface MapboxGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    MapboxProviderOptionsInterface {
+  provider: "mapbox";
+}
+
+interface NominatimGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    NominatimProviderOptionsInterface {
+  provider: "nominatim" | "openstreetmap";
+}
+
+interface YandexGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    YandexProviderOptionsInterface {
+  provider: "yandex";
+}
+
+export type GeocoderProviderFactoryOptions =
+  | ProviderFactoryOptions
+  | MapboxGeocoderProviderFactoryOptions
+  | NominatimGeocoderProviderFactoryOptions
+  | YandexGeocoderProviderFactoryOptions;
+
+export type GeocoderProvider =
+  | BingProvider
+  | GoogleAPIProvider
+  | MapboxProvider
+  | MapquestProvider
+  | NominatimProvider
+  | YandexProvider;
+
+export type GeocoderProviderByOptionsType<
+  O
+> = O extends MapboxGeocoderProviderFactoryOptions
+  ? MapboxProvider
+  : O extends NominatimGeocoderProviderFactoryOptions
+  ? NominatimProvider
+  : O extends YandexGeocoderProviderFactoryOptions
+  ? YandexProvider
+  : GeocoderProvider;
 
 export default class ProviderFactory {
   /**
@@ -36,9 +83,9 @@ export default class ProviderFactory {
    *   An object compatible with ProviderInterface, or undefined if there's not a
    *   registered provider.
    */
-  public static createProvider(
-    options: string | GeocoderProviderFactoryOptions
-  ): ProviderInterface | undefined {
+  public static createProvider<O extends GeocoderProviderFactoryOptions>(
+    options: string | O
+  ): GeocoderProviderByOptionsType<O> | undefined {
     const createProviderOptions = {
       ...defaultProviderOptions,
       ...(typeof options === "string" ? { provider: options } : options),
@@ -49,24 +96,36 @@ export default class ProviderFactory {
     const { provider, ...providerOptions } = createProviderOptions;
     switch (provider) {
       case "bing":
-        return new BingProvider(externalLoader, providerOptions);
+        return <GeocoderProviderByOptionsType<O>>(
+          new BingProvider(externalLoader, providerOptions)
+        );
       case "google":
-        return new GoogleAPIProvider(externalLoader, providerOptions);
+        return <GeocoderProviderByOptionsType<O>>(
+          new GoogleAPIProvider(externalLoader, providerOptions)
+        );
       case "mapbox":
-        return new MapboxProvider(externalLoader, {
-          ...defaultMapboxProviderOptions,
-          ...providerOptions,
-        });
+        return <GeocoderProviderByOptionsType<O>>(
+          new MapboxProvider(externalLoader, {
+            ...defaultMapboxProviderOptions,
+            ...providerOptions,
+          })
+        );
       case "mapquest":
-        return new MapquestProvider(externalLoader, providerOptions);
+        return <GeocoderProviderByOptionsType<O>>(
+          new MapquestProvider(externalLoader, providerOptions)
+        );
       case "openstreetmap":
       case "nominatim":
-        return new OpenStreetMapProvider(externalLoader, {
-          ...defaultOpenStreetMapProviderOptions,
-          ...providerOptions,
-        });
+        return <GeocoderProviderByOptionsType<O>>(
+          new NominatimProvider(externalLoader, {
+            ...defaultNominatimProviderOptions,
+            ...providerOptions,
+          })
+        );
       case "yandex":
-        return new YandexProvider(externalLoader, providerOptions);
+        return <GeocoderProviderByOptionsType<O>>(
+          new YandexProvider(externalLoader, providerOptions)
+        );
       default:
     }
 

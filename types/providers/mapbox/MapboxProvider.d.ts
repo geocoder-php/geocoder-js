@@ -41,19 +41,20 @@ export interface MapboxResult {
         }[];
     };
 }
-export declare enum GEOCODING_MODES {
+export declare enum MAPBOX_GEOCODING_MODES {
     GEOCODING_MODE_PLACES = "mapbox.places",
     GEOCODING_MODE_PLACES_PERMANENT = "mapbox.places-permanent"
 }
 export interface MapboxProviderOptionsInterface extends ProviderOptionsInterface {
-    readonly geocodingMode: GEOCODING_MODES;
+    readonly apiKey: string;
+    readonly geocodingMode?: MAPBOX_GEOCODING_MODES;
     readonly country?: string;
 }
 export declare const defaultMapboxProviderOptions: {
-    geocodingMode: GEOCODING_MODES;
-    useSsl: boolean;
-    useJsonp: boolean;
-    apiKey?: string | undefined;
+    apiKey: string;
+    geocodingMode: MAPBOX_GEOCODING_MODES;
+    useSsl?: boolean | undefined;
+    useJsonp?: boolean | undefined;
 };
 export default class MapboxProvider implements ProviderInterface {
     private externalLoader;

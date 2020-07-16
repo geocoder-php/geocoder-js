@@ -8,7 +8,7 @@ export interface GeocodeQueryObject {
     readonly north?: number | string;
     readonly east?: number | string;
     readonly locale?: string;
-    readonly limit: number;
+    readonly limit?: number;
 }
 export default class GeocodeQuery {
     private readonly text;

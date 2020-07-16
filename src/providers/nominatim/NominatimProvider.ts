@@ -76,14 +76,15 @@ export interface NominatimResult {
 
 export interface NominatimProviderOptionsInterface
   extends ProviderOptionsInterface {
-  readonly host: string;
-  readonly userAgent?: string;
+  readonly host?: string;
+  readonly userAgent: string;
   readonly referer?: string;
 }
 
 export const defaultNominatimProviderOptions = {
   ...defaultProviderOptions,
   host: "nominatim.openstreetmap.org",
+  userAgent: "",
 };
 
 export default class NominatimProvider implements ProviderInterface {

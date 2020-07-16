@@ -32,14 +32,15 @@ export interface NominatimResult {
     };
 }
 export interface NominatimProviderOptionsInterface extends ProviderOptionsInterface {
-    readonly host: string;
-    readonly userAgent?: string;
+    readonly host?: string;
+    readonly userAgent: string;
     readonly referer?: string;
 }
 export declare const defaultNominatimProviderOptions: {
     host: string;
-    useSsl: boolean;
-    useJsonp: boolean;
+    userAgent: string;
+    useSsl?: boolean | undefined;
+    useJsonp?: boolean | undefined;
     apiKey?: string | undefined;
 };
 export default class NominatimProvider implements ProviderInterface {

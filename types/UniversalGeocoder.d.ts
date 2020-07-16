@@ -1,7 +1,6 @@
-import { GeocoderProviderFactoryOptions } from "./GeocoderProviderFactory";
-import { ProviderInterface } from "./providers";
+import { GeocoderProviderByOptionsType, GeocoderProviderFactoryOptions } from "./GeocoderProviderFactory";
 export default class UniversalGeocoder {
     version: string;
-    static createGeocoder(options: string | GeocoderProviderFactoryOptions): ProviderInterface | undefined;
+    static createGeocoder<O extends GeocoderProviderFactoryOptions>(options: string | O): GeocoderProviderByOptionsType<O> | undefined;
 }
 //# sourceMappingURL=UniversalGeocoder.d.ts.map
