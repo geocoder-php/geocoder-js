@@ -233,7 +233,7 @@ export default class NominatimProvider implements ProviderInterface {
             ? data.map((result: NominatimResult) =>
                 NominatimProvider.mapToGeocoded(result)
               )
-            : [NominatimProvider.mapToGeocoded(data)]
+            : []
         );
       },
       headers

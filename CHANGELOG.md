@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.4
+
+* [Nominatim] Fix error when no result is received
+
 ## 0.2.3
 
 * Fix TypeScript types for the library to be usable in a TS project
