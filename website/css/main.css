@@ -1,0 +1,114 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    font-size: 19px;
+}
+
+main {
+    margin-top: 20px;
+}
+
+section {
+    margin-bottom: 120px;
+}
+
+h3 {
+    font-size: 23px;
+}
+
+li {
+    margin-bottom: 3px;
+}
+
+pre {
+    padding: 0;
+    border-radius: 4px;
+    margin: 15px;
+    font-size: 15px;
+}
+pre code {
+    border: none;
+}
+
+a {
+    color: #186fbc;
+}
+a:hover {
+    color: #0d3b63;
+}
+
+code {
+    color: #18Bc9c;
+}
+
+img[alt="Build Status"] {
+    display: none;
+}
+
+#content img {
+    max-width: 100%;
+    padding: 4px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+header.navbar {
+    opacity: 0.9;
+}
+.navbar .navbar-brand {
+    font-size: 28px;
+    height: auto;
+    line-height: 40px;
+    margin-left: 20px;
+}
+.navbar .navbar-brand small {
+    font-size: 18px;
+    font-weight: 300;
+    margin-left: 10px;
+}
+
+@media (min-width: 576px) {
+    #sidebar {
+        position: fixed;
+        margin-top: 30px;
+    }
+}
+@media (max-width: 960px) {
+    body {
+        font-size: 17px;
+    }
+    pre {
+        font-size: 12px;
+    }
+}
+
+#sidebar .text-muted {
+    color: #bbbbbb;
+}
+
+.page-header {
+    margin-top: 0;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #f5f5f5;
+    padding: 25px 0;
+    font-size: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: opacity .2s ease;
+}
+footer:hover {
+    opacity: 1.0;
+    transition: opacity .2s ease;
+}
+footer p {
+    margin: 0;
+}
