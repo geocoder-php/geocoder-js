@@ -13,4 +13,4 @@ menu:
       text: Provider Usage
       relativeUrl: docs/provider_usage.html
 
-baseUrl: /universal-geocoder/
+baseUrl: /universal-geocoder-js/
