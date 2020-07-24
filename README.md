@@ -3,6 +3,8 @@
 Universal Geocoder
 ==================
 
+[![CI](https://github.com/universal-geocoder/universal-geocoder-js/workflows/Continuous%20Integration/badge.svg?branch=main&event=push)](https://github.com/universal-geocoder/universal-geocoder-js/actions)
+
 Universal Geocoder is a universal JavaScript library for client-side geocoding applications with multiple built-in providers.
 
 Need geocoding 🌍️ in your website or application? Don't want to be vendor-locked to a service? ✨️ Universal Geocoder ✨️ is for you!

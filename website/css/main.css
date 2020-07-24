@@ -43,7 +43,7 @@ code {
     color: #18Bc9c;
 }
 
-img[alt="Build Status"] {
+img[alt="CI"] {
     display: none;
 }
 
