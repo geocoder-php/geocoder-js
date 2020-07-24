@@ -1,9 +1,7 @@
-![Universal Geocoder Logo](https://raw.githubusercontent.com/alanpoulain/universal-geocoder/main/assets/logo.svg)
+![Universal Geocoder Logo](https://raw.githubusercontent.com/universal-geocoder/universal-geocoder-js/main/assets/logo.svg)
 
 Universal Geocoder
 ==================
-
-[![Build Status](https://travis-ci.com/alanpoulain/universal-geocoder.png?branch=main)](https://travis-ci.com/alanpoulain/universal-geocoder)
 
 Universal Geocoder is a universal JavaScript library for client-side geocoding applications with multiple built-in providers.
 

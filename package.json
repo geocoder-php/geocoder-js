@@ -1,5 +1,5 @@
 {
-  "name": "universal-geocoder",
+  "name": "@universal-geocoder/universal-geocoder",
   "description": "Universal geocoding abstraction with multiple built-in providers",
   "version": "0.2.4",
   "keywords": [
@@ -17,11 +17,11 @@
   "contributors": [
     "Alan Poulain <contact@alanpoulain.eu>"
   ],
-  "homepage": "https://alanpoulain.github.io/universal-geocoder/",
-  "bugs": "https://github.com/alanpoulain/universal-geocoder/issues",
+  "homepage": "https://universal-geocoder.github.io/universal-geocoder-js/",
+  "bugs": "https://github.com/universal-geocoder/universal-geocoder-js/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alanpoulain/universal-geocoder.git"
+    "url": "git+https://github.com/universal-geocoder/universal-geocoder-js.git"
   },
   "main": "dist/index.js",
   "types": "types/index.d.ts",
