@@ -1,3 +1,5 @@
+![Universal Geocoder Logo](https://raw.githubusercontent.com/alanpoulain/universal-geocoder/main/assets/logo.svg)
+
 Universal Geocoder
 ==================
 
