@@ -50,9 +50,6 @@ img[alt="Build Status"] {
 #content img {
     max-width: 100%;
     padding: 4px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
 }
 
 header.navbar {
