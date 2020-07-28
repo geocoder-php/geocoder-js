@@ -1,6 +1,6 @@
 # Changelog
 
-## O.3.0
+## 0.3.0
 
 * Add OpenCage Provider
 * Add time zone to `Geocoded`
