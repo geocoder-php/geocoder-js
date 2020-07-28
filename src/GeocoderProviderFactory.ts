@@ -6,14 +6,17 @@ import {
   MapquestProvider,
   NominatimProvider,
   NominatimProviderOptionsInterface,
+  OpenCageProvider,
+  OpenCageProviderOptionsInterface,
   YandexProvider,
   YandexProviderOptionsInterface,
   ProviderOptionsInterface,
   defaultMapboxProviderOptions,
   defaultNominatimProviderOptions,
+  defaultOpenCageProviderOptions,
   defaultProviderOptions,
-} from "providers";
-import ExternalURILoader from "ExternalURILoader";
+} from "provider";
+import ExternalLoader from "ExternalLoader";
 
 interface ProviderOptionInterface {
   provider:
@@ -22,6 +25,7 @@ interface ProviderOptionInterface {
     | "mapbox"
     | "mapquest"
     | "nominatim"
+    | "opencage"
     | "openstreetmap"
     | "yandex";
 }
@@ -42,6 +46,12 @@ interface NominatimGeocoderProviderFactoryOptions
   provider: "nominatim" | "openstreetmap";
 }
 
+interface OpenCageGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    OpenCageProviderOptionsInterface {
+  provider: "opencage";
+}
+
 interface YandexGeocoderProviderFactoryOptions
   extends ProviderOptionInterface,
     YandexProviderOptionsInterface {
@@ -52,6 +62,7 @@ export type GeocoderProviderFactoryOptions =
   | ProviderFactoryOptions
   | MapboxGeocoderProviderFactoryOptions
   | NominatimGeocoderProviderFactoryOptions
+  | OpenCageGeocoderProviderFactoryOptions
   | YandexGeocoderProviderFactoryOptions;
 
 export type GeocoderProvider =
@@ -60,6 +71,7 @@ export type GeocoderProvider =
   | MapboxProvider
   | MapquestProvider
   | NominatimProvider
+  | OpenCageProvider
   | YandexProvider;
 
 export type GeocoderProviderByOptionsType<
@@ -68,6 +80,8 @@ export type GeocoderProviderByOptionsType<
   ? MapboxProvider
   : O extends NominatimGeocoderProviderFactoryOptions
   ? NominatimProvider
+  : O extends OpenCageGeocoderProviderFactoryOptions
+  ? OpenCageProvider
   : O extends YandexGeocoderProviderFactoryOptions
   ? YandexProvider
   : GeocoderProvider;
@@ -91,7 +105,7 @@ export default class ProviderFactory {
       ...(typeof options === "string" ? { provider: options } : options),
     };
 
-    const externalLoader = new ExternalURILoader();
+    const externalLoader = new ExternalLoader();
 
     const { provider, ...providerOptions } = createProviderOptions;
     switch (provider) {
@@ -119,6 +133,13 @@ export default class ProviderFactory {
         return <GeocoderProviderByOptionsType<O>>(
           new NominatimProvider(externalLoader, {
             ...defaultNominatimProviderOptions,
+            ...providerOptions,
+          })
+        );
+      case "opencage":
+        return <GeocoderProviderByOptionsType<O>>(
+          new OpenCageProvider(externalLoader, {
+            ...defaultOpenCageProviderOptions,
             ...providerOptions,
           })
         );

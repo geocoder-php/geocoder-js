@@ -10,7 +10,7 @@
     "browser": true
   },
   "plugins": ["prettier"],
-  "ignorePatterns": ["types/**/*.ts"],
+  "ignorePatterns": ["/types/**/*.ts", "/website/vendor/**/*"],
   "rules": {
     "prettier/prettier": ["error"],
     "no-console": "off",

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Universal Geocoder: OpenCage Example</title>
+    <script src="../dist/universal-geocoder.js"></script>
+    <script>
+      var openCageGeocoder = UniversalGeocoder.createGeocoder({ provider: "opencage" });
+      openCageGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", function(result) {
+        console.log(result);
+      });
+
+      openCageGeocoder.geodecode("44.915", "-93.21", function(result) {
+        console.log(result);
+      });
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>

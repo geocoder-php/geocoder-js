@@ -1,7 +1,12 @@
 import AdminLevel from "AdminLevel";
 
 export interface GeocodedObject {
-  readonly [property: string]: string | number | AdminLevel[] | undefined;
+  readonly [property: string]:
+    | string
+    | string[]
+    | number
+    | AdminLevel[]
+    | undefined;
   readonly latitude?: number;
   readonly longitude?: number;
   readonly south?: number;
@@ -18,6 +23,7 @@ export interface GeocodedObject {
   readonly adminLevels?: AdminLevel[];
   readonly country?: string;
   readonly countryCode?: string;
+  readonly timezone?: string;
 }
 
 export default class Geocoded {
@@ -53,6 +59,8 @@ export default class Geocoded {
 
   private readonly countryCode?: string;
 
+  private readonly timezone?: string;
+
   protected constructor({
     latitude,
     longitude,
@@ -70,6 +78,7 @@ export default class Geocoded {
     adminLevels,
     country,
     countryCode,
+    timezone,
   }: GeocodedObject) {
     this.latitude = latitude;
     this.longitude = longitude;
@@ -87,6 +96,7 @@ export default class Geocoded {
     this.adminLevels = adminLevels || [];
     this.country = country;
     this.countryCode = countryCode;
+    this.timezone = timezone;
   }
 
   public static create(object: GeocodedObject): Geocoded {
@@ -111,6 +121,7 @@ export default class Geocoded {
       adminLevels: this.adminLevels,
       country: this.country,
       countryCode: this.countryCode,
+      timezone: this.timezone,
     };
   }
 
@@ -200,5 +211,9 @@ export default class Geocoded {
 
   public getCountryCode(): undefined | string {
     return this.countryCode;
+  }
+
+  public getTimezone(): undefined | string {
+    return this.timezone;
   }
 }

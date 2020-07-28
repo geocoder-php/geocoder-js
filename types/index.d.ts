@@ -8,12 +8,12 @@ export interface Coordinates {
     readonly latitude: number | string;
     readonly longitude: number | string;
 }
-export * from "./providers";
+export * from "./provider";
 export * from "./query";
 export { default as AdminLevel } from "./AdminLevel";
 export * from "./AdminLevel";
-export { default as ExternalURILoader } from "./ExternalURILoader";
-export * from "./ExternalURILoader";
+export { default as ExternalLoader } from "./ExternalLoader";
+export * from "./ExternalLoader";
 export { default as Geocoded } from "./Geocoded";
 export * from "./Geocoded";
 export { default as GeocoderProviderFactory } from "./GeocoderProviderFactory";

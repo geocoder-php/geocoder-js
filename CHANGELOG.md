@@ -1,5 +1,14 @@
 # Changelog
 
+## O.3.0
+
+* Add OpenCage Provider
+* Add time zone to `Geocoded`
+* [Mapbox] Add `countryCodes`, `proximity` and `reverseMode` to geo(de)code parameters
+* [Mapbox] Add `resultType` to `Geocoded`
+* [Mapbox] Add admin levels to `Geocoded`
+* Rename `ExternalURILoader` to `ExternalLoader`
+
 ## 0.2.4
 
 * [Nominatim] Fix error when no result is received

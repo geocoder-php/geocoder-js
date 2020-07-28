@@ -1,0 +1,1 @@
+{"version":3,"file":"ResponseError.d.ts","sourceRoot":"","sources":["../../src/error/ResponseError.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,OAAO,aAAc,SAAQ,KAAK;IACvC,SAAS,EAAE,aAAa,CAAC;IAEhC,OAAO,CAAC,QAAQ,CAAC,QAAQ,CAAW;gBAEjB,OAAO,EAAE,MAAM,EAAE,QAAQ,EAAE,QAAQ;IAS/C,WAAW,IAAI,QAAQ;CAG/B"}

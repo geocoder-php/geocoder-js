@@ -42,6 +42,9 @@ describe("Geocoded API", () => {
   it("has getCountryCode method", () => {
     expect(geocoded.getCountryCode).toBeDefined();
   });
+  it("has getTimezone method", () => {
+    expect(geocoded.getTimezone).toBeDefined();
+  });
 });
 
 describe("Geocoded returns data properly", () => {
@@ -57,6 +60,7 @@ describe("Geocoded returns data properly", () => {
     region: "DC",
     country: "United States",
     countryCode: "US",
+    timezone: "America/New_York",
   });
   geocoded = geocoded.withBounds(
     38.89380528242933,
@@ -120,5 +124,9 @@ describe("Geocoded returns data properly", () => {
 
   it("returns proper country code", () => {
     expect(geocoded.getCountryCode()).toEqual("US");
+  });
+
+  it("returns proper timezone", () => {
+    expect(geocoded.getTimezone()).toEqual("America/New_York");
   });
 });

@@ -1,4 +1,4 @@
-import { DEFAULT_RESULT_LIMIT } from "providers/ProviderInterface";
+import { DEFAULT_RESULT_LIMIT } from "provider";
 import { PartialSome } from "types";
 import { Bounds } from "index";
 

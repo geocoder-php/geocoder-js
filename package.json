@@ -1,5 +1,5 @@
 {
-  "name": "@universal-geocoder/universal-geocoder",
+  "name": "universal-geocoder",
   "description": "Universal geocoding abstraction with multiple built-in providers",
   "version": "0.2.4",
   "keywords": [

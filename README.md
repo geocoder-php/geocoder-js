@@ -112,6 +112,7 @@ The result of a query is a `Geocoded` object which maps the following common inf
 - Bounds (south, west, north, east)
 - Formatted address
 - Address details: street number, street name, (sub) locality, postal code, region, administration levels, country (with its code)
+- Time zone
 
 You can either use getter methods to retrieve them or use the `toObject` method to manipulate an object containing the properties.
 
@@ -136,6 +137,13 @@ The following table summarizes the features of each:
     <tr>
       <td>OpenStreetMap (Nominatim)</td>
       <td>openstreetmap or nominatim</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
+      <td>✅️ yes</td>
+    </tr>
+    <tr>
+      <td>OpenCage</td>
+      <td>opencage</td>
       <td>✅️ yes</td>
       <td>❓️ untested</td>
       <td>✅️ yes</td>

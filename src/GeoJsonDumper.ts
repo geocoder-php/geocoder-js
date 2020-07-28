@@ -6,6 +6,7 @@ export interface GeoJson {
   readonly properties: {
     readonly [property: string]:
       | string
+      | string[]
       | number
       | AdminLevel[]
       | AdminLevelObject[]
@@ -58,6 +59,7 @@ export default class GeoJsonDumper {
     let properties: {
       [property: string]:
         | string
+        | string[]
         | number
         | AdminLevel[]
         | AdminLevelObject[]
