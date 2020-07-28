@@ -60,7 +60,7 @@
   "scripts": {
     "build": "rm -rf types && webpack --config webpack.dev.js && webpack --config webpack.prod.js && ttsc",
     "lint": "eslint --fix --ext .ts .",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "serve": "http-server",
     "test": "ts-node --compiler ttypescript -r tsconfig-paths/register node_modules/.bin/jasmine",
     "watch": "webpack --config webpack.dev.js --watch"

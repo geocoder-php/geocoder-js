@@ -37,6 +37,11 @@ jobs:
         with:
           node-version: "14"
           registry-url: https://npm.pkg.github.com
+      - name: Change package name
+        uses: datamonsters/replace-action
+        with:
+          files: package.json
+          replacements: '"name": "universal-geocoder","name": "@universal-geocoder/universal-geocoder"'
       - name: Publish to GitHub
         run: npm publish
         env:
