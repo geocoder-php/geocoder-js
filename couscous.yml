@@ -1,0 +1,16 @@
+title: GeocoderJS
+subTitle: A universal JavaScript library for client-side geocoding applications with multiple built-in providers
+
+github:
+    user: geocoder-php
+    repo: geocoder-js
+
+menu:
+  items:
+    readme:
+      text: Home
+    provider_usage:
+      text: Provider Usage
+      relativeUrl: docs/provider_usage.html
+
+baseUrl: /geocoder-js/

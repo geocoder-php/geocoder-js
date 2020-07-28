@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create and publish a release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node (npm registry)
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+          registry-url: https://registry.npmjs.org
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
+      - name: Create a GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Setup Node (GitHub registry)
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+          registry-url: https://npm.pkg.github.com
+      - name: Change package name
+        uses: datamonsters/replace-action
+        with:
+          files: package.json
+          replacements: '"name": "geocoder-js","name": "@geocoder-php/geocoder-js"'
+      - name: Publish to GitHub
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

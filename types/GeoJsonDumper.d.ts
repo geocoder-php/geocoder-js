@@ -1,9 +1,9 @@
-import Geocoded from "Geocoded";
-import AdminLevel, { AdminLevelObject } from "AdminLevel";
+import Geocoded from "./Geocoded";
+import AdminLevel, { AdminLevelObject } from "./AdminLevel";
 export interface GeoJson {
     readonly type: "Feature";
     readonly properties: {
-        readonly [property: string]: string | number | AdminLevel[] | AdminLevelObject[] | undefined;
+        readonly [property: string]: string | string[] | number | AdminLevel[] | AdminLevelObject[] | undefined;
     };
     readonly geometry: {
         readonly type: "Point";

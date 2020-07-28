@@ -1,4 +1,4 @@
-import { DEFAULT_RESULT_LIMIT } from "providers/ProviderInterface";
+import { DEFAULT_RESULT_LIMIT } from "provider";
 import { PartialSome } from "types";
 import { Bounds } from "index";
 
@@ -11,7 +11,7 @@ export interface GeocodeQueryObject {
   readonly north?: number | string;
   readonly east?: number | string;
   readonly locale?: string;
-  readonly limit: number;
+  readonly limit?: number;
 }
 
 export default class GeocodeQuery {

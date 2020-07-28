@@ -1,5 +1,5 @@
-export { default as GeocodeQuery } from "query/GeocodeQuery";
-export * from "query/GeocodeQuery";
-export { default as ReverseQuery } from "query/ReverseQuery";
-export * from "query/ReverseQuery";
+export { default as GeocodeQuery } from "./GeocodeQuery";
+export * from "./GeocodeQuery";
+export { default as ReverseQuery } from "./ReverseQuery";
+export * from "./ReverseQuery";
 //# sourceMappingURL=index.d.ts.map

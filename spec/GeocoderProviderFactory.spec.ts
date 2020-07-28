@@ -1,7 +1,7 @@
 import ProviderFactory, {
   GeocoderProviderFactoryOptions,
 } from "GeocoderProviderFactory";
-import { OpenStreetMapProviderOptionsInterface } from "providers";
+import { OpenStreetMapProviderOptionsInterface } from "provider";
 
 describe("Geocoder Factory", () => {
   it("expects createProvider method to return undefined for an unregistered provider", () => {

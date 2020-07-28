@@ -6,7 +6,10 @@ module.exports = {
     rules: [
       {
         test: /\.ts$/,
-        use: "ts-loader",
+        loader: "ts-loader",
+        options: {
+          compiler: 'ttypescript'
+        },
         exclude: /node_modules/,
       },
     ],

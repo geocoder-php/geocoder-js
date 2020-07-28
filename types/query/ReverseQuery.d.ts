@@ -1,5 +1,5 @@
-import { PartialSome } from "types";
-import { Coordinates } from "index";
+import { PartialSome } from "../types";
+import { Coordinates } from "../index";
 declare type ReverseQueryObjectCreate = PartialSome<ReverseQueryObject, "limit">;
 export interface ReverseQueryObject {
     readonly latitude: number | string;

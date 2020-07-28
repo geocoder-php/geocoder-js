@@ -1,6 +1,6 @@
-import AdminLevel from "AdminLevel";
+import AdminLevel from "./AdminLevel";
 export interface GeocodedObject {
-    readonly [property: string]: string | number | AdminLevel[] | undefined;
+    readonly [property: string]: string | string[] | number | AdminLevel[] | undefined;
     readonly latitude?: number;
     readonly longitude?: number;
     readonly south?: number;
@@ -17,6 +17,7 @@ export interface GeocodedObject {
     readonly adminLevels?: AdminLevel[];
     readonly country?: string;
     readonly countryCode?: string;
+    readonly timezone?: string;
 }
 export default class Geocoded {
     private readonly latitude?;
@@ -35,7 +36,8 @@ export default class Geocoded {
     private readonly adminLevels;
     private readonly country?;
     private readonly countryCode?;
-    protected constructor({ latitude, longitude, south, west, north, east, formattedAddress, streetNumber, streetName, subLocality, locality, postalCode, region, adminLevels, country, countryCode, }: GeocodedObject);
+    private readonly timezone?;
+    protected constructor({ latitude, longitude, south, west, north, east, formattedAddress, streetNumber, streetName, subLocality, locality, postalCode, region, adminLevels, country, countryCode, timezone, }: GeocodedObject);
     static create(object: GeocodedObject): Geocoded;
     toObject(): GeocodedObject;
     withBounds(south?: number, west?: number, north?: number, east?: number): Geocoded;
@@ -55,5 +57,6 @@ export default class Geocoded {
     getAdminLevels(): AdminLevel[];
     getCountry(): undefined | string;
     getCountryCode(): undefined | string;
+    getTimezone(): undefined | string;
 }
 //# sourceMappingURL=Geocoded.d.ts.map

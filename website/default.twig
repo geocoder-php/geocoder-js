@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{{ title }}</title>
+
+        <link rel="stylesheet" href="{{ baseUrl }}/vendor/bootswatch/dist/flatly/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ baseUrl }}/vendor/components-font-awesome/css/all.min.css">
+        <link rel="stylesheet" href="{{ baseUrl }}/vendor/highlight/build/styles/dracula.min.css">
+        <link rel="stylesheet" href="{{ baseUrl }}/css/main.css">
+    </head>
+
+    <body>
+
+        <header class="navbar navbar-dark bg-primary sticky-top">
+
+            <a class="navbar-brand" href="{{ baseUrl }}/">
+                {{ title }}
+                <small class="d-none d-sm-none d-md-block d-xl-inline">
+                    {{ subTitle }}
+                </small>
+            </a>
+
+            {% if github is defined %}
+                <a href="https://github.com/{{ github.user }}/{{ github.repo }}" target="_blank" class="btn btn-secondary d-none d-sm-block" role="button"><i class="fab fa-github"></i> View on GitHub</a>
+            {% endif %}
+
+        </header>
+
+        <main class="{{ menu ? 'container-fluid' : 'container' }}">
+            <div class="row">
+
+                {% if menu is defined %}
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+                        <ul class="nav nav-pills flex-column">
+                            {% for itemId, item in menu.items %}
+                                <li class="nav-item">
+                                    <a href="{{ item.absoluteUrl|default(baseUrl ~ '/' ~ item.relativeUrl) }}" class="nav-link {{ itemId in currentFile|lower ? 'active' }}">
+                                        {{ item.text|raw }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                {% endif %}
+
+                <section id="content" class="{{ menu ? 'col-sm-9 offset-sm-3 col-lg-10 offset-lg-2' : 'col-sm-12' }}">
+                    {{ content|replace({ '<table>': '<div class="table-hover table-responsive"><table class="table">', '</table>': '</table></div>' })|raw }}
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="{{ menu ? 'container-fluid' : 'container' }}">
+                <p class="text-muted">
+                    made with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="{{ baseUrl }}/vendor/jquery/dist/js/jquery.min.js"></script>
+        <script src="{{ baseUrl }}/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="{{ baseUrl }}/vendor/highlight/build/highlight.min.js"></script>
+
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+
+    </body>
+</html>

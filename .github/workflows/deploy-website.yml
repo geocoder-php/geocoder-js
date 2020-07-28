@@ -1,0 +1,34 @@
+name: Deploy website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  couscous:
+    name: Deploy website with Couscous
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+          tools: composer
+      - name: Setup Node
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+      - name: Setup Bower
+        run: npm install -g bower
+      - name: Setup Couscous
+        run: composer global require couscous/couscous
+      - name: Couscous
+        run: couscous generate
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./.couscous/generated
