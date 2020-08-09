@@ -12,6 +12,7 @@ export interface Coordinates {
 
 export * from "provider";
 export * from "query";
+export * from "utils";
 export { default as AdminLevel } from "AdminLevel";
 export * from "AdminLevel";
 export { default as ExternalLoader } from "ExternalLoader";

@@ -149,7 +149,7 @@ export default class OpenCageProvider implements ProviderInterface {
     constructor(_externalLoader: ExternalLoaderInterface, options?: OpenCageProviderOptionsInterface);
     geocode(query: string | OpenCageGeocodeQuery | OpenCageGeocodeQueryObject, callback: GeocodedResultsCallback): void;
     geodecode(latitudeOrQuery: number | string | OpenCageReverseQuery | OpenCageReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callback?: GeocodedResultsCallback): void;
-    private getCommonParams;
+    private withCommonParams;
     executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback): void;
     static mapToGeocoded(result: OpenCageResult): OpenCageGeocoded;
 }

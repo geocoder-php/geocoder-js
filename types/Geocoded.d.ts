@@ -1,6 +1,6 @@
 import AdminLevel from "./AdminLevel";
 export interface GeocodedObject {
-    readonly [property: string]: string | string[] | number | AdminLevel[] | undefined;
+    readonly [property: string]: string | string[] | number | boolean | AdminLevel[] | undefined;
     readonly latitude?: number;
     readonly longitude?: number;
     readonly south?: number;

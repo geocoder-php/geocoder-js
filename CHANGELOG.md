@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0
+
+* [Google] Better Google Maps provider
+* [Nominatim] Better handling of geodecode errors
+* [ExternalLoader] Add `getOptions` method to interface
+* [ExternalLoader] Rename `JSONPCallback` in params to `jsonpCallback`
+* Rename `GoogleAPIProvider` to `GoogleMapsProvider`
+* Add Node examples
+
 ## 0.3.0
 
 * Add OpenCage Provider

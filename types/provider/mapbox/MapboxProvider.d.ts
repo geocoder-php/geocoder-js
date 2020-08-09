@@ -61,7 +61,7 @@ export default class MapboxProvider implements ProviderInterface {
     constructor(_externalLoader: ExternalLoaderInterface, options?: MapboxProviderOptionsInterface);
     geocode(query: string | MapboxGeocodeQuery | MapboxGeocodeQueryObject, callback: GeocodedResultsCallback): void;
     geodecode(latitudeOrQuery: number | string | MapboxReverseQuery | MapboxReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callback?: GeocodedResultsCallback): void;
-    private getCommonParams;
+    private withCommonParams;
     executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback): void;
     static mapToGeocoded(result: MapboxResult): MapboxGeocoded;
 }

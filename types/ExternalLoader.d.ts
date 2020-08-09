@@ -1,6 +1,7 @@
 import { ResponseError } from "./error";
 export interface ExternalLoaderInterface {
     setOptions(options: ExternalLoaderOptions): void;
+    getOptions(): ExternalLoaderOptions;
     executeRequest(params: ExternalLoaderParams, callback: ResponseCallback, headers?: ExternalLoaderHeaders, errorCallback?: ErrorCallback): void;
 }
 export interface ExternalLoaderOptions {
@@ -10,7 +11,7 @@ export interface ExternalLoaderOptions {
 }
 export interface ExternalLoaderParams {
     [param: string]: string | undefined;
-    JSONPCallback?: string;
+    jsonpCallback?: string;
 }
 export interface ExternalLoaderHeaders {
     [header: string]: string | undefined;
@@ -24,8 +25,8 @@ export default class ExternalLoader implements ExternalLoaderInterface {
     private options;
     constructor(options?: ExternalLoaderOptions);
     setOptions(options: ExternalLoaderOptions): void;
+    getOptions(): ExternalLoaderOptions;
     executeRequest(params: ExternalLoaderParams, callback: ResponseCallback, externalLoaderHeaders?: ExternalLoaderHeaders, errorCallback?: ErrorCallback): void;
-    private static filterUndefinedObjectValues;
     private static runJsonpCallback;
     /**
      * Generates randomly-named function to use as a callback for JSONP requests.

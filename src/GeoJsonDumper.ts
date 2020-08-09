@@ -8,6 +8,7 @@ export interface GeoJson {
       | string
       | string[]
       | number
+      | boolean
       | AdminLevel[]
       | AdminLevelObject[]
       | undefined;
@@ -61,6 +62,7 @@ export default class GeoJsonDumper {
         | string
         | string[]
         | number
+        | boolean
         | AdminLevel[]
         | AdminLevelObject[]
         | undefined;

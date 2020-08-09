@@ -33,7 +33,7 @@ interface NominatimRequestParams {
   readonly exclude_place_ids?: string;
   readonly viewbox?: string;
   readonly bounded?: string;
-  readonly JSONPCallback?: string;
+  readonly jsonpCallback?: string;
 }
 
 export interface NominatimResult {
@@ -123,7 +123,7 @@ export default class NominatimProvider implements ProviderInterface {
       pathname: "search",
     });
 
-    const params: NominatimRequestParams = this.getCommonParams(
+    const params: NominatimRequestParams = this.withCommonParams(
       {
         q: geocodeQuery.getText(),
         limit: geocodeQuery.getLimit().toString(),
@@ -175,7 +175,7 @@ export default class NominatimProvider implements ProviderInterface {
       pathname: "reverse",
     });
 
-    const params: NominatimRequestParams = this.getCommonParams(
+    const params: NominatimRequestParams = this.withCommonParams(
       {
         lat: reverseQuery.getCoordinates().latitude.toString(),
         lon: reverseQuery.getCoordinates().longitude.toString(),
@@ -188,7 +188,7 @@ export default class NominatimProvider implements ProviderInterface {
     this.executeRequest(params, reverseCallback, this.getHeaders());
   }
 
-  private getCommonParams(
+  private withCommonParams(
     params: Partial<NominatimRequestParams>,
     query: NominatimGeocodeQuery | NominatimReverseQuery
   ): NominatimRequestParams {
@@ -196,7 +196,7 @@ export default class NominatimProvider implements ProviderInterface {
       ...params,
       format: "jsonv2",
       addressdetails: "1",
-      JSONPCallback: this.options.useJsonp ? "json_callback" : undefined,
+      jsonpCallback: this.options.useJsonp ? "json_callback" : undefined,
       "accept-language": query.getLocale(),
     };
   }
@@ -216,8 +216,15 @@ export default class NominatimProvider implements ProviderInterface {
     this.externalLoader.executeRequest(
       params,
       (data) => {
+        let results = data;
+        if (!Array.isArray(data)) {
+          if (data.error) {
+            throw new Error(`An error has occurred: ${data.error}`);
+          }
+          results = [data];
+        }
         callback(
-          data.map((result: NominatimResult) =>
+          results.map((result: NominatimResult) =>
             NominatimProvider.mapToGeocoded(result)
           )
         );

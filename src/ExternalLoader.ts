@@ -1,8 +1,10 @@
 import fetch from "cross-fetch";
 import { ResponseError } from "error";
+import { isBrowser, filterUndefinedObjectValues } from "utils";
 
 export interface ExternalLoaderInterface {
   setOptions(options: ExternalLoaderOptions): void;
+  getOptions(): ExternalLoaderOptions;
   executeRequest(
     params: ExternalLoaderParams,
     callback: ResponseCallback,
@@ -19,7 +21,7 @@ export interface ExternalLoaderOptions {
 
 export interface ExternalLoaderParams {
   [param: string]: string | undefined;
-  JSONPCallback?: string;
+  jsonpCallback?: string;
 }
 
 export interface ExternalLoaderHeaders {
@@ -48,6 +50,10 @@ export default class ExternalLoader implements ExternalLoaderInterface {
     this.options = { ...defaultOptions, ...options };
   }
 
+  public getOptions(): ExternalLoaderOptions {
+    return this.options;
+  }
+
   public executeRequest(
     params: ExternalLoaderParams,
     callback: ResponseCallback,
@@ -65,11 +71,9 @@ export default class ExternalLoader implements ExternalLoaderInterface {
       `${this.options.protocol}://${this.options.host}/${this.options.pathname}`
     );
 
-    const { JSONPCallback: jsonpCallback, ...requestParams } = params;
+    const { jsonpCallback, ...requestParams } = params;
 
-    const filteredRequestParams = ExternalLoader.filterUndefinedObjectValues(
-      requestParams
-    );
+    const filteredRequestParams = filterUndefinedObjectValues(requestParams);
     Object.keys(filteredRequestParams).forEach((paramKey) =>
       requestUrl.searchParams.append(
         paramKey,
@@ -82,9 +86,7 @@ export default class ExternalLoader implements ExternalLoaderInterface {
       return;
     }
 
-    const headers = ExternalLoader.filterUndefinedObjectValues(
-      externalLoaderHeaders || {}
-    );
+    const headers = filterUndefinedObjectValues(externalLoaderHeaders || {});
     fetch(requestUrl.toString(), {
       headers,
     })
@@ -107,30 +109,15 @@ export default class ExternalLoader implements ExternalLoaderInterface {
       });
   }
 
-  private static filterUndefinedObjectValues(
-    object: Record<string, string | undefined>
-  ): Record<string, string> {
-    return Object.keys(object).reduce((acc: Record<string, string>, key) => {
-      const filtered = acc;
-      const value = object[key];
-      if (value !== undefined) {
-        filtered[key] = value;
-      }
-      return filtered;
-    }, {});
-  }
-
   private static runJsonpCallback(
     requestUrl: URL,
     callback: ResponseCallback,
     jsonpCallback: string
   ): void {
-    if (typeof window === "undefined") {
-      console.error(
-        "JSONPCallback parameter can only be used in a browser environment."
+    if (!isBrowser()) {
+      throw new Error(
+        '"jsonpCallback" parameter can only be used in a browser environment.'
       );
-
-      return;
     }
 
     requestUrl.searchParams.append(

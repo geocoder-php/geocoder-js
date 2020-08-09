@@ -11,7 +11,7 @@ Need geocoding 🌍️ in your website or application? Don't want to be vendor-l
 
 Universal Geocoder is a TypeScript fork of [GeocoderJS](https://github.com/geocoder-php/geocoder-js), itself a port of the [Geocoder PHP](https://geocoder-php.org/) library.
 
-This library is platform agnostic: it is available either server-side (Node) or client-side (browsers, React Native).
+This library is platform agnostic: it is available either server-side (Node) or client-side (browsers, React Native, Electron).
 
 Installation
 ------------
@@ -41,7 +41,7 @@ openStreetMapGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", (resul
 });
 ```
 
-If you want to use the library as a direct dependecy, copy `dist/universal-geocoder.js` or `dist/universal-geocoder.min.js` to your dependencies.
+If you want to use the library as a direct dependecy (for browsers only), copy `dist/universal-geocoder.js` or `dist/universal-geocoder.min.js` to your dependencies.
 
 Universal Geocoder will be available in the global environment:
 
@@ -59,7 +59,7 @@ For a more advanced usage, see the example below:
 import UniversalGeocoder, { ReverseQuery } from "universal-geocoder";
 
 const googleGeocoder = UniversalGeocoder.createGeocoder({
-  provider: "google",
+  provider: "googlemaps",
   apiKey: "YOUR_API_KEY",
   useSsl: true,
   useJsonp: false,
@@ -130,6 +130,8 @@ The following table summarizes the features of each:
       <th>Name</th>
       <th>Works in browsers?</th>
       <th>Works in Node?</th>
+      <th>Works in React Native?</th>
+      <th>Works in Electron?</th>
       <th>Supports reverse geocoding?</th>
     </tr>
   </thead>
@@ -138,6 +140,8 @@ The following table summarizes the features of each:
       <td>OpenStreetMap (Nominatim)</td>
       <td>openstreetmap or nominatim</td>
       <td>✅️ yes</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
       <td>❓️ untested</td>
       <td>✅️ yes</td>
     </tr>
@@ -145,20 +149,26 @@ The following table summarizes the features of each:
       <td>OpenCage</td>
       <td>opencage</td>
       <td>✅️ yes</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
       <td>❓️ untested</td>
       <td>✅️ yes</td>
     </tr>
     <tr>
-      <td>Google API</td>
-      <td>google</td>
+      <td>Google Maps (Geocoding API)</td>
+      <td>google or googlemaps</td>
       <td>✅️ yes</td>
       <td>✅️ yes</td>
+      <td>❓️ untested</td>
+      <td>❓️ untested</td>
       <td>✅️ yes</td>
     </tr>
     <tr>
       <td>Mapbox</td>
       <td>mapbox</td>
       <td>✅️ yes</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
       <td>❓️ untested</td>
       <td>✅️ yes</td>
     </tr>
@@ -166,6 +176,8 @@ The following table summarizes the features of each:
       <td>MapQuest</td>
       <td>mapquest</td>
       <td>✅️ yes</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
       <td>❓️ untested</td>
       <td>✅️ yes</td>
     </tr>
@@ -173,6 +185,8 @@ The following table summarizes the features of each:
       <td>Bing</td>
       <td>bing</td>
       <td>✅️ yes</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
       <td>❓️ untested</td>
       <td>✅️ yes</td>
     </tr>
@@ -180,6 +194,8 @@ The following table summarizes the features of each:
       <td>Yandex</td>
       <td>yandex</td>
       <td>✅️ yes</td>
+      <td>✅️ yes</td>
+      <td>❓️ untested</td>
       <td>❓️ untested</td>
       <td>✅️ yes</td>
     </tr>
@@ -228,10 +244,18 @@ Unit tests are handled by Jasmine. To run unit tests from the command line, use:
 npm test
 ```
 
-You can also check if the examples are running correctly:
+You can also check if the examples are running correctly.
+
+For the Web:
 
 ```shell
 npm run serve
 ```
 
-Then go to http://localhost:8080/example, choose a provider and open the console.
+Then go to http://localhost:8080/example/web, choose a provider and open the console.
+
+For Node:
+
+```shell
+npm run ts-node -- example/node/provider.ts
+```
