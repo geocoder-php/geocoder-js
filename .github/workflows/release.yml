@@ -41,7 +41,7 @@ jobs:
         uses: datamonsters/replace-action@v2
         with:
           files: package.json
-          replacements: '"name": "universal-geocoder","name": "@universal-geocoder/universal-geocoder"'
+          replacements: '"universal-geocoder"="@universal-geocoder/universal-geocoder"'
       - name: Publish to GitHub
         run: npm publish
         env:
