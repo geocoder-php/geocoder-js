@@ -18,7 +18,7 @@ import { Box } from "types";
 interface BingRequestParams {
   [param: string]: string | undefined;
   readonly key?: string;
-  readonly JSONPCallback?: string;
+  readonly jsonpCallback?: string;
 }
 
 export interface BingResult {
@@ -81,7 +81,7 @@ export default class BingProvider implements ProviderInterface {
 
     const params: BingRequestParams = {
       key: this.options.apiKey,
-      JSONPCallback: this.options.useJsonp ? "jsonp" : undefined,
+      jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
 
     this.executeRequest(params, callback);
@@ -111,7 +111,7 @@ export default class BingProvider implements ProviderInterface {
 
     const params: BingRequestParams = {
       key: this.options.apiKey,
-      JSONPCallback: this.options.useJsonp ? "jsonp" : undefined,
+      jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
 
     this.executeRequest(params, reverseCallback);

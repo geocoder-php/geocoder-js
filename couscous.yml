@@ -6,11 +6,31 @@ github:
     repo: geocoder-js
 
 menu:
-  items:
-    readme:
-      text: Home
+  sections:
+    main:
+      items:
+        readme:
+          text: 🌏️ Home
+        provider_usage:
+          text: 🔎️ Provider Usage
+          relativeUrl: docs/provider_usage.html
     provider_usage:
-      text: Provider Usage
-      relativeUrl: docs/provider_usage.html
+      name: Provider
+      items:
+        nominatim:
+          text: 📌️ OpenStreetMap (Nominatim)
+          relativeUrl: docs/provider_usage/nominatim.html
+        opencage:
+          text: 📌️ OpenCage
+          relativeUrl: docs/provider_usage/opencage.html
+        googlemaps:
+          text: 📌️ Google Maps (Geocoding API)
+          relativeUrl: docs/provider_usage/googlemaps.html
+        mapbox:
+          text: 📌️ Mapbox
+          relativeUrl: docs/provider_usage/mapbox.html
+        yandex:
+          text: 📌️ Yandex
+          relativeUrl: docs/provider_usage/yandex.html
 
 baseUrl: /geocoder-js/

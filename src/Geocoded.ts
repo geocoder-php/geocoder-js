@@ -5,6 +5,7 @@ export interface GeocodedObject {
     | string
     | string[]
     | number
+    | boolean
     | AdminLevel[]
     | undefined;
   readonly latitude?: number;

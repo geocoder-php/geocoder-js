@@ -1,6 +1,7 @@
 import {
   BingProvider,
-  GoogleAPIProvider,
+  GoogleMapsProvider,
+  GoogleMapsProviderOptionsInterface,
   MapboxProvider,
   MapboxProviderOptionsInterface,
   MapquestProvider,
@@ -22,6 +23,7 @@ interface ProviderOptionInterface {
   provider:
     | "bing"
     | "google"
+    | "googlemaps"
     | "mapbox"
     | "mapquest"
     | "nominatim"
@@ -33,6 +35,12 @@ interface ProviderOptionInterface {
 interface ProviderFactoryOptions
   extends ProviderOptionsInterface,
     ProviderOptionInterface {}
+
+interface GoogleMapsGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    GoogleMapsProviderOptionsInterface {
+  provider: "google" | "googlemaps";
+}
 
 interface MapboxGeocoderProviderFactoryOptions
   extends ProviderOptionInterface,
@@ -60,6 +68,7 @@ interface YandexGeocoderProviderFactoryOptions
 
 export type GeocoderProviderFactoryOptions =
   | ProviderFactoryOptions
+  | GoogleMapsGeocoderProviderFactoryOptions
   | MapboxGeocoderProviderFactoryOptions
   | NominatimGeocoderProviderFactoryOptions
   | OpenCageGeocoderProviderFactoryOptions
@@ -67,7 +76,7 @@ export type GeocoderProviderFactoryOptions =
 
 export type GeocoderProvider =
   | BingProvider
-  | GoogleAPIProvider
+  | GoogleMapsProvider
   | MapboxProvider
   | MapquestProvider
   | NominatimProvider
@@ -76,7 +85,9 @@ export type GeocoderProvider =
 
 export type GeocoderProviderByOptionsType<
   O
-> = O extends MapboxGeocoderProviderFactoryOptions
+> = O extends GoogleMapsGeocoderProviderFactoryOptions
+  ? GoogleMapsProvider
+  : O extends MapboxGeocoderProviderFactoryOptions
   ? MapboxProvider
   : O extends NominatimGeocoderProviderFactoryOptions
   ? NominatimProvider
@@ -114,8 +125,9 @@ export default class ProviderFactory {
           new BingProvider(externalLoader, providerOptions)
         );
       case "google":
+      case "googlemaps":
         return <GeocoderProviderByOptionsType<O>>(
-          new GoogleAPIProvider(externalLoader, providerOptions)
+          new GoogleMapsProvider(externalLoader, providerOptions)
         );
       case "mapbox":
         return <GeocoderProviderByOptionsType<O>>(

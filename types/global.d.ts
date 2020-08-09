@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import GeocoderJS from "GeocoderJS";
-import GeoJsonDumper from "GeoJsonDumper";
-=======
-import UniversalGeocoder from "./UniversalGeocoder";
+import GeocoderJS from "./GeocoderJS";
 import GeoJsonDumper from "./GeoJsonDumper";
->>>>>>> main
 declare global {
     interface Window {
         GeocoderJS: typeof GeocoderJS;

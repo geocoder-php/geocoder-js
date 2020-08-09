@@ -18,7 +18,7 @@ interface MapQuestRequestParams {
   [param: string]: string | undefined;
   readonly key?: string;
   readonly location: string;
-  readonly JSONPCallback?: string;
+  readonly jsonpCallback?: string;
 }
 
 export interface MapQuestResult {
@@ -83,7 +83,7 @@ export default class MapQuestProvider implements ProviderInterface {
     const params: MapQuestRequestParams = {
       key: this.options.apiKey,
       location: encodeURIComponent(geocodeQuery.getText()),
-      JSONPCallback: this.options.useJsonp ? "callback" : undefined,
+      jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
     this.executeRequest(params, callback);
@@ -114,7 +114,7 @@ export default class MapQuestProvider implements ProviderInterface {
       location: `${reverseQuery.getCoordinates().latitude},${
         reverseQuery.getCoordinates().longitude
       }`,
-      JSONPCallback: this.options.useJsonp ? "callback" : undefined,
+      jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
     this.executeRequest(params, reverseCallback);

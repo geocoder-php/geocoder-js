@@ -38,10 +38,10 @@ jobs:
           node-version: "14"
           registry-url: https://npm.pkg.github.com
       - name: Change package name
-        uses: datamonsters/replace-action
+        uses: datamonsters/replace-action@v2
         with:
           files: package.json
-          replacements: '"name": "geocoder-js","name": "@geocoder-php/geocoder-js"'
+          replacements: '"geocoder-js"="@geocoder-php/geocoder-js"'
       - name: Publish to GitHub
         run: npm publish
         env:

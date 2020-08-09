@@ -146,7 +146,7 @@ export default class MapboxProvider implements ProviderInterface {
       }/${geocodeQuery.getText()}.json`,
     });
 
-    const params: MapboxRequestParams = this.getCommonParams(
+    const params: MapboxRequestParams = this.withCommonParams(
       {
         bbox: geocodeQuery.getBounds()
           ? `${geocodeQuery.getBounds()?.west},${
@@ -197,7 +197,7 @@ export default class MapboxProvider implements ProviderInterface {
       },${reverseQuery.getCoordinates().latitude}.json`,
     });
 
-    const params: MapboxRequestParams = this.getCommonParams(
+    const params: MapboxRequestParams = this.withCommonParams(
       {
         reverseMode: (<MapboxReverseQuery>reverseQuery).getReverseMode()
           ? (<MapboxReverseQuery>reverseQuery).getReverseMode()
@@ -212,7 +212,7 @@ export default class MapboxProvider implements ProviderInterface {
     this.executeRequest(params, reverseCallback);
   }
 
-  private getCommonParams(
+  private withCommonParams(
     params: Pick<
       MapboxRequestParams,
       "bbox" | "proximity" | "reverseMode" | "types"

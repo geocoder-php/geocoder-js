@@ -49,7 +49,7 @@ export default class NominatimProvider implements ProviderInterface {
     constructor(_externalLoader: ExternalLoaderInterface, options?: NominatimProviderOptionsInterface);
     geocode(query: string | NominatimGeocodeQuery | NominatimGeocodeQueryObject, callback: GeocodedResultsCallback): void;
     geodecode(latitudeOrQuery: number | string | NominatimReverseQuery | NominatimReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callback?: GeocodedResultsCallback): void;
-    private getCommonParams;
+    private withCommonParams;
     private getHeaders;
     executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback, headers?: ExternalLoaderHeaders): void;
     static mapToGeocoded(result: NominatimResult): NominatimGeocoded;

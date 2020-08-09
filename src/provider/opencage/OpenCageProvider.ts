@@ -26,7 +26,7 @@ interface OpenCageRequestParams {
   readonly min_confidence?: string;
   // eslint-disable-next-line camelcase
   readonly no_record?: string;
-  readonly JSONPCallback?: string;
+  readonly jsonpCallback?: string;
 }
 
 interface OpenCageCoordinates {
@@ -304,7 +304,7 @@ export default class OpenCageProvider implements ProviderInterface {
       pathname: "geocode/v1/json",
     });
 
-    const params: OpenCageRequestParams = this.getCommonParams(
+    const params: OpenCageRequestParams = this.withCommonParams(
       {
         q: geocodeQuery.getText(),
         bounds: geocodeQuery.getBounds()
@@ -351,7 +351,7 @@ export default class OpenCageProvider implements ProviderInterface {
       pathname: "geocode/v1/json",
     });
 
-    const params: OpenCageRequestParams = this.getCommonParams(
+    const params: OpenCageRequestParams = this.withCommonParams(
       {
         q: `${reverseQuery.getCoordinates().latitude},${
           reverseQuery.getCoordinates().longitude
@@ -363,7 +363,7 @@ export default class OpenCageProvider implements ProviderInterface {
     this.executeRequest(params, reverseCallback);
   }
 
-  private getCommonParams(
+  private withCommonParams(
     params: Pick<OpenCageRequestParams, "q" | "bounds" | "proximity">,
     query: OpenCageGeocodeQuery | OpenCageReverseQuery
   ): OpenCageRequestParams {
@@ -377,7 +377,7 @@ export default class OpenCageProvider implements ProviderInterface {
       limit: query.getLimit().toString(),
       min_confidence: query.getMinConfidence()?.toString(),
       no_record: query.getNoRecord()?.toString(),
-      JSONPCallback: this.options.useJsonp ? "jsonp" : undefined,
+      jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
   }
 

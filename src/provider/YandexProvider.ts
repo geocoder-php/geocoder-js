@@ -21,7 +21,7 @@ interface YandexRequestParams {
   readonly format: string;
   readonly lang?: string;
   readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
-  readonly JSONPCallback?: string;
+  readonly jsonpCallback?: string;
 }
 
 interface YandexCollectionResult {
@@ -116,7 +116,7 @@ export default class YandexProvider implements ProviderInterface {
       geocode: geocodeQuery.getText(),
       format: "json",
       lang: geocodeQuery.getLocale(),
-      JSONPCallback: this.options.useJsonp ? "callback" : undefined,
+      jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
     this.executeRequest(params, callback);
@@ -150,7 +150,7 @@ export default class YandexProvider implements ProviderInterface {
       format: "json",
       lang: reverseQuery.getLocale(),
       toponym: this.options.toponym,
-      JSONPCallback: this.options.useJsonp ? "callback" : undefined,
+      jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
     this.executeRequest(params, reverseCallback);
