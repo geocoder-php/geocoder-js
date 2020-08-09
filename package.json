@@ -1,7 +1,7 @@
 {
   "name": "universal-geocoder",
   "description": "Universal geocoding abstraction with multiple built-in providers",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "keywords": [
     "geocoder",
     "geocoding",
