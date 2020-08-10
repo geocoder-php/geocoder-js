@@ -1,4 +1,4 @@
-import { GeocodedResultsCallback } from "provider";
+import { ErrorCallback, GeocodedResultsCallback } from "provider";
 import {
   GeocodeQuery,
   GeocodeQueryObject,
@@ -54,7 +54,7 @@ export default class ProviderHelpers {
 
   public static getCallbackFromParameters(
     longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback
   ): GeocodedResultsCallback {
     if (
       !(
@@ -64,12 +64,31 @@ export default class ProviderHelpers {
     ) {
       return longitudeOrCallback;
     }
-    if (callback) {
-      return callback;
+    if (callbackOrErrorCallback) {
+      return <GeocodedResultsCallback>callbackOrErrorCallback;
     }
 
     throw new Error(
       "A callback must be set at the last parameter of geodecode"
     );
+  }
+
+  public static getErrorCallbackFromParameters(
+    longitudeOrCallback: number | string | GeocodedResultsCallback,
+    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
+  ): undefined | ErrorCallback {
+    if (errorCallback) {
+      return errorCallback;
+    }
+
+    if (
+      typeof longitudeOrCallback === "number" ||
+      typeof longitudeOrCallback === "string"
+    ) {
+      return undefined;
+    }
+
+    return <undefined | ErrorCallback>callbackOrErrorCallback;
   }
 }

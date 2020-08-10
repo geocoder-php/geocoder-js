@@ -206,6 +206,13 @@ The following table summarizes the features of each:
 
 The documentation for specific provider options, parameters and results can be found [here](docs/provider_usage.md).
 
+Special Providers
+-----------------
+
+A `chain` provider is available: it iterates over multiple providers.
+
+For more information, see [its documentation](docs/provider_usage/chain.md).
+
 Dumpers
 -------
 

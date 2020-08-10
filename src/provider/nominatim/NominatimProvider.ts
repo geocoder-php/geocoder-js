@@ -4,6 +4,7 @@ import {
   ExternalLoaderParams,
 } from "ExternalLoader";
 import {
+  ErrorCallback,
   GeocodedResultsCallback,
   NominatimGeocoded,
   NominatimReverseQuery,
@@ -16,6 +17,7 @@ import {
   defaultProviderOptions,
 } from "provider";
 import AdminLevel from "AdminLevel";
+import { ResponseError } from "error";
 
 interface NominatimRequestParams {
   [param: string]: string | undefined;
@@ -35,6 +37,15 @@ interface NominatimRequestParams {
   readonly bounded?: string;
   readonly jsonpCallback?: string;
 }
+
+interface NominatimErrorResponse {
+  error: string;
+}
+
+export type NominatimResponse =
+  | NominatimErrorResponse
+  | NominatimResult
+  | NominatimResult[];
 
 export interface NominatimResult {
   // eslint-disable-next-line camelcase
@@ -110,7 +121,8 @@ export default class NominatimProvider implements ProviderInterface {
 
   public geocode(
     query: string | NominatimGeocodeQuery | NominatimGeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
       query,
@@ -147,7 +159,7 @@ export default class NominatimProvider implements ProviderInterface {
       <NominatimGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback, this.getHeaders());
+    this.executeRequest(params, callback, this.getHeaders(), errorCallback);
   }
 
   public geodecode(
@@ -157,7 +169,8 @@ export default class NominatimProvider implements ProviderInterface {
       | NominatimReverseQuery
       | NominatimReverseQueryObject,
     longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -166,7 +179,12 @@ export default class NominatimProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -185,7 +203,12 @@ export default class NominatimProvider implements ProviderInterface {
       <NominatimReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback, this.getHeaders());
+    this.executeRequest(
+      params,
+      reverseCallback,
+      this.getHeaders(),
+      reverseErrorCallback
+    );
   }
 
   private withCommonParams(
@@ -211,25 +234,36 @@ export default class NominatimProvider implements ProviderInterface {
   public executeRequest(
     params: ExternalLoaderParams,
     callback: GeocodedResultsCallback,
-    headers?: ExternalLoaderHeaders
+    headers?: ExternalLoaderHeaders,
+    errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
       params,
-      (data) => {
+      (data: NominatimResponse) => {
         let results = data;
         if (!Array.isArray(data)) {
-          if (data.error) {
-            throw new Error(`An error has occurred: ${data.error}`);
+          if ((<NominatimErrorResponse>data).error) {
+            const errorMessage = `An error has occurred: ${
+              (<NominatimErrorResponse>data).error
+            }`;
+            if (errorCallback) {
+              errorCallback(new ResponseError(errorMessage, data));
+              return;
+            }
+            setTimeout(() => {
+              throw new Error(errorMessage);
+            });
           }
-          results = [data];
+          results = [<NominatimResult>data];
         }
         callback(
-          results.map((result: NominatimResult) =>
+          (<NominatimResult[]>results).map((result: NominatimResult) =>
             NominatimProvider.mapToGeocoded(result)
           )
         );
       },
-      headers
+      headers,
+      errorCallback
     );
   }
 

@@ -3,6 +3,8 @@ export { default as ProviderInterface } from "./ProviderInterface";
 export * from "./ProviderInterface";
 export { default as BingProvider } from "./BingProvider";
 export * from "./BingProvider";
+export { default as ChainProvider } from "./ChainProvider";
+export * from "./ChainProvider";
 export * from "./googlemaps";
 export * from "./mapbox";
 export { default as MapquestProvider } from "./MapquestProvider";

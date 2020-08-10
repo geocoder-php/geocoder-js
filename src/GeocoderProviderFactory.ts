@@ -1,5 +1,7 @@
 import {
   BingProvider,
+  ChainProvider,
+  ChainProviderOptionsInterface,
   GoogleMapsProvider,
   GoogleMapsProviderOptionsInterface,
   MapboxProvider,
@@ -12,6 +14,7 @@ import {
   YandexProvider,
   YandexProviderOptionsInterface,
   ProviderOptionsInterface,
+  defaultChainProviderOptions,
   defaultMapboxProviderOptions,
   defaultNominatimProviderOptions,
   defaultOpenCageProviderOptions,
@@ -22,6 +25,7 @@ import ExternalLoader from "ExternalLoader";
 interface ProviderOptionInterface {
   provider:
     | "bing"
+    | "chain"
     | "google"
     | "googlemaps"
     | "mapbox"
@@ -35,6 +39,12 @@ interface ProviderOptionInterface {
 interface ProviderFactoryOptions
   extends ProviderOptionsInterface,
     ProviderOptionInterface {}
+
+interface ChainGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    ChainProviderOptionsInterface {
+  provider: "chain";
+}
 
 interface GoogleMapsGeocoderProviderFactoryOptions
   extends ProviderOptionInterface,
@@ -68,6 +78,7 @@ interface YandexGeocoderProviderFactoryOptions
 
 export type GeocoderProviderFactoryOptions =
   | ProviderFactoryOptions
+  | ChainGeocoderProviderFactoryOptions
   | GoogleMapsGeocoderProviderFactoryOptions
   | MapboxGeocoderProviderFactoryOptions
   | NominatimGeocoderProviderFactoryOptions
@@ -76,6 +87,7 @@ export type GeocoderProviderFactoryOptions =
 
 export type GeocoderProvider =
   | BingProvider
+  | ChainProvider
   | GoogleMapsProvider
   | MapboxProvider
   | MapquestProvider
@@ -85,7 +97,9 @@ export type GeocoderProvider =
 
 export type GeocoderProviderByOptionsType<
   O
-> = O extends GoogleMapsGeocoderProviderFactoryOptions
+> = O extends ChainGeocoderProviderFactoryOptions
+  ? ChainProvider
+  : O extends GoogleMapsGeocoderProviderFactoryOptions
   ? GoogleMapsProvider
   : O extends MapboxGeocoderProviderFactoryOptions
   ? MapboxProvider
@@ -124,6 +138,11 @@ export default class ProviderFactory {
         return <GeocoderProviderByOptionsType<O>>(
           new BingProvider(externalLoader, providerOptions)
         );
+      case "chain":
+        return <GeocoderProviderByOptionsType<O>>new ChainProvider({
+          ...defaultChainProviderOptions,
+          ...providerOptions,
+        });
       case "google":
       case "googlemaps":
         return <GeocoderProviderByOptionsType<O>>(

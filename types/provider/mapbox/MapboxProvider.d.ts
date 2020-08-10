@@ -1,6 +1,12 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "../../ExternalLoader";
-import { GeocodedResultsCallback, MapboxGeocoded, MapboxGeocodeQuery, MapboxGeocodeQueryObject, MapboxReverseQuery, MapboxReverseQueryObject, ProviderInterface, ProviderOptionsInterface } from "./..";
+import { ExternalLoaderHeaders, ExternalLoaderInterface, ExternalLoaderParams } from "../../ExternalLoader";
+import { ErrorCallback, GeocodedResultsCallback, MapboxGeocoded, MapboxGeocodeQuery, MapboxGeocodeQueryObject, MapboxReverseQuery, MapboxReverseQueryObject, ProviderInterface, ProviderOptionsInterface } from "./..";
 import { Box } from "../../types";
+export interface MapboxResponse {
+    type: "FeatureCollection";
+    query: string[];
+    features: MapboxResult[];
+    attribution: string;
+}
 interface MapboxFeatureContextProperties {
     id: string;
     text: string;
@@ -59,10 +65,10 @@ export default class MapboxProvider implements ProviderInterface {
     private externalLoader;
     private options;
     constructor(_externalLoader: ExternalLoaderInterface, options?: MapboxProviderOptionsInterface);
-    geocode(query: string | MapboxGeocodeQuery | MapboxGeocodeQueryObject, callback: GeocodedResultsCallback): void;
-    geodecode(latitudeOrQuery: number | string | MapboxReverseQuery | MapboxReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callback?: GeocodedResultsCallback): void;
+    geocode(query: string | MapboxGeocodeQuery | MapboxGeocodeQueryObject, callback: GeocodedResultsCallback, errorCallback?: ErrorCallback): void;
+    geodecode(latitudeOrQuery: number | string | MapboxReverseQuery | MapboxReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback, errorCallback?: ErrorCallback): void;
     private withCommonParams;
-    executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback): void;
+    executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback, headers?: ExternalLoaderHeaders, errorCallback?: ErrorCallback): void;
     static mapToGeocoded(result: MapboxResult): MapboxGeocoded;
 }
 export {};

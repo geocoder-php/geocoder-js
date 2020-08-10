@@ -1,4 +1,5 @@
 import fetch from "cross-fetch";
+import { ErrorCallback } from "provider";
 import { ResponseError } from "error";
 import { isBrowser, filterUndefinedObjectValues } from "utils";
 
@@ -30,7 +31,6 @@ export interface ExternalLoaderHeaders {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ResponseCallback = (response: any) => void;
-export type ErrorCallback = (responseError: ResponseError) => void;
 
 const defaultOptions: ExternalLoaderOptions = {
   protocol: "http",
@@ -105,7 +105,9 @@ export default class ExternalLoader implements ExternalLoaderInterface {
           errorCallback(error);
           return;
         }
-        throw error;
+        setTimeout(() => {
+          throw error;
+        });
       });
   }
 

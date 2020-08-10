@@ -1,5 +1,10 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalLoader";
 import {
+  ExternalLoaderHeaders,
+  ExternalLoaderInterface,
+  ExternalLoaderParams,
+} from "ExternalLoader";
+import {
+  ErrorCallback,
   GeocodedResultsCallback,
   OpenCageGeocoded,
   OpenCageGeocodeQuery,
@@ -12,6 +17,7 @@ import {
   defaultProviderOptions,
 } from "provider";
 import AdminLevel from "AdminLevel";
+import { ResponseError } from "error";
 
 interface OpenCageRequestParams {
   [param: string]: string | undefined;
@@ -41,7 +47,7 @@ interface OpenCageSun {
   nautical: number;
 }
 
-interface OpenCageResponse {
+export interface OpenCageResponse {
   documentation: string;
   licences: {
     name: string;
@@ -291,7 +297,8 @@ export default class OpenCageProvider implements ProviderInterface {
 
   public geocode(
     query: string | OpenCageGeocodeQuery | OpenCageGeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
       query,
@@ -323,7 +330,7 @@ export default class OpenCageProvider implements ProviderInterface {
       <OpenCageGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback);
+    this.executeRequest(params, callback, {}, errorCallback);
   }
 
   public geodecode(
@@ -333,7 +340,8 @@ export default class OpenCageProvider implements ProviderInterface {
       | OpenCageReverseQuery
       | OpenCageReverseQueryObject,
     longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -342,7 +350,12 @@ export default class OpenCageProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -360,7 +373,7 @@ export default class OpenCageProvider implements ProviderInterface {
       <OpenCageReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback);
+    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
   }
 
   private withCommonParams(
@@ -383,7 +396,9 @@ export default class OpenCageProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders,
+    errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
       params,
@@ -394,57 +409,55 @@ export default class OpenCageProvider implements ProviderInterface {
           )
         );
       },
-      {},
+      headers,
       (error) => {
-        error
-          .getResponse()
-          .json()
-          .then((data: OpenCageResponse) => {
-            if (data.status) {
-              switch (data.status.code) {
-                case 400:
-                  throw new Error(
-                    `Invalid request (400): ${data.status.message}`
-                  );
-                case 401:
-                  throw new Error(
-                    `Unable to authenticate (401): ${data.status.message}`
-                  );
-                case 402:
-                  throw new Error(
-                    `Quota exceeded (402): ${data.status.message}`
-                  );
-                case 403:
-                  throw new Error(`Forbidden (403): ${data.status.message}`);
-                case 404:
-                  throw new Error(
-                    `Invalid API endpoint (404): ${data.status.message}`
-                  );
-                case 405:
-                  throw new Error(
-                    `Method not allowed (405): ${data.status.message}`
-                  );
-                case 408:
-                  throw new Error(`Timeout (408): ${data.status.message}`);
-                case 410:
-                  throw new Error(
-                    `Request too long (410): ${data.status.message}`
-                  );
-                case 429:
-                  throw new Error(
-                    `Too many requests (429): ${data.status.message}`
-                  );
-                case 503:
-                  throw new Error(
-                    `Internal server error (503): ${data.status.message}`
-                  );
-                default:
-                  throw new Error(
-                    `Error (${data.status.code}): ${data.status.message}`
-                  );
-              }
+        const response = <Response>error.getResponse();
+        response.json().then((data: OpenCageResponse) => {
+          if (data.status) {
+            let errorMessage: string;
+            switch (data.status.code) {
+              case 400:
+                errorMessage = `Invalid request (400): ${data.status.message}`;
+                break;
+              case 401:
+                errorMessage = `Unable to authenticate (401): ${data.status.message}`;
+                break;
+              case 402:
+                errorMessage = `Quota exceeded (402): ${data.status.message}`;
+                break;
+              case 403:
+                errorMessage = `Forbidden (403): ${data.status.message}`;
+                break;
+              case 404:
+                errorMessage = `Invalid API endpoint (404): ${data.status.message}`;
+                break;
+              case 405:
+                errorMessage = `Method not allowed (405): ${data.status.message}`;
+                break;
+              case 408:
+                errorMessage = `Timeout (408): ${data.status.message}`;
+                break;
+              case 410:
+                errorMessage = `Request too long (410): ${data.status.message}`;
+                break;
+              case 429:
+                errorMessage = `Too many requests (429): ${data.status.message}`;
+                break;
+              case 503:
+                errorMessage = `Internal server error (503): ${data.status.message}`;
+                break;
+              default:
+                errorMessage = `Error (${data.status.code}): ${data.status.message}`;
             }
-          });
+            if (errorCallback) {
+              errorCallback(new ResponseError(errorMessage, data));
+              return;
+            }
+            setTimeout(() => {
+              throw new Error(errorMessage);
+            });
+          }
+        });
       }
     );
   }

@@ -1,8 +1,4 @@
-import {
-  ErrorCallback,
-  ExternalLoaderHeaders,
-  ExternalLoaderParams,
-} from "ExternalLoader";
+import { ExternalLoaderHeaders, ExternalLoaderParams } from "ExternalLoader";
 import Geocoded from "Geocoded";
 import {
   GeocodeQuery,
@@ -10,6 +6,7 @@ import {
   ReverseQuery,
   ReverseQueryObject,
 } from "query";
+import { ResponseError } from "error";
 
 export const DEFAULT_RESULT_LIMIT = 5;
 
@@ -25,16 +22,19 @@ export interface ProviderOptionsInterface {
 }
 
 export type GeocodedResultsCallback = (results: Geocoded[]) => void;
+export type ErrorCallback = (responseError: ResponseError) => void;
 
 export default interface ProviderInterface {
   geocode(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void;
   geodecode(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
     longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void;
   executeRequest(
     params: ExternalLoaderParams,

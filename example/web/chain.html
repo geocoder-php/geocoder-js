@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Universal Geocoder: Chain Example</title>
+    <script src="../../dist/universal-geocoder.js"></script>
+    <script>
+      var yandexGeocoder = UniversalGeocoder.createGeocoder("yandex");
+      var openStreetMapGeocoder = UniversalGeocoder.createGeocoder({ provider: "openstreetmap", userAgent: "Universal Geocoder Example" });
+      var chainGeocoder = UniversalGeocoder.createGeocoder({ provider: "chain", providers: [yandexGeocoder, openStreetMapGeocoder], parallelize: true });
+      chainGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", function(result) {
+        console.log(result);
+      });
+
+      chainGeocoder.geodecode("44.915", "-93.21", function(result) {
+        console.log(result);
+      });
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>

@@ -1,8 +1,11 @@
-import { BingProvider, GoogleMapsProvider, GoogleMapsProviderOptionsInterface, MapboxProvider, MapboxProviderOptionsInterface, MapquestProvider, NominatimProvider, NominatimProviderOptionsInterface, OpenCageProvider, OpenCageProviderOptionsInterface, YandexProvider, YandexProviderOptionsInterface, ProviderOptionsInterface } from "./provider";
+import { BingProvider, ChainProvider, ChainProviderOptionsInterface, GoogleMapsProvider, GoogleMapsProviderOptionsInterface, MapboxProvider, MapboxProviderOptionsInterface, MapquestProvider, NominatimProvider, NominatimProviderOptionsInterface, OpenCageProvider, OpenCageProviderOptionsInterface, YandexProvider, YandexProviderOptionsInterface, ProviderOptionsInterface } from "./provider";
 interface ProviderOptionInterface {
-    provider: "bing" | "google" | "googlemaps" | "mapbox" | "mapquest" | "nominatim" | "opencage" | "openstreetmap" | "yandex";
+    provider: "bing" | "chain" | "google" | "googlemaps" | "mapbox" | "mapquest" | "nominatim" | "opencage" | "openstreetmap" | "yandex";
 }
 interface ProviderFactoryOptions extends ProviderOptionsInterface, ProviderOptionInterface {
+}
+interface ChainGeocoderProviderFactoryOptions extends ProviderOptionInterface, ChainProviderOptionsInterface {
+    provider: "chain";
 }
 interface GoogleMapsGeocoderProviderFactoryOptions extends ProviderOptionInterface, GoogleMapsProviderOptionsInterface {
     provider: "google" | "googlemaps";
@@ -19,9 +22,9 @@ interface OpenCageGeocoderProviderFactoryOptions extends ProviderOptionInterface
 interface YandexGeocoderProviderFactoryOptions extends ProviderOptionInterface, YandexProviderOptionsInterface {
     provider: "yandex";
 }
-export declare type GeocoderProviderFactoryOptions = ProviderFactoryOptions | GoogleMapsGeocoderProviderFactoryOptions | MapboxGeocoderProviderFactoryOptions | NominatimGeocoderProviderFactoryOptions | OpenCageGeocoderProviderFactoryOptions | YandexGeocoderProviderFactoryOptions;
-export declare type GeocoderProvider = BingProvider | GoogleMapsProvider | MapboxProvider | MapquestProvider | NominatimProvider | OpenCageProvider | YandexProvider;
-export declare type GeocoderProviderByOptionsType<O> = O extends GoogleMapsGeocoderProviderFactoryOptions ? GoogleMapsProvider : O extends MapboxGeocoderProviderFactoryOptions ? MapboxProvider : O extends NominatimGeocoderProviderFactoryOptions ? NominatimProvider : O extends OpenCageGeocoderProviderFactoryOptions ? OpenCageProvider : O extends YandexGeocoderProviderFactoryOptions ? YandexProvider : GeocoderProvider;
+export declare type GeocoderProviderFactoryOptions = ProviderFactoryOptions | ChainGeocoderProviderFactoryOptions | GoogleMapsGeocoderProviderFactoryOptions | MapboxGeocoderProviderFactoryOptions | NominatimGeocoderProviderFactoryOptions | OpenCageGeocoderProviderFactoryOptions | YandexGeocoderProviderFactoryOptions;
+export declare type GeocoderProvider = BingProvider | ChainProvider | GoogleMapsProvider | MapboxProvider | MapquestProvider | NominatimProvider | OpenCageProvider | YandexProvider;
+export declare type GeocoderProviderByOptionsType<O> = O extends ChainGeocoderProviderFactoryOptions ? ChainProvider : O extends GoogleMapsGeocoderProviderFactoryOptions ? GoogleMapsProvider : O extends MapboxGeocoderProviderFactoryOptions ? MapboxProvider : O extends NominatimGeocoderProviderFactoryOptions ? NominatimProvider : O extends OpenCageGeocoderProviderFactoryOptions ? OpenCageProvider : O extends YandexGeocoderProviderFactoryOptions ? YandexProvider : GeocoderProvider;
 export default class ProviderFactory {
     /**
      * Creates Geocoder Provider instances.

@@ -1,5 +1,10 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalLoader";
 import {
+  ExternalLoaderHeaders,
+  ExternalLoaderInterface,
+  ExternalLoaderParams,
+} from "ExternalLoader";
+import {
+  ErrorCallback,
   GeocodedResultsCallback,
   GoogleMapsGeocoded,
   GoogleMapsGeocodeQuery,
@@ -12,6 +17,7 @@ import {
   defaultProviderOptions,
 } from "provider";
 import AdminLevel from "AdminLevel";
+import { ResponseError } from "error";
 import {
   decodeBase64,
   decodeUrlSafeBase64,
@@ -96,7 +102,7 @@ type GoogleMapsPlaceType =
   | "transit_station"
   | "ward";
 
-interface GoogleMapsResponse {
+export interface GoogleMapsResponse {
   results: GoogleMapsResult[];
   status:
     | "OK"
@@ -197,7 +203,8 @@ export default class GoogleMapsProvider implements ProviderInterface {
 
   public geocode(
     query: string | GoogleMapsGeocodeQuery | GoogleMapsGeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
       query,
@@ -233,7 +240,7 @@ export default class GoogleMapsProvider implements ProviderInterface {
       <GoogleMapsGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback);
+    this.executeRequest(params, callback, {}, errorCallback);
   }
 
   public geodecode(
@@ -243,7 +250,8 @@ export default class GoogleMapsProvider implements ProviderInterface {
       | GoogleMapsReverseQuery
       | GoogleMapsReverseQueryObject,
     longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -252,7 +260,12 @@ export default class GoogleMapsProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -276,7 +289,7 @@ export default class GoogleMapsProvider implements ProviderInterface {
       <GoogleMapsReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback);
+    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
   }
 
   private withCommonParams(
@@ -317,48 +330,59 @@ export default class GoogleMapsProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders,
+    errorCallback?: ErrorCallback
   ): void {
     const { limit, ...externalLoaderParams } = params;
 
     this.externalLoader.executeRequest(
       externalLoaderParams,
       (data: GoogleMapsResponse) => {
-        let errorMessage;
+        let errorMessage: undefined | string;
         switch (data.status) {
           case "REQUEST_DENIED":
             errorMessage = "Request has been denied";
             if (data.error_message) {
               errorMessage += `: ${data.error_message}`;
             }
-            throw new Error(errorMessage);
+            break;
           case "OVER_QUERY_LIMIT":
             errorMessage =
               "Exceeded daily quota when attempting geocoding request";
             if (data.error_message) {
               errorMessage += `: ${data.error_message}`;
             }
-            throw new Error(errorMessage);
+            break;
           case "OVER_DAILY_LIMIT":
             errorMessage = "API usage has been limited";
             if (data.error_message) {
               errorMessage += `: ${data.error_message}`;
             }
-            throw new Error(errorMessage);
+            break;
           case "INVALID_REQUEST":
             errorMessage = "The request is invalid";
             if (data.error_message) {
               errorMessage += `: ${data.error_message}`;
             }
-            throw new Error(errorMessage);
+            break;
           case "UNKNOWN_ERROR":
             errorMessage = "Unknown error";
             if (data.error_message) {
               errorMessage += `: ${data.error_message}`;
             }
-            throw new Error(errorMessage);
+            break;
           default:
           // Intentionnaly left empty
+        }
+        if (errorMessage && errorCallback) {
+          errorCallback(new ResponseError(errorMessage, data));
+          return;
+        }
+        if (errorMessage) {
+          setTimeout(() => {
+            throw new Error(errorMessage);
+          });
         }
 
         const { results } = data;
@@ -373,7 +397,9 @@ export default class GoogleMapsProvider implements ProviderInterface {
             GoogleMapsProvider.mapToGeocoded(result)
           )
         );
-      }
+      },
+      headers,
+      errorCallback
     );
   }
 

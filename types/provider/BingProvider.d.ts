@@ -1,5 +1,5 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "../ExternalLoader";
-import { GeocodedResultsCallback, ProviderInterface, ProviderOptionsInterface } from "./";
+import { ExternalLoaderHeaders, ExternalLoaderInterface, ExternalLoaderParams } from "../ExternalLoader";
+import { ErrorCallback, GeocodedResultsCallback, ProviderInterface, ProviderOptionsInterface } from "./";
 import Geocoded from "../Geocoded";
 import { GeocodeQuery, GeocodeQueryObject, ReverseQuery, ReverseQueryObject } from "../query";
 import { Box } from "../types";
@@ -34,9 +34,9 @@ export default class BingProvider implements ProviderInterface {
     private externalLoader;
     private options;
     constructor(_externalLoader: ExternalLoaderInterface, options?: ProviderOptionsInterface);
-    geocode(query: string | GeocodeQuery | GeocodeQueryObject, callback: GeocodedResultsCallback): void;
-    geodecode(latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callback?: GeocodedResultsCallback): void;
-    executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback): void;
+    geocode(query: string | GeocodeQuery | GeocodeQueryObject, callback: GeocodedResultsCallback, errorCallback?: ErrorCallback): void;
+    geodecode(latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback, errorCallback?: ErrorCallback): void;
+    executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback, headers?: ExternalLoaderHeaders, errorCallback?: ErrorCallback): void;
     static mapToGeocoded(result: BingResult): Geocoded;
 }
 //# sourceMappingURL=BingProvider.d.ts.map

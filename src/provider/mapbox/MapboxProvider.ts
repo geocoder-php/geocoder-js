@@ -1,5 +1,10 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalLoader";
 import {
+  ExternalLoaderHeaders,
+  ExternalLoaderInterface,
+  ExternalLoaderParams,
+} from "ExternalLoader";
+import {
+  ErrorCallback,
   GeocodedResultsCallback,
   MapboxGeocoded,
   MapboxGeocodeQuery,
@@ -27,7 +32,7 @@ interface MapboxRequestParams {
   readonly types?: string;
 }
 
-interface MapboxResponse {
+export interface MapboxResponse {
   type: "FeatureCollection";
   query: string[];
   features: MapboxResult[];
@@ -131,7 +136,8 @@ export default class MapboxProvider implements ProviderInterface {
 
   public geocode(
     query: string | MapboxGeocodeQuery | MapboxGeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
       query,
@@ -167,7 +173,7 @@ export default class MapboxProvider implements ProviderInterface {
       <MapboxGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback);
+    this.executeRequest(params, callback, {}, errorCallback);
   }
 
   public geodecode(
@@ -177,7 +183,8 @@ export default class MapboxProvider implements ProviderInterface {
       | MapboxReverseQuery
       | MapboxReverseQueryObject,
     longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -186,7 +193,12 @@ export default class MapboxProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -209,7 +221,7 @@ export default class MapboxProvider implements ProviderInterface {
       <MapboxReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback);
+    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
   }
 
   private withCommonParams(
@@ -232,15 +244,22 @@ export default class MapboxProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback
+    callback: GeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders,
+    errorCallback?: ErrorCallback
   ): void {
-    this.externalLoader.executeRequest(params, (data: MapboxResponse) => {
-      callback(
-        data.features.map((result: MapboxResult) =>
-          MapboxProvider.mapToGeocoded(result)
-        )
-      );
-    });
+    this.externalLoader.executeRequest(
+      params,
+      (data: MapboxResponse) => {
+        callback(
+          data.features.map((result: MapboxResult) =>
+            MapboxProvider.mapToGeocoded(result)
+          )
+        );
+      },
+      headers,
+      errorCallback
+    );
   }
 
   public static mapToGeocoded(result: MapboxResult): MapboxGeocoded {

@@ -1,5 +1,9 @@
 import { ExternalLoaderHeaders, ExternalLoaderInterface, ExternalLoaderParams } from "../../ExternalLoader";
-import { GeocodedResultsCallback, NominatimGeocoded, NominatimReverseQuery, NominatimReverseQueryObject, NominatimGeocodeQueryObject, NominatimGeocodeQuery, ProviderInterface, ProviderOptionsInterface } from "./..";
+import { ErrorCallback, GeocodedResultsCallback, NominatimGeocoded, NominatimReverseQuery, NominatimReverseQueryObject, NominatimGeocodeQueryObject, NominatimGeocodeQuery, ProviderInterface, ProviderOptionsInterface } from "./..";
+interface NominatimErrorResponse {
+    error: string;
+}
+export declare type NominatimResponse = NominatimErrorResponse | NominatimResult | NominatimResult[];
 export interface NominatimResult {
     place_id: number;
     licence: string;
@@ -47,11 +51,12 @@ export default class NominatimProvider implements ProviderInterface {
     private externalLoader;
     private options;
     constructor(_externalLoader: ExternalLoaderInterface, options?: NominatimProviderOptionsInterface);
-    geocode(query: string | NominatimGeocodeQuery | NominatimGeocodeQueryObject, callback: GeocodedResultsCallback): void;
-    geodecode(latitudeOrQuery: number | string | NominatimReverseQuery | NominatimReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callback?: GeocodedResultsCallback): void;
+    geocode(query: string | NominatimGeocodeQuery | NominatimGeocodeQueryObject, callback: GeocodedResultsCallback, errorCallback?: ErrorCallback): void;
+    geodecode(latitudeOrQuery: number | string | NominatimReverseQuery | NominatimReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback, errorCallback?: ErrorCallback): void;
     private withCommonParams;
     private getHeaders;
-    executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback, headers?: ExternalLoaderHeaders): void;
+    executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback, headers?: ExternalLoaderHeaders, errorCallback?: ErrorCallback): void;
     static mapToGeocoded(result: NominatimResult): NominatimGeocoded;
 }
+export {};
 //# sourceMappingURL=NominatimProvider.d.ts.map

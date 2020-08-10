@@ -1,4 +1,4 @@
-import { ResponseError } from "./error";
+import { ErrorCallback } from "./provider";
 export interface ExternalLoaderInterface {
     setOptions(options: ExternalLoaderOptions): void;
     getOptions(): ExternalLoaderOptions;
@@ -17,7 +17,6 @@ export interface ExternalLoaderHeaders {
     [header: string]: string | undefined;
 }
 declare type ResponseCallback = (response: any) => void;
-export declare type ErrorCallback = (responseError: ResponseError) => void;
 /**
  * Load data from external geocoding engines.
  */

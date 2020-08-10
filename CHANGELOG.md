@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0
+
+* Add special chain provider
+* Add `errorCallback` parameter to `geocode` and `geodecode`
+
 ## 0.4.0
 
 * [Google] Better Google Maps provider

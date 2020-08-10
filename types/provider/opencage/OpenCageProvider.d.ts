@@ -1,5 +1,5 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "../../ExternalLoader";
-import { GeocodedResultsCallback, OpenCageGeocoded, OpenCageGeocodeQuery, OpenCageGeocodeQueryObject, OpenCageReverseQuery, OpenCageReverseQueryObject, ProviderInterface, ProviderOptionsInterface } from "./..";
+import { ExternalLoaderHeaders, ExternalLoaderInterface, ExternalLoaderParams } from "../../ExternalLoader";
+import { ErrorCallback, GeocodedResultsCallback, OpenCageGeocoded, OpenCageGeocodeQuery, OpenCageGeocodeQueryObject, OpenCageReverseQuery, OpenCageReverseQueryObject, ProviderInterface, ProviderOptionsInterface } from "./..";
 interface OpenCageCoordinates {
     lat: number;
     lng: number;
@@ -9,6 +9,33 @@ interface OpenCageSun {
     astronomical: number;
     civil: number;
     nautical: number;
+}
+export interface OpenCageResponse {
+    documentation: string;
+    licences: {
+        name: string;
+        url: string;
+    }[];
+    rate: {
+        limit: number;
+        remaining: number;
+        reset: number;
+    };
+    results: OpenCageResult[];
+    status: {
+        code: 200 | 400 | 401 | 402 | 403 | 404 | 405 | 408 | 410 | 429 | 503;
+        message: string;
+    };
+    stay_informed: {
+        blog: string;
+        twitter: string;
+    };
+    thanks: string;
+    timestamp: {
+        created_http: string;
+        created_unix: number;
+    };
+    total_results: number;
 }
 export interface OpenCageResult {
     annotations: {
@@ -147,10 +174,10 @@ export default class OpenCageProvider implements ProviderInterface {
     private externalLoader;
     private options;
     constructor(_externalLoader: ExternalLoaderInterface, options?: OpenCageProviderOptionsInterface);
-    geocode(query: string | OpenCageGeocodeQuery | OpenCageGeocodeQueryObject, callback: GeocodedResultsCallback): void;
-    geodecode(latitudeOrQuery: number | string | OpenCageReverseQuery | OpenCageReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callback?: GeocodedResultsCallback): void;
+    geocode(query: string | OpenCageGeocodeQuery | OpenCageGeocodeQueryObject, callback: GeocodedResultsCallback, errorCallback?: ErrorCallback): void;
+    geodecode(latitudeOrQuery: number | string | OpenCageReverseQuery | OpenCageReverseQueryObject, longitudeOrCallback: number | string | GeocodedResultsCallback, callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback, errorCallback?: ErrorCallback): void;
     private withCommonParams;
-    executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback): void;
+    executeRequest(params: ExternalLoaderParams, callback: GeocodedResultsCallback, headers?: ExternalLoaderHeaders, errorCallback?: ErrorCallback): void;
     static mapToGeocoded(result: OpenCageResult): OpenCageGeocoded;
 }
 export {};
