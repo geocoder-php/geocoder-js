@@ -1,4 +1,5 @@
 import {
+  ExternalLoaderBody,
   ExternalLoaderHeaders,
   ExternalLoaderInterface,
   ExternalLoaderParams,
@@ -55,7 +56,9 @@ export interface MapQuestResult {
   geocodeQualityCode: string;
 }
 
-export default class MapQuestProvider implements ProviderInterface {
+type MapQuestGeocodedResultsCallback = GeocodedResultsCallback<Geocoded>;
+
+export default class MapQuestProvider implements ProviderInterface<Geocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: ProviderOptionsInterface;
@@ -75,7 +78,7 @@ export default class MapQuestProvider implements ProviderInterface {
 
   public geocode(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: MapQuestGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
@@ -88,17 +91,17 @@ export default class MapQuestProvider implements ProviderInterface {
 
     const params: MapQuestRequestParams = {
       key: this.options.apiKey,
-      location: encodeURIComponent(geocodeQuery.getText()),
+      location: geocodeQuery.getText(),
       jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
-    this.executeRequest(params, callback, {}, errorCallback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | MapQuestGeocodedResultsCallback,
+    callbackOrErrorCallback?: MapQuestGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
@@ -129,13 +132,14 @@ export default class MapQuestProvider implements ProviderInterface {
       jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
-    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
+    callback: MapQuestGeocodedResultsCallback,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
@@ -148,6 +152,7 @@ export default class MapQuestProvider implements ProviderInterface {
         );
       },
       headers,
+      body,
       errorCallback
     );
   }

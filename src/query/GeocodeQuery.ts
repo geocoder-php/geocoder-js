@@ -1,8 +1,5 @@
 import { DEFAULT_RESULT_LIMIT } from "provider";
-import { PartialSome } from "types";
 import { Bounds } from "index";
-
-type GeocodeQueryObjectCreate = PartialSome<GeocodeQueryObject, "limit">;
 
 export interface GeocodeQueryObject {
   readonly text: string;
@@ -37,7 +34,7 @@ export default class GeocodeQuery {
     east,
     locale,
     limit = DEFAULT_RESULT_LIMIT,
-  }: GeocodeQueryObjectCreate) {
+  }: GeocodeQueryObject) {
     this.text = text;
     this.south = south;
     this.west = west;
@@ -47,7 +44,7 @@ export default class GeocodeQuery {
     this.limit = limit;
   }
 
-  public static create(object: GeocodeQueryObjectCreate): GeocodeQuery {
+  public static create(object: GeocodeQueryObject): GeocodeQuery {
     return new this(object);
   }
 

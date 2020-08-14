@@ -1,4 +1,5 @@
 import {
+  ExternalLoaderBody,
   ExternalLoaderHeaders,
   ExternalLoaderInterface,
   ExternalLoaderParams,
@@ -54,7 +55,9 @@ export interface BingResult {
   matchCodes: string[];
 }
 
-export default class BingProvider implements ProviderInterface {
+type BingGeocodedResultsCallback = GeocodedResultsCallback<Geocoded>;
+
+export default class BingProvider implements ProviderInterface<Geocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: ProviderOptionsInterface;
@@ -74,7 +77,7 @@ export default class BingProvider implements ProviderInterface {
 
   public geocode(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: BingGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
@@ -90,13 +93,13 @@ export default class BingProvider implements ProviderInterface {
       jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
 
-    this.executeRequest(params, callback, {}, errorCallback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | BingGeocodedResultsCallback,
+    callbackOrErrorCallback?: BingGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
@@ -126,13 +129,14 @@ export default class BingProvider implements ProviderInterface {
       jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
 
-    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
+    callback: BingGeocodedResultsCallback,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
@@ -145,6 +149,7 @@ export default class BingProvider implements ProviderInterface {
         );
       },
       headers,
+      body,
       errorCallback
     );
   }

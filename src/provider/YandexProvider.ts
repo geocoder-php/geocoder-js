@@ -1,4 +1,5 @@
 import {
+  ExternalLoaderBody,
   ExternalLoaderHeaders,
   ExternalLoaderInterface,
   ExternalLoaderParams,
@@ -91,7 +92,9 @@ export interface YandexProviderOptionsInterface
   readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
 }
 
-export default class YandexProvider implements ProviderInterface {
+type YandexGeocodedResultsCallback = GeocodedResultsCallback<Geocoded>;
+
+export default class YandexProvider implements ProviderInterface<Geocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: YandexProviderOptionsInterface;
@@ -106,7 +109,7 @@ export default class YandexProvider implements ProviderInterface {
 
   public geocode(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: YandexGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
@@ -125,13 +128,13 @@ export default class YandexProvider implements ProviderInterface {
       jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
-    this.executeRequest(params, callback, {}, errorCallback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | YandexGeocodedResultsCallback,
+    callbackOrErrorCallback?: YandexGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
@@ -165,13 +168,14 @@ export default class YandexProvider implements ProviderInterface {
       jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
-    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
+    callback: YandexGeocodedResultsCallback,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
@@ -185,6 +189,7 @@ export default class YandexProvider implements ProviderInterface {
         );
       },
       headers,
+      body,
       errorCallback
     );
   }

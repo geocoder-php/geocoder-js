@@ -1,4 +1,5 @@
 import {
+  ExternalLoaderBody,
   ExternalLoaderHeaders,
   ExternalLoaderInterface,
   ExternalLoaderParams,
@@ -116,7 +117,10 @@ export const defaultMapboxProviderOptions = {
   geocodingMode: MAPBOX_GEOCODING_MODES.GEOCODING_MODE_PLACES,
 };
 
-export default class MapboxProvider implements ProviderInterface {
+type MapboxGeocodedResultsCallback = GeocodedResultsCallback<MapboxGeocoded>;
+
+export default class MapboxProvider
+  implements ProviderInterface<MapboxGeocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: MapboxProviderOptionsInterface;
@@ -136,7 +140,7 @@ export default class MapboxProvider implements ProviderInterface {
 
   public geocode(
     query: string | MapboxGeocodeQuery | MapboxGeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: MapboxGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
@@ -173,7 +177,7 @@ export default class MapboxProvider implements ProviderInterface {
       <MapboxGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback, {}, errorCallback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
@@ -182,8 +186,8 @@ export default class MapboxProvider implements ProviderInterface {
       | string
       | MapboxReverseQuery
       | MapboxReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | MapboxGeocodedResultsCallback,
+    callbackOrErrorCallback?: MapboxGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
@@ -221,7 +225,7 @@ export default class MapboxProvider implements ProviderInterface {
       <MapboxReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   private withCommonParams(
@@ -244,8 +248,9 @@ export default class MapboxProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
+    callback: MapboxGeocodedResultsCallback,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
@@ -258,6 +263,7 @@ export default class MapboxProvider implements ProviderInterface {
         );
       },
       headers,
+      body,
       errorCallback
     );
   }

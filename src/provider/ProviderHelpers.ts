@@ -1,4 +1,5 @@
 import { ErrorCallback, GeocodedResultsCallback } from "provider";
+import Geocoded from "Geocoded";
 import {
   GeocodeQuery,
   GeocodeQueryObject,
@@ -21,9 +22,9 @@ export default class ProviderHelpers {
     return query;
   }
 
-  public static getReverseQueryFromParameters(
+  public static getReverseQueryFromParameters<G extends Geocoded>(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
+    longitudeOrCallback: number | string | GeocodedResultsCallback<G>,
     reverseQuery = ReverseQuery
   ): ReverseQuery {
     if (
@@ -52,10 +53,10 @@ export default class ProviderHelpers {
     return latitudeOrQuery;
   }
 
-  public static getCallbackFromParameters(
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback
-  ): GeocodedResultsCallback {
+  public static getCallbackFromParameters<G extends Geocoded>(
+    longitudeOrCallback: number | string | GeocodedResultsCallback<G>,
+    callbackOrErrorCallback?: GeocodedResultsCallback<G> | ErrorCallback
+  ): GeocodedResultsCallback<G> {
     if (
       !(
         typeof longitudeOrCallback === "number" ||
@@ -65,7 +66,7 @@ export default class ProviderHelpers {
       return longitudeOrCallback;
     }
     if (callbackOrErrorCallback) {
-      return <GeocodedResultsCallback>callbackOrErrorCallback;
+      return <GeocodedResultsCallback<G>>callbackOrErrorCallback;
     }
 
     throw new Error(
@@ -73,9 +74,9 @@ export default class ProviderHelpers {
     );
   }
 
-  public static getErrorCallbackFromParameters(
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+  public static getErrorCallbackFromParameters<G extends Geocoded>(
+    longitudeOrCallback: number | string | GeocodedResultsCallback<G>,
+    callbackOrErrorCallback?: GeocodedResultsCallback<G> | ErrorCallback,
     errorCallback?: ErrorCallback
   ): undefined | ErrorCallback {
     if (errorCallback) {

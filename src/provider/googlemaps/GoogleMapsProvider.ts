@@ -1,4 +1,5 @@
 import {
+  ExternalLoaderBody,
   ExternalLoaderHeaders,
   ExternalLoaderInterface,
   ExternalLoaderParams,
@@ -168,7 +169,12 @@ export interface GoogleMapsProviderOptionsInterface
   readonly countryCodes?: string[];
 }
 
-export default class GoogleMapsProvider implements ProviderInterface {
+type GoogleMapsGeocodedResultsCallback = GeocodedResultsCallback<
+  GoogleMapsGeocoded
+>;
+
+export default class GoogleMapsProvider
+  implements ProviderInterface<GoogleMapsGeocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: GoogleMapsProviderOptionsInterface;
@@ -203,7 +209,7 @@ export default class GoogleMapsProvider implements ProviderInterface {
 
   public geocode(
     query: string | GoogleMapsGeocodeQuery | GoogleMapsGeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: GoogleMapsGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
@@ -240,7 +246,7 @@ export default class GoogleMapsProvider implements ProviderInterface {
       <GoogleMapsGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback, {}, errorCallback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
@@ -249,8 +255,8 @@ export default class GoogleMapsProvider implements ProviderInterface {
       | string
       | GoogleMapsReverseQuery
       | GoogleMapsReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | GoogleMapsGeocodedResultsCallback,
+    callbackOrErrorCallback?: GoogleMapsGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
@@ -289,7 +295,7 @@ export default class GoogleMapsProvider implements ProviderInterface {
       <GoogleMapsReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   private withCommonParams(
@@ -330,8 +336,9 @@ export default class GoogleMapsProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
+    callback: GoogleMapsGeocodedResultsCallback,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void {
     const { limit, ...externalLoaderParams } = params;
@@ -383,6 +390,7 @@ export default class GoogleMapsProvider implements ProviderInterface {
           setTimeout(() => {
             throw new Error(errorMessage);
           });
+          return;
         }
 
         const { results } = data;
@@ -399,6 +407,7 @@ export default class GoogleMapsProvider implements ProviderInterface {
         );
       },
       headers,
+      body,
       errorCallback
     );
   }

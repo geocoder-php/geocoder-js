@@ -1,99 +1,36 @@
-import {
-  GoogleMapsGeocoded,
-  GoogleMapsProvider,
-  GoogleMapsResult,
-} from "provider";
+import UniversalGeocoder from "UniversalGeocoder";
+import { GoogleMapsGeocoded, GoogleMapsProvider } from "provider";
 import ExternalLoader from "ExternalLoader";
 import AdminLevel from "AdminLevel";
+import setupPolly, { cleanRecording } from "../setupPolly";
 
-describe("Google Maps Geocoder Provider raw result to Geocoded mapping", () => {
-  let geocoded: GoogleMapsGeocoded;
-
-  const stubGoogleMapsResult: GoogleMapsResult[] = [
-    {
-      address_components: [
-        {
-          long_name: "1600",
-          short_name: "1600",
-          types: ["street_number"],
-        },
-        {
-          long_name: "Pennsylvania Avenue Northwest",
-          short_name: "Pennsylvania Avenue NW",
-          types: ["route"],
-        },
-        {
-          long_name: "Northwest Washington",
-          short_name: "Northwest Washington",
-          types: ["neighborhood", "political"],
-        },
-        {
-          long_name: "Washington",
-          short_name: "Washington",
-          types: ["locality", "political"],
-        },
-        {
-          long_name: "District of Columbia",
-          short_name: "DC",
-          types: ["administrative_area_level_1", "political"],
-        },
-        {
-          long_name: "United States",
-          short_name: "US",
-          types: ["country", "political"],
-        },
-        {
-          long_name: "20500",
-          short_name: "20500",
-          types: ["postal_code"],
-        },
-      ],
-      formatted_address:
-        "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA",
-      geometry: {
-        bounds: {
-          northeast: {
-            lat: 38.8979044,
-            lng: -77.0355124,
-          },
-          southwest: {
-            lat: 38.8973063,
-            lng: -77.03795749999999,
-          },
-        },
-        location: {
-          lat: 38.8976633,
-          lng: -77.03657389999999,
-        },
-        location_type: "ROOFTOP",
-        viewport: {
-          northeast: {
-            lat: 38.8989543302915,
-            lng: -77.03538596970849,
-          },
-          southwest: {
-            lat: 38.8962563697085,
-            lng: -77.03808393029151,
-          },
-        },
-      },
-      place_id: "ChIJGVtI4by3t4kRr51d_Qm_x58",
-      types: ["establishment", "point_of_interest", "premise"],
-    },
-  ];
+describe("Google Maps Geocoder Provider", () => {
+  const pollyContext = setupPolly();
 
   beforeEach(() => {
-    geocoded = GoogleMapsProvider.mapToGeocoded(stubGoogleMapsResult[0]);
+    cleanRecording(pollyContext);
   });
 
-  it("receives results from the Google Maps geocoder", () => {
-    expect(geocoded).toBeDefined();
+  afterEach(async () => {
+    await pollyContext.polly.flush();
   });
 
   it("expects API Key or client ID to be required on initiation", () => {
     expect(() => new GoogleMapsProvider(new ExternalLoader())).toThrowError(
       Error,
       'An API key or a client ID is required for the Google Maps provider. Please add it in the "apiKey" or the "clientId" option.'
+    );
+  });
+
+  it("expects secret to be required on initiation when client ID is set", () => {
+    expect(
+      () =>
+        new GoogleMapsProvider(new ExternalLoader(), {
+          clientId: "client_id",
+        })
+    ).toThrowError(
+      Error,
+      'An URL signing secret is required if you use a client ID (Premium only). Please add it in the "secret" option.'
     );
   });
 
@@ -110,84 +47,128 @@ describe("Google Maps Geocoder Provider raw result to Geocoded mapping", () => {
     );
   });
 
-  it("maps coordinates correctly", () => {
-    expect(geocoded.getCoordinates()).toEqual([38.8976633, -77.0365739]);
+  it("receives correct geocoding results", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "googlemaps",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    provider?.geocode("1600 Pennsylvania Ave, Washington, DC", (results) => {
+      const geocoded = results[0];
+
+      expect(geocoded).toBeDefined();
+      expect(geocoded.getCoordinates()).toEqual([38.8976633, -77.0365739]);
+      expect(geocoded.getBounds()).toEqual([
+        38.8973063,
+        -77.03795749999999,
+        38.8979044,
+        -77.0355124,
+      ]);
+      expect(geocoded.getFormattedAddress()).toEqual(
+        "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA"
+      );
+      expect(geocoded.getStreetNumber()).toEqual("1600");
+      expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue Northwest");
+      expect(geocoded.getSubLocality()).toEqual(undefined);
+      expect(geocoded.getLocality()).toEqual("Washington");
+      expect(geocoded.getPostalCode()).toEqual("20500");
+      expect(geocoded.getRegion()).toEqual("District of Columbia");
+      expect(geocoded.getAdminLevels()).toEqual([
+        AdminLevel.create({
+          level: 1,
+          name: "District of Columbia",
+          code: "DC",
+        }),
+      ]);
+      expect(geocoded.getCountry()).toEqual("United States");
+      expect(geocoded.getCountryCode()).toEqual("US");
+      expect(geocoded.getPlaceId()).toEqual("ChIJGVtI4by3t4kRr51d_Qm_x58");
+      expect(geocoded.getResultType()).toEqual([
+        "establishment",
+        "point_of_interest",
+        "premise",
+      ]);
+      expect(geocoded.getLocationType()).toEqual("ROOFTOP");
+      expect(geocoded.getPolitical()).toEqual("United States");
+      expect(geocoded.getNeighborhood()).toEqual("Northwest Washington");
+
+      done();
+    });
   });
 
-  it("maps bounds correctly", () => {
-    expect(geocoded.getBounds()).toEqual([
-      38.8973063,
-      -77.03795749999999,
-      38.8979044,
-      -77.0355124,
-    ]);
-  });
+  it("receives correct geodecoding results", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "googlemaps",
+      useSsl: true,
+      apiKey: "api_key",
+    });
 
-  it("maps formatted address correctly", () => {
-    expect(geocoded.getFormattedAddress()).toEqual(
-      "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA"
+    provider?.geodecode(
+      48.8631507,
+      2.388911,
+      (results: GoogleMapsGeocoded[]) => {
+        const geocoded = results[0];
+
+        expect(geocoded).toBeDefined();
+        expect(geocoded.getCoordinates()).toEqual([48.8631361, 2.3889219]);
+        expect(geocoded.getBounds()).toEqual([
+          48.8617871197085,
+          2.387572919708498,
+          48.8644850802915,
+          2.390270880291502,
+        ]);
+        expect(geocoded.getFormattedAddress()).toEqual(
+          "12 Avenue Gambetta, 75020 Paris, France"
+        );
+        expect(geocoded.getStreetNumber()).toEqual("12");
+        expect(geocoded.getStreetName()).toEqual("Avenue Gambetta");
+        expect(geocoded.getSubLocality()).toEqual(undefined);
+        expect(geocoded.getLocality()).toEqual("Paris");
+        expect(geocoded.getPostalCode()).toEqual("75020");
+        expect(geocoded.getRegion()).toEqual("Île-de-France");
+        expect(geocoded.getAdminLevels()).toEqual([
+          AdminLevel.create({
+            level: 2,
+            name: "Arrondissement de Paris",
+            code: "Arrondissement de Paris",
+          }),
+          AdminLevel.create({
+            level: 1,
+            name: "Île-de-France",
+            code: "IDF",
+          }),
+        ]);
+        expect(geocoded.getCountry()).toEqual("France");
+        expect(geocoded.getCountryCode()).toEqual("FR");
+        expect(geocoded.getPlaceId()).toEqual("ChIJ9aLL3vJt5kcR61GCze3v6fg");
+        expect(geocoded.getResultType()).toEqual(["street_address"]);
+        expect(geocoded.getLocationType()).toEqual("ROOFTOP");
+        expect(geocoded.getPolitical()).toEqual("France");
+
+        done();
+      }
     );
   });
 
-  it("maps street number correctly", () => {
-    expect(geocoded.getStreetNumber()).toEqual("1600");
-  });
+  it("receives error when the API key is bad", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "googlemaps",
+      useSsl: true,
+      apiKey: "api_key",
+    });
 
-  it("maps street name correctly", () => {
-    expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue Northwest");
-  });
-
-  it("maps sublocality correctly", () => {
-    expect(geocoded.getSubLocality()).toEqual(undefined);
-  });
-
-  it("maps locality correctly", () => {
-    expect(geocoded.getLocality()).toEqual("Washington");
-  });
-
-  it("maps postal code correctly", () => {
-    expect(geocoded.getPostalCode()).toEqual("20500");
-  });
-
-  it("maps region correctly", () => {
-    expect(geocoded.getRegion()).toEqual("District of Columbia");
-  });
-
-  it("maps admin levels correctly", () => {
-    expect(geocoded.getAdminLevels()).toEqual([
-      AdminLevel.create({ level: 1, name: "District of Columbia", code: "DC" }),
-    ]);
-  });
-
-  it("maps country correctly", () => {
-    expect(geocoded.getCountry()).toEqual("United States");
-  });
-
-  it("maps country code correctly", () => {
-    expect(geocoded.getCountryCode()).toEqual("US");
-  });
-
-  it("maps place ID correctly", () => {
-    expect(geocoded.getPlaceId()).toEqual("ChIJGVtI4by3t4kRr51d_Qm_x58");
-  });
-
-  it("maps result type correctly", () => {
-    expect(geocoded.getResultType()).toEqual([
-      "establishment",
-      "point_of_interest",
-      "premise",
-    ]);
-  });
-
-  it("maps location type correctly", () => {
-    expect(geocoded.getLocationType()).toEqual("ROOFTOP");
-  });
-
-  it("maps political correctly", () => {
-    expect(geocoded.getPolitical()).toEqual("United States");
-  });
-
-  it("maps neighborhood correctly", () => {
-    expect(geocoded.getNeighborhood()).toEqual("Northwest Washington");
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      () => {
+        done();
+      },
+      (error) => {
+        expect(error.message).toEqual(
+          "Request has been denied: The provided API key is invalid."
+        );
+        done();
+      }
+    );
   });
 });

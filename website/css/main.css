@@ -46,6 +46,9 @@ code {
 img[alt="CI"] {
     display: none;
 }
+img[alt="codecov"] {
+    display: none;
+}
 
 #content img {
     max-width: 100%;

@@ -1,57 +1,18 @@
-import { BingProvider, BingResult } from "provider";
+import UniversalGeocoder from "UniversalGeocoder";
+import { BingProvider } from "provider";
 import ExternalLoader from "ExternalLoader";
 import Geocoded from "Geocoded";
+import setupPolly, { cleanRecording } from "../setupPolly";
 
-describe("Bing Geocoder Provider raw result to Geocoded mapping", () => {
-  let geocoded: Geocoded;
-
-  const stubBingResult: BingResult = {
-    __type: "Location:http://schemas.microsoft.com/search/local/ws/rest/v1",
-    bbox: [
-      47.636186665473566,
-      -122.13744013372656,
-      47.64391210061492,
-      -122.12215365108256,
-    ],
-    name: "1 Microsoft Way, Redmond, WA 98052",
-    point: {
-      type: "Point",
-      coordinates: [47.64004938304424, -122.12979689240456],
-    },
-    address: {
-      addressLine: "1 Microsoft Way",
-      adminDistrict: "WA",
-      adminDistrict2: "King Co.",
-      countryRegion: "United States",
-      formattedAddress: "1 Microsoft Way, Redmond, WA 98052",
-      locality: "Redmond",
-      postalCode: "98052",
-    },
-    confidence: "High",
-    entityType: "Address",
-    geocodePoints: [
-      {
-        type: "Point",
-        coordinates: [47.64004938304424, -122.12979689240456],
-        calculationMethod: "InterpolationOffset",
-        usageTypes: ["Display"],
-      },
-      {
-        type: "Point",
-        coordinates: [47.64006815850735, -122.12985791265965],
-        calculationMethod: "Interpolation",
-        usageTypes: ["Route"],
-      },
-    ],
-    matchCodes: ["Good"],
-  };
+describe("Bing Geocoder Provider", () => {
+  const pollyContext = setupPolly();
 
   beforeEach(() => {
-    geocoded = BingProvider.mapToGeocoded(stubBingResult);
+    cleanRecording(pollyContext);
   });
 
-  it("receives results from the Bing geocoder", () => {
-    expect(geocoded).toBeDefined();
+  afterEach(async () => {
+    await pollyContext.polly.flush();
   });
 
   it("expects API Key to be required on initiation", () => {
@@ -61,45 +22,97 @@ describe("Bing Geocoder Provider raw result to Geocoded mapping", () => {
     );
   });
 
-  it("maps coordinates correctly", () => {
-    expect(geocoded.getCoordinates()).toEqual([
-      47.64004938304424,
-      -122.12979689240456,
-    ]);
-  });
+  it("receives correct geocoding results", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "bing",
+      useSsl: true,
+      apiKey: "api_key",
+    });
 
-  it("maps bounds correctly", () => {
-    expect(geocoded.getBounds()).toEqual([
-      47.636186665473566,
-      -122.13744013372656,
-      47.64391210061492,
-      -122.12215365108256,
-    ]);
-  });
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      (results: Geocoded[]) => {
+        const geocoded = results[0];
 
-  it("maps formatted address correctly", () => {
-    expect(geocoded.getFormattedAddress()).toEqual(
-      "1 Microsoft Way, Redmond, WA 98052"
+        expect(geocoded).toBeDefined();
+        expect(geocoded.getCoordinates()).toEqual([38.897668, -77.036556]);
+        expect(geocoded.getBounds()).toEqual([
+          38.89380528242933,
+          -77.04317326462667,
+          38.90153071757068,
+          -77.02993873537334,
+        ]);
+        expect(geocoded.getFormattedAddress()).toEqual(
+          "1600 Pennsylvania Ave NW, Washington, DC 20006"
+        );
+        expect(geocoded.getStreetNumber()).toEqual(undefined);
+        expect(geocoded.getStreetName()).toEqual("1600 Pennsylvania Ave NW");
+        expect(geocoded.getSubLocality()).toEqual(undefined);
+        expect(geocoded.getLocality()).toEqual("Washington");
+        expect(geocoded.getPostalCode()).toEqual("20006");
+        expect(geocoded.getRegion()).toEqual("DC");
+        expect(geocoded.getAdminLevels()).toEqual([]);
+        expect(geocoded.getCountry()).toEqual("United States");
+        expect(geocoded.getCountryCode()).toEqual(undefined);
+
+        done();
+      }
     );
   });
 
-  it("maps street name correctly", () => {
-    expect(geocoded.getStreetName()).toEqual("1 Microsoft Way");
+  it("receives correct geodecoding results", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "bing",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    provider?.geodecode(48.8631507, 2.388911, (results: Geocoded[]) => {
+      const geocoded = results[0];
+
+      expect(geocoded).toBeDefined();
+      expect(geocoded.getCoordinates()).toEqual([48.8631093, 2.3887809]);
+      expect(geocoded.getBounds()).toEqual([
+        48.85924658242932,
+        2.380952653445271,
+        48.866972017570674,
+        2.396609146554729,
+      ]);
+      expect(geocoded.getFormattedAddress()).toEqual(
+        "8 Avenue Gambetta, 75020 Paris"
+      );
+      expect(geocoded.getStreetNumber()).toEqual(undefined);
+      expect(geocoded.getStreetName()).toEqual("8 Avenue Gambetta");
+      expect(geocoded.getSubLocality()).toEqual(undefined);
+      expect(geocoded.getLocality()).toEqual("Paris");
+      expect(geocoded.getPostalCode()).toEqual("75020");
+      expect(geocoded.getRegion()).toEqual("Île-de-France");
+      expect(geocoded.getAdminLevels()).toEqual([]);
+      expect(geocoded.getCountry()).toEqual("France");
+      expect(geocoded.getCountryCode()).toEqual(undefined);
+
+      done();
+    });
   });
 
-  it("maps locality correctly", () => {
-    expect(geocoded.getLocality()).toEqual("Redmond");
-  });
+  it("receives error when the API key is bad", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "bing",
+      useSsl: true,
+      apiKey: "api_key",
+    });
 
-  it("maps postal code correctly", () => {
-    expect(geocoded.getPostalCode()).toEqual("98052");
-  });
-
-  it("maps region correctly", () => {
-    expect(geocoded.getRegion()).toEqual("WA");
-  });
-
-  it("maps country correctly", () => {
-    expect(geocoded.getCountry()).toEqual("United States");
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      () => {
+        done();
+      },
+      (error) => {
+        expect(error.message).toEqual(
+          "Received HTTP status code 401 when attempting geocoding request."
+        );
+        done();
+      }
+    );
   });
 });

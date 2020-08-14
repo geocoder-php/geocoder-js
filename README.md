@@ -4,6 +4,7 @@ Universal Geocoder
 ==================
 
 [![CI](https://github.com/universal-geocoder/universal-geocoder-js/workflows/Continuous%20Integration/badge.svg?branch=main&event=push)](https://github.com/universal-geocoder/universal-geocoder-js/actions)
+[![codecov](https://codecov.io/gh/universal-geocoder/universal-geocoder-js/branch/main/graph/badge.svg)](https://codecov.io/gh/universal-geocoder/universal-geocoder-js)
 
 Universal Geocoder is a universal JavaScript library for client-side geocoding applications with multiple built-in providers.
 
@@ -245,10 +246,16 @@ npm run build
 Testing
 -------
 
-Unit tests are handled by Jasmine. To run unit tests from the command line, use:
+Unit and functional tests are handled by Jasmine. To run tests from the command line, use:
 
 ```shell
 npm test
+```
+
+If you need to record new API calls, use:
+
+```shell
+npm run test-record
 ```
 
 You can also check if the examples are running correctly.

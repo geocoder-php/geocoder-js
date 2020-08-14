@@ -1,4 +1,5 @@
 import {
+  ExternalLoaderBody,
   ExternalLoaderHeaders,
   ExternalLoaderInterface,
   ExternalLoaderParams,
@@ -98,7 +99,12 @@ export const defaultNominatimProviderOptions = {
   userAgent: "",
 };
 
-export default class NominatimProvider implements ProviderInterface {
+type NominatimGeocodedResultsCallback = GeocodedResultsCallback<
+  NominatimGeocoded
+>;
+
+export default class NominatimProvider
+  implements ProviderInterface<NominatimGeocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: NominatimProviderOptionsInterface;
@@ -121,7 +127,7 @@ export default class NominatimProvider implements ProviderInterface {
 
   public geocode(
     query: string | NominatimGeocodeQuery | NominatimGeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: NominatimGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
@@ -159,7 +165,7 @@ export default class NominatimProvider implements ProviderInterface {
       <NominatimGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback, this.getHeaders(), errorCallback);
+    this.executeRequest(params, callback, this.getHeaders(), {}, errorCallback);
   }
 
   public geodecode(
@@ -168,8 +174,8 @@ export default class NominatimProvider implements ProviderInterface {
       | string
       | NominatimReverseQuery
       | NominatimReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | NominatimGeocodedResultsCallback,
+    callbackOrErrorCallback?: NominatimGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
@@ -207,6 +213,7 @@ export default class NominatimProvider implements ProviderInterface {
       params,
       reverseCallback,
       this.getHeaders(),
+      {},
       reverseErrorCallback
     );
   }
@@ -233,8 +240,9 @@ export default class NominatimProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
+    callback: NominatimGeocodedResultsCallback,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
@@ -253,6 +261,7 @@ export default class NominatimProvider implements ProviderInterface {
             setTimeout(() => {
               throw new Error(errorMessage);
             });
+            return;
           }
           results = [<NominatimResult>data];
         }
@@ -263,6 +272,7 @@ export default class NominatimProvider implements ProviderInterface {
         );
       },
       headers,
+      body,
       errorCallback
     );
   }

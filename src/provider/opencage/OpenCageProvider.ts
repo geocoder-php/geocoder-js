@@ -1,4 +1,5 @@
 import {
+  ExternalLoaderBody,
   ExternalLoaderHeaders,
   ExternalLoaderInterface,
   ExternalLoaderParams,
@@ -277,7 +278,12 @@ export const defaultOpenCageProviderOptions = {
   apiKey: "",
 };
 
-export default class OpenCageProvider implements ProviderInterface {
+type OpenCageGeocodedResultsCallback = GeocodedResultsCallback<
+  OpenCageGeocoded
+>;
+
+export default class OpenCageProvider
+  implements ProviderInterface<OpenCageGeocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: OpenCageProviderOptionsInterface;
@@ -297,7 +303,7 @@ export default class OpenCageProvider implements ProviderInterface {
 
   public geocode(
     query: string | OpenCageGeocodeQuery | OpenCageGeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: OpenCageGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
@@ -330,7 +336,7 @@ export default class OpenCageProvider implements ProviderInterface {
       <OpenCageGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback, {}, errorCallback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
@@ -339,8 +345,8 @@ export default class OpenCageProvider implements ProviderInterface {
       | string
       | OpenCageReverseQuery
       | OpenCageReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | OpenCageGeocodedResultsCallback,
+    callbackOrErrorCallback?: OpenCageGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
@@ -373,7 +379,7 @@ export default class OpenCageProvider implements ProviderInterface {
       <OpenCageReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback, {}, reverseErrorCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   private withCommonParams(
@@ -396,8 +402,9 @@ export default class OpenCageProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
+    callback: OpenCageGeocodedResultsCallback,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
@@ -410,6 +417,7 @@ export default class OpenCageProvider implements ProviderInterface {
         );
       },
       headers,
+      body,
       (error) => {
         const response = <Response>error.getResponse();
         response.json().then((data: OpenCageResponse) => {

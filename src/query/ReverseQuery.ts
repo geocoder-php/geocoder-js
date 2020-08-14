@@ -1,14 +1,11 @@
 import { DEFAULT_RESULT_LIMIT } from "provider";
-import { PartialSome } from "types";
 import { Coordinates } from "index";
-
-type ReverseQueryObjectCreate = PartialSome<ReverseQueryObject, "limit">;
 
 export interface ReverseQueryObject {
   readonly latitude: number | string;
   readonly longitude: number | string;
   readonly locale?: string;
-  readonly limit: number;
+  readonly limit?: number;
 }
 
 export default class ReverseQuery {
@@ -25,14 +22,14 @@ export default class ReverseQuery {
     longitude,
     locale,
     limit = DEFAULT_RESULT_LIMIT,
-  }: ReverseQueryObjectCreate) {
+  }: ReverseQueryObject) {
     this.latitude = latitude;
     this.longitude = longitude;
     this.locale = locale;
     this.limit = limit;
   }
 
-  public static create(object: ReverseQueryObjectCreate): ReverseQuery {
+  public static create(object: ReverseQueryObject): ReverseQuery {
     return new this(object);
   }
 

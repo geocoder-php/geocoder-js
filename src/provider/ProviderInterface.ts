@@ -1,4 +1,8 @@
-import { ExternalLoaderHeaders, ExternalLoaderParams } from "ExternalLoader";
+import {
+  ExternalLoaderBody,
+  ExternalLoaderHeaders,
+  ExternalLoaderParams,
+} from "ExternalLoader";
 import Geocoded from "Geocoded";
 import {
   GeocodeQuery,
@@ -21,25 +25,28 @@ export interface ProviderOptionsInterface {
   readonly apiKey?: string;
 }
 
-export type GeocodedResultsCallback = (results: Geocoded[]) => void;
+export type GeocodedResultsCallback<G extends Geocoded> = (
+  results: G[]
+) => void;
 export type ErrorCallback = (responseError: ResponseError) => void;
 
-export default interface ProviderInterface {
+export default interface ProviderInterface<G extends Geocoded> {
   geocode(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: GeocodedResultsCallback<G>,
     errorCallback?: ErrorCallback
   ): void;
   geodecode(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | GeocodedResultsCallback<G>,
+    callbackOrErrorCallback?: GeocodedResultsCallback<G> | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void;
   executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
+    callback: GeocodedResultsCallback<G>,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void;
 }

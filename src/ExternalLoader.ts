@@ -2,14 +2,16 @@ import fetch from "cross-fetch";
 import { ErrorCallback } from "provider";
 import { ResponseError } from "error";
 import { isBrowser, filterUndefinedObjectValues } from "utils";
+import { PartialSome } from "types";
 
 export interface ExternalLoaderInterface {
-  setOptions(options: ExternalLoaderOptions): void;
+  setOptions(options: PartialSome<ExternalLoaderOptions, "method">): void;
   getOptions(): ExternalLoaderOptions;
   executeRequest(
     params: ExternalLoaderParams,
     callback: ResponseCallback,
     headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void;
 }
@@ -18,6 +20,11 @@ export interface ExternalLoaderOptions {
   readonly protocol: string;
   readonly host?: string;
   readonly pathname?: string;
+  readonly method: "GET" | "POST";
+}
+
+export interface ExternalLoaderBody {
+  [param: string]: string | undefined;
 }
 
 export interface ExternalLoaderParams {
@@ -34,6 +41,7 @@ type ResponseCallback = (response: any) => void;
 
 const defaultOptions: ExternalLoaderOptions = {
   protocol: "http",
+  method: "GET",
 };
 
 /**
@@ -42,11 +50,15 @@ const defaultOptions: ExternalLoaderOptions = {
 export default class ExternalLoader implements ExternalLoaderInterface {
   private options: ExternalLoaderOptions = defaultOptions;
 
-  public constructor(options: ExternalLoaderOptions = defaultOptions) {
+  public constructor(
+    options: PartialSome<ExternalLoaderOptions, "method"> = defaultOptions
+  ) {
     this.setOptions(options);
   }
 
-  public setOptions(options: ExternalLoaderOptions): void {
+  public setOptions(
+    options: PartialSome<ExternalLoaderOptions, "method">
+  ): void {
     this.options = { ...defaultOptions, ...options };
   }
 
@@ -58,18 +70,19 @@ export default class ExternalLoader implements ExternalLoaderInterface {
     params: ExternalLoaderParams,
     callback: ResponseCallback,
     externalLoaderHeaders?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
     errorCallback?: ErrorCallback
   ): void {
-    if (!this.options.host) {
+    const { protocol, host, pathname, method } = this.options;
+
+    if (!host) {
       throw new Error("A host is required for the external loader.");
     }
-    if (!this.options.pathname) {
+    if (!pathname) {
       throw new Error("A pathname is required for the external loader.");
     }
 
-    const requestUrl = new URL(
-      `${this.options.protocol}://${this.options.host}/${this.options.pathname}`
-    );
+    const requestUrl = new URL(`${protocol}://${host}/${pathname}`);
 
     const { jsonpCallback, ...requestParams } = params;
 
@@ -89,6 +102,8 @@ export default class ExternalLoader implements ExternalLoaderInterface {
     const headers = filterUndefinedObjectValues(externalLoaderHeaders || {});
     fetch(requestUrl.toString(), {
       headers,
+      method,
+      body: method === "POST" ? JSON.stringify(body) : undefined,
     })
       .then((response) => {
         if (!response.ok) {

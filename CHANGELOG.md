@@ -4,6 +4,8 @@
 
 * Add special chain provider
 * Add `errorCallback` parameter to `geocode` and `geodecode`
+* Add `body` parameter to `executeRequest`
+* [MapQuest] Fix geocode request (bad encoded query)
 
 ## 0.4.0
 

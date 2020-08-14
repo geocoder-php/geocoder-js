@@ -1,137 +1,18 @@
-import { OpenCageGeocoded, OpenCageProvider, OpenCageResult } from "provider";
+import UniversalGeocoder from "UniversalGeocoder";
+import { OpenCageGeocoded, OpenCageProvider } from "provider";
 import ExternalLoader from "ExternalLoader";
 import AdminLevel from "AdminLevel";
+import setupPolly, { cleanRecording } from "../setupPolly";
 
-describe("OpenCage Geocoder Provider raw result to Geocoded mapping", () => {
-  let geocoded: OpenCageGeocoded;
-
-  const stubOpenCageResult: OpenCageResult[] = [
-    {
-      annotations: {
-        DMS: {
-          lat: "38° 53' 51.71928'' N",
-          lng: "77° 2' 11.59260'' W",
-        },
-        FIPS: {
-          county: "11001",
-          state: "11",
-        },
-        MGRS: "18SUJ2338907395",
-        Maidenhead: "FM18lv55ok",
-        Mercator: {
-          x: -8575669.907,
-          y: 4680193.667,
-        },
-        OSM: {
-          edit_url:
-            "https://www.openstreetmap.org/edit?way=238241022#map=16/38.89770/-77.03655",
-          note_url:
-            "https://www.openstreetmap.org/note/new#map=16/38.89770/-77.03655&layers=N",
-          url:
-            "https://www.openstreetmap.org/?mlat=38.89770&mlon=-77.03655#map=16/38.89770/-77.03655",
-        },
-        UN_M49: {
-          regions: {
-            AMERICAS: "019",
-            NORTHERN_AMERICA: "021",
-            US: "840",
-            WORLD: "001",
-          },
-          statistical_groupings: ["MEDC"],
-        },
-        callingcode: 1,
-        currency: {
-          alternate_symbols: ["US$"],
-          decimal_mark: ".",
-          disambiguate_symbol: "US$",
-          html_entity: "$",
-          iso_code: "USD",
-          iso_numeric: "840",
-          name: "United States Dollar",
-          smallest_denomination: 1,
-          subunit: "Cent",
-          subunit_to_unit: 100,
-          symbol: "$",
-          symbol_first: 1,
-          thousands_separator: ",",
-        },
-        flag: "🇺🇸",
-        geohash: "dqcjqcpew0y36kbv76ew",
-        qibla: 56.56,
-        roadinfo: {
-          drive_on: "right",
-          speed_in: "mph",
-        },
-        sun: {
-          rise: {
-            apparent: 1595844420,
-            astronomical: 1595837940,
-            civil: 1595842620,
-            nautical: 1595840400,
-          },
-          set: {
-            apparent: 1595809320,
-            astronomical: 1595815740,
-            civil: 1595811120,
-            nautical: 1595813340,
-          },
-        },
-        timezone: {
-          name: "America/New_York",
-          now_in_dst: 1,
-          offset_sec: -14400,
-          offset_string: "-0400",
-          short_name: "EDT",
-        },
-        what3words: {
-          words: "deeply.bunk.farmer",
-        },
-        wikidata: "Q35525",
-      },
-      bounds: {
-        northeast: {
-          lat: 38.897911,
-          lng: -77.0362526,
-        },
-        southwest: {
-          lat: 38.8974898,
-          lng: -77.0368542,
-        },
-      },
-      components: {
-        "ISO_3166-1_alpha-2": "US",
-        "ISO_3166-1_alpha-3": "USA",
-        _category: "travel/tourism",
-        _type: "castle",
-        castle: "White House",
-        city: "Washington D.C.",
-        continent: "North America",
-        country: "United States of America",
-        country_code: "us",
-        county: "Washington",
-        house_number: "1600",
-        neighbourhood: "Golden Triangle",
-        pedestrian: "Pennsylvania Avenue Northwest",
-        postcode: "20500",
-        state: "District of Columbia",
-        state_code: "DC",
-      },
-      confidence: 9,
-      formatted:
-        "White House, 1600 Pennsylvania Avenue Northwest, Washington, DC 20500, United States of America",
-      geometry: {
-        lat: 38.8976998,
-        lng: -77.0365535,
-      },
-    },
-  ];
+describe("OpenCage Geocoder Provider", () => {
+  const pollyContext = setupPolly();
 
   beforeEach(() => {
-    geocoded = OpenCageProvider.mapToGeocoded(stubOpenCageResult[0]);
+    cleanRecording(pollyContext);
   });
 
-  it("receives results from the OpenCage geocoder", () => {
-    expect(geocoded).toBeDefined();
+  afterEach(async () => {
+    await pollyContext.polly.flush();
   });
 
   it("expects API Key to be required on initiation", () => {
@@ -141,89 +22,182 @@ describe("OpenCage Geocoder Provider raw result to Geocoded mapping", () => {
     );
   });
 
-  it("maps coordinates correctly", () => {
-    expect(geocoded.getCoordinates()).toEqual([38.8976998, -77.0365535]);
+  it("receives correct geocoding results", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "opencage",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    provider?.geocode("1600 Pennsylvania Ave, Washington, DC", (results) => {
+      const geocoded = results[0];
+
+      expect(geocoded).toBeDefined();
+      expect(geocoded.getCoordinates()).toEqual([38.8636383, -76.9463651]);
+      expect(geocoded.getBounds()).toEqual([
+        38.8633822,
+        -76.9467576,
+        38.8637409,
+        -76.945632,
+      ]);
+      expect(geocoded.getFormattedAddress()).toEqual(
+        "Pennsylvania Avenue, Washington, DC 20746-8001, United States of America"
+      );
+      expect(geocoded.getStreetNumber()).toEqual(undefined);
+      expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue");
+      expect(geocoded.getSubLocality()).toEqual(undefined);
+      expect(geocoded.getLocality()).toEqual("Dillon Park");
+      expect(geocoded.getPostalCode()).toEqual("20746-8001");
+      expect(geocoded.getRegion()).toEqual("District of Columbia");
+      expect(geocoded.getAdminLevels()).toEqual([
+        AdminLevel.create({
+          level: 1,
+          name: "District of Columbia",
+          code: "DC",
+        }),
+        AdminLevel.create({ level: 2, name: "Prince George's County" }),
+      ]);
+      expect(geocoded.getCountry()).toEqual("United States of America");
+      expect(geocoded.getCountryCode()).toEqual("us");
+      expect(geocoded.getTimezone()).toEqual("America/New_York");
+      expect(geocoded.getCallingCode()).toEqual(1);
+      expect(geocoded.getFlag()).toEqual("🇺🇸");
+      expect(geocoded.getMgrs()).toEqual("18SUJ3113003444");
+      expect(geocoded.getMaidenhead()).toEqual("FM18mu67kg");
+      expect(geocoded.getGeohash()).toEqual("dqcm14cm5er8th99jt7w");
+      expect(geocoded.getWhat3words()).toEqual("bottom.grace.mass");
+
+      done();
+    });
   });
 
-  it("maps bounds correctly", () => {
-    expect(geocoded.getBounds()).toEqual([
-      38.8974898,
-      -77.0368542,
-      38.897911,
-      -77.0362526,
-    ]);
+  it("receives correct geodecoding results", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "opencage",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    provider?.geodecode(48.8631507, 2.388911, (results: OpenCageGeocoded[]) => {
+      const geocoded = results[0];
+
+      expect(geocoded).toBeDefined();
+      expect(geocoded.getCoordinates()).toEqual([48.863116, 2.38878]);
+      expect(geocoded.getBounds()).toEqual([
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      ]);
+      expect(geocoded.getFormattedAddress()).toEqual(
+        "8 Avenue Gambetta, 75020 Paris, France"
+      );
+      expect(geocoded.getStreetNumber()).toEqual("8");
+      expect(geocoded.getStreetName()).toEqual("Avenue Gambetta");
+      expect(geocoded.getSubLocality()).toEqual(undefined);
+      expect(geocoded.getLocality()).toEqual("Paris");
+      expect(geocoded.getPostalCode()).toEqual("75020");
+      expect(geocoded.getRegion()).toEqual("Île-de-France");
+      expect(geocoded.getAdminLevels()).toEqual([
+        AdminLevel.create({
+          level: 1,
+          name: "Île-de-France",
+          code: "IDF",
+        }),
+      ]);
+      expect(geocoded.getCountry()).toEqual("France");
+      expect(geocoded.getCountryCode()).toEqual("fr");
+      expect(geocoded.getTimezone()).toEqual("Europe/Paris");
+      expect(geocoded.getCallingCode()).toEqual(33);
+      expect(geocoded.getFlag()).toEqual("🇫🇷");
+      expect(geocoded.getMgrs()).toEqual("31UDQ5517112419");
+      expect(geocoded.getMaidenhead()).toEqual("JN18eu67pd");
+      expect(geocoded.getGeohash()).toEqual("u09tyr72q952wcz9bf5x");
+      expect(geocoded.getWhat3words()).toEqual("snatched.juniors.tedious");
+
+      done();
+    });
   });
 
-  it("maps formatted address correctly", () => {
-    expect(geocoded.getFormattedAddress()).toEqual(
-      "White House, 1600 Pennsylvania Avenue Northwest, Washington, DC 20500, United States of America"
+  it("receives error when the quota is exceeded", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "opencage",
+      useSsl: true,
+      // see https://opencagedata.com/api#testingkeys
+      apiKey: "4372eff77b8343cebfc843eb4da4ddc4",
+    });
+
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      () => {
+        done();
+      },
+      (error) => {
+        expect(error.message).toEqual("Quota exceeded (402): quota exceeded");
+        done();
+      }
     );
   });
 
-  it("maps street number correctly", () => {
-    expect(geocoded.getStreetNumber()).toEqual("1600");
+  it("receives error when suspended", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "opencage",
+      useSsl: true,
+      // see https://opencagedata.com/api#testingkeys
+      apiKey: "2e10e5e828262eb243ec0b54681d699a",
+    });
+
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      () => {
+        done();
+      },
+      (error) => {
+        expect(error.message).toEqual("Forbidden (403): suspended");
+        done();
+      }
+    );
   });
 
-  it("maps street name correctly", () => {
-    expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue Northwest");
+  it("receives error when the IP address is rejected", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "opencage",
+      useSsl: true,
+      // see https://opencagedata.com/api#testingkeys
+      apiKey: "6c79ee8e1ca44ad58ad1fc493ba9542f",
+    });
+
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      () => {
+        done();
+      },
+      (error) => {
+        expect(error.message).toEqual("Forbidden (403): IP address rejected");
+        done();
+      }
+    );
   });
 
-  it("maps sublocality correctly", () => {
-    expect(geocoded.getSubLocality()).toEqual("Golden Triangle");
-  });
+  it("receives error when requesting too quickly", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "opencage",
+      useSsl: true,
+      // see https://opencagedata.com/api#testingkeys
+      apiKey: "d6d0f0065f4348a4bdfe4587ba02714b",
+    });
 
-  it("maps locality correctly", () => {
-    expect(geocoded.getLocality()).toEqual("Washington D.C.");
-  });
-
-  it("maps postal code correctly", () => {
-    expect(geocoded.getPostalCode()).toEqual("20500");
-  });
-
-  it("maps region correctly", () => {
-    expect(geocoded.getRegion()).toEqual("District of Columbia");
-  });
-
-  it("maps admin levels correctly", () => {
-    expect(geocoded.getAdminLevels()).toEqual([
-      AdminLevel.create({ level: 1, name: "District of Columbia", code: "DC" }),
-      AdminLevel.create({ level: 2, name: "Washington" }),
-    ]);
-  });
-
-  it("maps country correctly", () => {
-    expect(geocoded.getCountry()).toEqual("United States of America");
-  });
-
-  it("maps country code correctly", () => {
-    expect(geocoded.getCountryCode()).toEqual("us");
-  });
-
-  it("maps timezone correctly", () => {
-    expect(geocoded.getTimezone()).toEqual("America/New_York");
-  });
-
-  it("maps calling code correctly", () => {
-    expect(geocoded.getCallingCode()).toEqual(1);
-  });
-
-  it("maps flag correctly", () => {
-    expect(geocoded.getFlag()).toEqual("🇺🇸");
-  });
-
-  it("maps MGRS correctly", () => {
-    expect(geocoded.getMgrs()).toEqual("18SUJ2338907395");
-  });
-
-  it("maps Maidenhead correctly", () => {
-    expect(geocoded.getMaidenhead()).toEqual("FM18lv55ok");
-  });
-
-  it("maps Geohash correctly", () => {
-    expect(geocoded.getGeohash()).toEqual("dqcjqcpew0y36kbv76ew");
-  });
-
-  it("maps What3words correctly", () => {
-    expect(geocoded.getWhat3words()).toEqual("deeply.bunk.farmer");
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      () => {
+        done();
+      },
+      (error) => {
+        expect(error.message).toEqual(
+          "Too many requests (429): requesting too quickly"
+        );
+        done();
+      }
+    );
   });
 });

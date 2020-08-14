@@ -17,7 +17,7 @@ import {
 
 export interface ChainProviderOptionsInterface
   extends ProviderOptionsInterface {
-  readonly providers: ProviderInterface[];
+  readonly providers: ProviderInterface<Geocoded>[];
   readonly parallelize?: boolean;
   readonly first?: boolean;
 }
@@ -27,7 +27,9 @@ export const defaultChainProviderOptions = {
   providers: [],
 };
 
-export default class ChainProvider implements ProviderInterface {
+type ChainGeocodedResultsCallback = GeocodedResultsCallback<Geocoded>;
+
+export default class ChainProvider implements ProviderInterface<Geocoded> {
   private options: ChainProviderOptionsInterface;
 
   public constructor(
@@ -38,7 +40,7 @@ export default class ChainProvider implements ProviderInterface {
 
   public geocode(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: ChainGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     if (this.options.parallelize || this.options.first) {
@@ -56,8 +58,8 @@ export default class ChainProvider implements ProviderInterface {
 
   public geodecode(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callbackOrErrorCallback?: GeocodedResultsCallback | ErrorCallback,
+    longitudeOrCallback: number | string | ChainGeocodedResultsCallback,
+    callbackOrErrorCallback?: ChainGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
@@ -92,13 +94,13 @@ export default class ChainProvider implements ProviderInterface {
   }
 
   private geocodeNextProvider(
-    providers: ProviderInterface[],
+    providers: ProviderInterface<Geocoded>[],
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: ChainGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const [provider, ...nextProviders] = providers;
-    const resultCallback: GeocodedResultsCallback = (results) => {
+    const resultCallback: ChainGeocodedResultsCallback = (results) => {
       if (results.length > 0) {
         callback(results);
         return;
@@ -123,13 +125,13 @@ export default class ChainProvider implements ProviderInterface {
   }
 
   private geodecodeNextProvider(
-    providers: ProviderInterface[],
+    providers: ProviderInterface<Geocoded>[],
     reverseQuery: ReverseQuery,
-    callback: GeocodedResultsCallback,
+    callback: ChainGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const [provider, ...nextProviders] = providers;
-    const resultCallback: GeocodedResultsCallback = (results) => {
+    const resultCallback: ChainGeocodedResultsCallback = (results) => {
       if (results.length > 0) {
         callback(results);
         return;
@@ -160,7 +162,7 @@ export default class ChainProvider implements ProviderInterface {
 
   private geocodeAllProviders(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback,
+    callback: ChainGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const providerResults: Map<string, Geocoded[]> = new Map();
@@ -182,7 +184,7 @@ export default class ChainProvider implements ProviderInterface {
       }, <undefined | Geocoded[]>[]);
     const resultProviderCallback: (
       providerName: string
-    ) => GeocodedResultsCallback = (providerName) => (results) => {
+    ) => ChainGeocodedResultsCallback = (providerName) => (results) => {
       providerResults.set(providerName, results);
       const providerResult = getProviderResult();
       if (!callbackCalled && providerResult) {
@@ -218,7 +220,7 @@ export default class ChainProvider implements ProviderInterface {
 
   private geodecodeAllProviders(
     reverseQuery: ReverseQuery,
-    callback: GeocodedResultsCallback,
+    callback: ChainGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
     const providerResults: Map<string, Geocoded[]> = new Map();
@@ -240,7 +242,7 @@ export default class ChainProvider implements ProviderInterface {
       }, <undefined | Geocoded[]>[]);
     const resultProviderCallback: (
       providerName: string
-    ) => GeocodedResultsCallback = (providerName) => (results) => {
+    ) => ChainGeocodedResultsCallback = (providerName) => (results) => {
       providerResults.set(providerName, results);
       const providerResult = getProviderResult();
       if (!callbackCalled && providerResult) {
@@ -279,7 +281,7 @@ export default class ChainProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     params: ExternalLoaderParams,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    callback: GeocodedResultsCallback
+    callback: ChainGeocodedResultsCallback
   ): void {
     throw new Error(
       "executeRequest cannot be called directly from the chain provider."
