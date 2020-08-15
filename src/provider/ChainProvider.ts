@@ -1,4 +1,8 @@
-import { ExternalLoaderParams } from "ExternalLoader";
+import {
+  ExternalLoaderBody,
+  ExternalLoaderHeaders,
+  ExternalLoaderParams,
+} from "ExternalLoader";
 import Geocoded from "Geocoded";
 import {
   ErrorCallback,
@@ -281,7 +285,13 @@ export default class ChainProvider implements ProviderInterface<Geocoded> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     params: ExternalLoaderParams,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    callback: ChainGeocodedResultsCallback
+    callback: ChainGeocodedResultsCallback,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    headers?: ExternalLoaderHeaders,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    body?: ExternalLoaderBody,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    errorCallback?: ErrorCallback
   ): void {
     throw new Error(
       "executeRequest cannot be called directly from the chain provider."

@@ -83,6 +83,12 @@ export default class MapQuestProvider implements ProviderInterface<Geocoded> {
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
 
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The MapQuest provider does not support IP geolocation, only location geocoding."
+      );
+    }
+
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
       host: "www.mapquestapi.com",
@@ -91,7 +97,7 @@ export default class MapQuestProvider implements ProviderInterface<Geocoded> {
 
     const params: MapQuestRequestParams = {
       key: this.options.apiKey,
-      location: geocodeQuery.getText(),
+      location: geocodeQuery.getText() || "",
       jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 

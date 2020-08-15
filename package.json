@@ -5,6 +5,8 @@
   "keywords": [
     "geocoder",
     "geocoding",
+    "geolocation",
+    "ip-geolocation",
     "typescript",
     "isomorphic",
     "universal",

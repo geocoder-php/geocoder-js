@@ -148,6 +148,12 @@ export default class MapboxProvider
       MapboxGeocodeQuery
     );
 
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The Mapbox provider does not support IP geolocation, only location geocoding."
+      );
+    }
+
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
       host: "api.mapbox.com",

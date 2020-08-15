@@ -1,4 +1,5 @@
 import {
+  GeoPluginResult,
   GoogleMapsResponse,
   MapboxResponse,
   NominatimResponse,
@@ -10,6 +11,7 @@ export default class ResponseError extends Error {
 
   private readonly response:
     | Response
+    | GeoPluginResult
     | GoogleMapsResponse
     | MapboxResponse
     | NominatimResponse
@@ -19,6 +21,7 @@ export default class ResponseError extends Error {
     message: string,
     response:
       | Response
+      | GeoPluginResult
       | GoogleMapsResponse
       | MapboxResponse
       | NominatimResponse
@@ -34,6 +37,7 @@ export default class ResponseError extends Error {
 
   public getResponse():
     | Response
+    | GeoPluginResult
     | GoogleMapsResponse
     | MapboxResponse
     | NominatimResponse

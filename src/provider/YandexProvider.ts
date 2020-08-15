@@ -114,6 +114,12 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
 
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The Yandex provider does not support IP geolocation, only location geocoding."
+      );
+    }
+
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
       host: "geocode-maps.yandex.ru",
@@ -122,7 +128,7 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
 
     const params: YandexRequestParams = {
       apikey: this.options.apiKey,
-      geocode: geocodeQuery.getText(),
+      geocode: geocodeQuery.getText() || "",
       format: "json",
       lang: geocodeQuery.getLocale(),
       jsonpCallback: this.options.useJsonp ? "callback" : undefined,

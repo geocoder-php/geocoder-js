@@ -82,6 +82,12 @@ export default class BingProvider implements ProviderInterface<Geocoded> {
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
 
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The Bing provider does not support IP geolocation, only location geocoding."
+      );
+    }
+
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
       host: "dev.virtualearth.net",

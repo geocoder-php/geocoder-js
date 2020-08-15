@@ -135,6 +135,12 @@ export default class NominatimProvider
       NominatimGeocodeQuery
     );
 
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The OpenStreetMap / Nominatim provider does not support IP geolocation, only location geocoding."
+      );
+    }
+
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
       host: this.options.host,

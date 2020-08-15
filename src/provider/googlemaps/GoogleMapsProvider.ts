@@ -217,6 +217,12 @@ export default class GoogleMapsProvider
       GoogleMapsGeocodeQuery
     );
 
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The GoogleMaps provider does not support IP geolocation, only location geocoding."
+      );
+    }
+
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
       host: "maps.googleapis.com",

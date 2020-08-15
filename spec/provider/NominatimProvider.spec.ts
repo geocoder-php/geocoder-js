@@ -22,6 +22,25 @@ describe("OpenStreetMap / Nominatim Geocoder Provider", () => {
     );
   });
 
+  it("expects to not support IP geolocation", () => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "nominatim",
+      useSsl: true,
+      userAgent: "Universal Geocoder Example",
+    });
+
+    expect(() =>
+      provider?.geocode(
+        "66.147.244.214",
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        () => {}
+      )
+    ).toThrowError(
+      Error,
+      "The OpenStreetMap / Nominatim provider does not support IP geolocation, only location geocoding."
+    );
+  });
+
   it("receives correct geocoding results", (done) => {
     const provider = UniversalGeocoder.createGeocoder({
       provider: "nominatim",

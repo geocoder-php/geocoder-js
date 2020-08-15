@@ -2,6 +2,7 @@ import {
   BingProvider,
   ChainProvider,
   ChainProviderOptionsInterface,
+  GeoPluginProvider,
   GoogleMapsProvider,
   GoogleMapsProviderOptionsInterface,
   MapboxProvider,
@@ -26,6 +27,7 @@ interface ProviderOptionInterface {
   provider:
     | "bing"
     | "chain"
+    | "geoplugin"
     | "google"
     | "googlemaps"
     | "mapbox"
@@ -44,6 +46,11 @@ interface ChainGeocoderProviderFactoryOptions
   extends ProviderOptionInterface,
     ChainProviderOptionsInterface {
   provider: "chain";
+}
+
+interface GeoPluginGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface {
+  provider: "geoplugin";
 }
 
 interface GoogleMapsGeocoderProviderFactoryOptions
@@ -79,6 +86,7 @@ interface YandexGeocoderProviderFactoryOptions
 export type GeocoderProviderFactoryOptions =
   | ProviderFactoryOptions
   | ChainGeocoderProviderFactoryOptions
+  | GeoPluginGeocoderProviderFactoryOptions
   | GoogleMapsGeocoderProviderFactoryOptions
   | MapboxGeocoderProviderFactoryOptions
   | NominatimGeocoderProviderFactoryOptions
@@ -88,6 +96,7 @@ export type GeocoderProviderFactoryOptions =
 export type GeocoderProvider =
   | BingProvider
   | ChainProvider
+  | GeoPluginProvider
   | GoogleMapsProvider
   | MapboxProvider
   | MapquestProvider
@@ -99,6 +108,8 @@ export type GeocoderProviderByOptionsType<
   O
 > = O extends ChainGeocoderProviderFactoryOptions
   ? ChainProvider
+  : O extends GeoPluginGeocoderProviderFactoryOptions
+  ? GeoPluginProvider
   : O extends GoogleMapsGeocoderProviderFactoryOptions
   ? GoogleMapsProvider
   : O extends MapboxGeocoderProviderFactoryOptions
@@ -143,6 +154,10 @@ export default class ProviderFactory {
           ...defaultChainProviderOptions,
           ...providerOptions,
         });
+      case "geoplugin":
+        return <GeocoderProviderByOptionsType<O>>(
+          new GeoPluginProvider(externalLoader, providerOptions)
+        );
       case "google":
       case "googlemaps":
         return <GeocoderProviderByOptionsType<O>>(

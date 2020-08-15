@@ -6,6 +6,7 @@ import {
   ReverseQuery,
   ReverseQueryObject,
 } from "query";
+import { isIpv4, isIpv6 } from "utils";
 
 export default class ProviderHelpers {
   public static getGeocodeQueryFromParameter(
@@ -13,6 +14,9 @@ export default class ProviderHelpers {
     geocodeQuery = GeocodeQuery
   ): GeocodeQuery {
     if (typeof query === "string") {
+      if (isIpv4(query) || isIpv6(query)) {
+        return geocodeQuery.create({ ip: query });
+      }
       return geocodeQuery.create({ text: query });
     }
     if (!(query instanceof geocodeQuery)) {

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Universal Geocoder: GeoPlugin Example</title>
+    <script src="../../dist/universal-geocoder.js"></script>
+    <script>
+      var geoPluginGeocoder = UniversalGeocoder.createGeocoder({ provider: "geoplugin" });
+      geoPluginGeocoder.geocode("190.226.155.134", function(result) {
+        console.log(result);
+      });
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>

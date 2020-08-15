@@ -38,5 +38,8 @@ menu:
         yandex:
           text: 📌️ Yandex
           relativeUrl: docs/provider_usage/yandex.html
+        geoplugin:
+          text: 📌️ GeoPlugin
+          relativeUrl: docs/provider_usage/geoplugin.html
 
 baseUrl: /universal-geocoder-js/

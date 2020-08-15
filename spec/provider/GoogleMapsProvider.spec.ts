@@ -47,6 +47,25 @@ describe("Google Maps Geocoder Provider", () => {
     );
   });
 
+  it("expects to not support IP geolocation", () => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "googlemaps",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    expect(() =>
+      provider?.geocode(
+        "66.147.244.214",
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        () => {}
+      )
+    ).toThrowError(
+      Error,
+      "The GoogleMaps provider does not support IP geolocation, only location geocoding."
+    );
+  });
+
   it("receives correct geocoding results", (done) => {
     const provider = UniversalGeocoder.createGeocoder({
       provider: "googlemaps",

@@ -311,6 +311,12 @@ export default class OpenCageProvider
       OpenCageGeocodeQuery
     );
 
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The OpenCage provider does not support IP geolocation, only location geocoding."
+      );
+    }
+
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
       host: "api.opencagedata.com",
@@ -319,7 +325,7 @@ export default class OpenCageProvider
 
     const params: OpenCageRequestParams = this.withCommonParams(
       {
-        q: geocodeQuery.getText(),
+        q: geocodeQuery.getText() || "",
         bounds: geocodeQuery.getBounds()
           ? `${geocodeQuery.getBounds()?.west},${
               geocodeQuery.getBounds()?.south
