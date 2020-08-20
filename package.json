@@ -37,6 +37,8 @@
     "cross-fetch": "^3.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^10.0.0",
+    "@commitlint/config-conventional": "^10.0.0",
     "@pollyjs/adapter-node-http": "^5.0.0",
     "@pollyjs/core": "^5.0.0",
     "@pollyjs/persister-fs": "^5.0.0",
@@ -59,8 +61,10 @@
     "eslint-plugin-import": "^2.0.0",
     "eslint-plugin-prettier": "^3.0.0",
     "http-server": "^0.12.0",
+    "husky": "^4.2.0",
     "jasmine": "^3.5.0",
     "jasmine-spec-reporter": "^5.0.0",
+    "lint-staged": "^10.2.0",
     "nyc": "^15.1.0",
     "prettier": "^2.0.0",
     "setup-polly-jest": "^0.9.0",
@@ -84,5 +88,17 @@
     "test-record": "POLLY_RECORD=1 npm test",
     "ts-node": "ts-node --skip-project",
     "watch": "webpack --config webpack.dev.js --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint --env HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint",
+      "git add"
+    ]
   }
 }
