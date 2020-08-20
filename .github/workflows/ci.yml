@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v2-beta
         with:
@@ -19,6 +21,8 @@ jobs:
         run: npm install
       - name: Check build
         run: npm run build
+      - name: Check commit messages
+        uses: wagoid/commitlint-github-action@v2
       - name: Check coding standards
         run: npm run lint
       - name: Run tests
