@@ -14,6 +14,9 @@ menu:
         provider_usage:
           text: 🔎️ Provider Usage
           relativeUrl: docs/provider_usage.html
+        changelog:
+          text: 📃️ Changelog
+          relativeUrl: changelog.html
     special_provider_usage:
       name: Special Provider
       items:
