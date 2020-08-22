@@ -23,6 +23,8 @@ jobs:
         run: npm run build
       - name: Check commit messages
         uses: wagoid/commitlint-github-action@v2
+        with:
+          configFile: .commitlintrc.json
       - name: Check coding standards
         run: npm run lint
       - name: Run tests
