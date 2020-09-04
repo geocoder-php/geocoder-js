@@ -14,6 +14,15 @@ menu:
         provider_usage:
           text: 🔎️ Provider Usage
           relativeUrl: docs/provider_usage.html
+        changelog:
+          text: 📃️ Changelog
+          relativeUrl: changelog.html
+    special_provider_usage:
+      name: Special Provider
+      items:
+        chain:
+          text: ⛓️ Chain
+          relativeUrl: docs/provider_usage/chain.html
     provider_usage:
       name: Provider
       items:
@@ -29,8 +38,14 @@ menu:
         mapbox:
           text: 📌️ Mapbox
           relativeUrl: docs/provider_usage/mapbox.html
+        mapquest:
+          text: 📌️ MapQuest
+          relativeUrl: docs/provider_usage/mapquest.html
         yandex:
           text: 📌️ Yandex
           relativeUrl: docs/provider_usage/yandex.html
+        geoplugin:
+          text: 📌️ GeoPlugin
+          relativeUrl: docs/provider_usage/geoplugin.html
 
 baseUrl: /geocoder-js/

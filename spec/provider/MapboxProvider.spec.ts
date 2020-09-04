@@ -1,51 +1,18 @@
-import { MapboxGeocoded, MapboxProvider, MapboxResult } from "provider";
+import GeocoderJS from "GeocoderJS";
+import { MapboxGeocoded, MapboxProvider } from "provider";
 import ExternalLoader from "ExternalLoader";
 import AdminLevel from "AdminLevel";
+import setupPolly, { cleanRecording } from "../setupPolly";
 
-describe("Mapbox Geocoder Provider raw result to Geocoded mapping", () => {
-  let geocoded: MapboxGeocoded;
-
-  const stubMapboxResult: MapboxResult[] = [
-    {
-      id: "address.8134540196038770",
-      type: "Feature",
-      place_type: ["address"],
-      relevance: 1,
-      properties: { accuracy: "rooftop" },
-      text: "Pennsylvania Avenue Northwest",
-      place_name:
-        "1600 Pennsylvania Avenue Northwest, Washington, District of Columbia 20500, United States",
-      matching_place_name:
-        "1600 Pennsylvania Avenue Northwest, Washington, DC 20500, United States",
-      center: [-77.036547, 38.897675],
-      geometry: { type: "Point", coordinates: [-77.036547, 38.897675] },
-      address: "1600",
-      context: [
-        { id: "neighborhood.291451", text: "Downtown" },
-        { id: "postcode.8134540196038770", text: "20500" },
-        { id: "place.7673410831246050", wikidata: "Q61", text: "Washington" },
-        {
-          id: "region.14064402149979320",
-          wikidata: "Q3551781",
-          short_code: "US-DC",
-          text: "District of Columbia",
-        },
-        {
-          id: "country.19678805456372290",
-          short_code: "us",
-          wikidata: "Q30",
-          text: "United States",
-        },
-      ],
-    },
-  ];
+describe("Mapbox Geocoder Provider", () => {
+  const pollyContext = setupPolly();
 
   beforeEach(() => {
-    geocoded = MapboxProvider.mapToGeocoded(stubMapboxResult[0]);
+    cleanRecording(pollyContext);
   });
 
-  it("receives results from the Mapbox geocoder", () => {
-    expect(geocoded).toBeDefined();
+  afterEach(async () => {
+    await pollyContext.polly.flush();
   });
 
   it("expects API Key to be required on initiation", () => {
@@ -55,52 +22,127 @@ describe("Mapbox Geocoder Provider raw result to Geocoded mapping", () => {
     );
   });
 
-  it("maps coordinates correctly", () => {
-    expect(geocoded.getCoordinates()).toEqual([38.897675, -77.036547]);
-  });
+  it("expects to not support IP geolocation", () => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "mapbox",
+      useSsl: true,
+      apiKey: "api_key",
+    });
 
-  it("maps formatted address correctly", () => {
-    expect(geocoded.getFormattedAddress()).toEqual(
-      "1600 Pennsylvania Avenue Northwest, Washington, District of Columbia 20500, United States"
+    expect(() =>
+      provider?.geocode(
+        "66.147.244.214",
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        () => {}
+      )
+    ).toThrowError(
+      Error,
+      "The Mapbox provider does not support IP geolocation, only location geocoding."
     );
   });
 
-  it("maps street number correctly", () => {
-    expect(geocoded.getStreetNumber()).toEqual("1600");
+  it("receives correct geocoding results", (done) => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "mapbox",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    provider?.geocode("1600 Pennsylvania Ave, Washington, DC", (results) => {
+      const geocoded = results[0];
+
+      expect(geocoded).toBeDefined();
+      expect(geocoded.getCoordinates()).toEqual([38.87925, -76.98204]);
+      expect(geocoded.getBounds()).toEqual([
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      ]);
+      expect(geocoded.getFormattedAddress()).toEqual(
+        "1600 Pennsylvania Ave SE, Washington, District of Columbia 20003, United States"
+      );
+      expect(geocoded.getStreetNumber()).toEqual("1600");
+      expect(geocoded.getStreetName()).toEqual("Pennsylvania Ave SE");
+      expect(geocoded.getSubLocality()).toEqual(undefined);
+      expect(geocoded.getLocality()).toEqual("Washington");
+      expect(geocoded.getPostalCode()).toEqual("20003");
+      expect(geocoded.getRegion()).toEqual("District of Columbia");
+      expect(geocoded.getAdminLevels()).toEqual([
+        AdminLevel.create({ level: 2, name: "Washington" }),
+        AdminLevel.create({
+          level: 1,
+          name: "District of Columbia",
+          code: "DC",
+        }),
+      ]);
+      expect(geocoded.getCountry()).toEqual("United States");
+      expect(geocoded.getCountryCode()).toEqual("us");
+      expect(geocoded.getResultType()).toEqual(["address"]);
+
+      done();
+    });
   });
 
-  it("maps street name correctly", () => {
-    expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue Northwest");
+  it("receives correct geodecoding results", (done) => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "mapbox",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    provider?.geodecode(48.8631507, 2.388911, (results: MapboxGeocoded[]) => {
+      const geocoded = results[0];
+
+      expect(geocoded).toBeDefined();
+      expect(geocoded.getCoordinates()).toEqual([48.863134, 2.388886]);
+      expect(geocoded.getBounds()).toEqual([
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      ]);
+      expect(geocoded.getFormattedAddress()).toEqual(
+        "12 Avenue Gambetta, 75020 Paris, France"
+      );
+      expect(geocoded.getStreetNumber()).toEqual("12");
+      expect(geocoded.getStreetName()).toEqual("Avenue Gambetta");
+      expect(geocoded.getSubLocality()).toEqual(undefined);
+      expect(geocoded.getLocality()).toEqual("Paris");
+      expect(geocoded.getPostalCode()).toEqual("75020");
+      expect(geocoded.getRegion()).toEqual(undefined);
+      expect(geocoded.getAdminLevels()).toEqual([
+        AdminLevel.create({
+          level: 2,
+          name: "Paris",
+        }),
+      ]);
+      expect(geocoded.getCountry()).toEqual("France");
+      expect(geocoded.getCountryCode()).toEqual("fr");
+      expect(geocoded.getResultType()).toEqual(["address"]);
+
+      done();
+    });
   });
 
-  it("maps locality correctly", () => {
-    expect(geocoded.getLocality()).toEqual("Washington");
-  });
+  it("receives error when the API key is bad", (done) => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "mapbox",
+      useSsl: true,
+      apiKey: "api_key",
+    });
 
-  it("maps postal code correctly", () => {
-    expect(geocoded.getPostalCode()).toEqual("20500");
-  });
-
-  it("maps region correctly", () => {
-    expect(geocoded.getRegion()).toEqual("District of Columbia");
-  });
-
-  it("maps admin levels correctly", () => {
-    expect(geocoded.getAdminLevels()).toEqual([
-      AdminLevel.create({ level: 2, name: "Washington" }),
-      AdminLevel.create({ level: 1, name: "District of Columbia", code: "DC" }),
-    ]);
-  });
-
-  it("maps country correctly", () => {
-    expect(geocoded.getCountry()).toEqual("United States");
-  });
-
-  it("maps country code correctly", () => {
-    expect(geocoded.getCountryCode()).toEqual("us");
-  });
-
-  it("maps result type correctly", () => {
-    expect(geocoded.getResultType()).toEqual(["address"]);
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      () => {
+        done();
+      },
+      (error) => {
+        expect(error.message).toEqual(
+          "Received HTTP status code 401 when attempting geocoding request."
+        );
+        done();
+      }
+    );
   });
 });

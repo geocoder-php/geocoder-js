@@ -1,5 +1,11 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalLoader";
 import {
+  ExternalLoaderBody,
+  ExternalLoaderHeaders,
+  ExternalLoaderInterface,
+  ExternalLoaderParams,
+} from "ExternalLoader";
+import {
+  ErrorCallback,
   GeocodedResultsCallback,
   ProviderHelpers,
   ProviderInterface,
@@ -49,7 +55,9 @@ export interface BingResult {
   matchCodes: string[];
 }
 
-export default class BingProvider implements ProviderInterface {
+type BingGeocodedResultsCallback = GeocodedResultsCallback<Geocoded>;
+
+export default class BingProvider implements ProviderInterface<Geocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: ProviderOptionsInterface;
@@ -69,9 +77,16 @@ export default class BingProvider implements ProviderInterface {
 
   public geocode(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: BingGeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
+
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The Bing provider does not support IP geolocation, only location geocoding."
+      );
+    }
 
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
@@ -84,13 +99,14 @@ export default class BingProvider implements ProviderInterface {
       jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
 
-    this.executeRequest(params, callback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    longitudeOrCallback: number | string | BingGeocodedResultsCallback,
+    callbackOrErrorCallback?: BingGeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -98,7 +114,12 @@ export default class BingProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -114,20 +135,29 @@ export default class BingProvider implements ProviderInterface {
       jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
 
-    this.executeRequest(params, reverseCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback
+    callback: BingGeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
+    errorCallback?: ErrorCallback
   ): void {
-    this.externalLoader.executeRequest(params, (data) => {
-      callback(
-        data.resourceSets[0].resources.map((result: BingResult) =>
-          BingProvider.mapToGeocoded(result)
-        )
-      );
-    });
+    this.externalLoader.executeRequest(
+      params,
+      (data) => {
+        callback(
+          data.resourceSets[0].resources.map((result: BingResult) =>
+            BingProvider.mapToGeocoded(result)
+          )
+        );
+      },
+      headers,
+      body,
+      errorCallback
+    );
   }
 
   public static mapToGeocoded(result: BingResult): Geocoded {

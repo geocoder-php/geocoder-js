@@ -1,5 +1,11 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalLoader";
 import {
+  ExternalLoaderBody,
+  ExternalLoaderHeaders,
+  ExternalLoaderInterface,
+  ExternalLoaderParams,
+} from "ExternalLoader";
+import {
+  ErrorCallback,
   GeocodedResultsCallback,
   OpenCageGeocoded,
   OpenCageGeocodeQuery,
@@ -12,6 +18,7 @@ import {
   defaultProviderOptions,
 } from "provider";
 import AdminLevel from "AdminLevel";
+import { ResponseError } from "error";
 
 interface OpenCageRequestParams {
   [param: string]: string | undefined;
@@ -39,38 +46,6 @@ interface OpenCageSun {
   astronomical: number;
   civil: number;
   nautical: number;
-}
-
-interface OpenCageResponse {
-  documentation: string;
-  licences: {
-    name: string;
-    url: string;
-  }[];
-  rate: {
-    limit: number;
-    remaining: number;
-    reset: number;
-  };
-  results: OpenCageResult[];
-  status: {
-    code: 200 | 400 | 401 | 402 | 403 | 404 | 405 | 408 | 410 | 429 | 503;
-    message: string;
-  };
-  // eslint-disable-next-line camelcase
-  stay_informed: {
-    blog: string;
-    twitter: string;
-  };
-  thanks: string;
-  timestamp: {
-    // eslint-disable-next-line camelcase
-    created_http: string;
-    // eslint-disable-next-line camelcase
-    created_unix: number;
-  };
-  // eslint-disable-next-line camelcase
-  total_results: number;
 }
 
 export interface OpenCageResult {
@@ -260,6 +235,38 @@ export interface OpenCageResult {
   geometry: OpenCageCoordinates;
 }
 
+export interface OpenCageResponse {
+  documentation: string;
+  licences: {
+    name: string;
+    url: string;
+  }[];
+  rate: {
+    limit: number;
+    remaining: number;
+    reset: number;
+  };
+  results: OpenCageResult[];
+  status: {
+    code: 200 | 400 | 401 | 402 | 403 | 404 | 405 | 408 | 410 | 429 | 503;
+    message: string;
+  };
+  // eslint-disable-next-line camelcase
+  stay_informed: {
+    blog: string;
+    twitter: string;
+  };
+  thanks: string;
+  timestamp: {
+    // eslint-disable-next-line camelcase
+    created_http: string;
+    // eslint-disable-next-line camelcase
+    created_unix: number;
+  };
+  // eslint-disable-next-line camelcase
+  total_results: number;
+}
+
 export interface OpenCageProviderOptionsInterface
   extends ProviderOptionsInterface {
   readonly apiKey: string;
@@ -271,7 +278,12 @@ export const defaultOpenCageProviderOptions = {
   apiKey: "",
 };
 
-export default class OpenCageProvider implements ProviderInterface {
+type OpenCageGeocodedResultsCallback = GeocodedResultsCallback<
+  OpenCageGeocoded
+>;
+
+export default class OpenCageProvider
+  implements ProviderInterface<OpenCageGeocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: OpenCageProviderOptionsInterface;
@@ -291,12 +303,19 @@ export default class OpenCageProvider implements ProviderInterface {
 
   public geocode(
     query: string | OpenCageGeocodeQuery | OpenCageGeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: OpenCageGeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
       query,
       OpenCageGeocodeQuery
     );
+
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The OpenCage provider does not support IP geolocation, only location geocoding."
+      );
+    }
 
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
@@ -306,7 +325,7 @@ export default class OpenCageProvider implements ProviderInterface {
 
     const params: OpenCageRequestParams = this.withCommonParams(
       {
-        q: geocodeQuery.getText(),
+        q: geocodeQuery.getText() || "",
         bounds: geocodeQuery.getBounds()
           ? `${geocodeQuery.getBounds()?.west},${
               geocodeQuery.getBounds()?.south
@@ -323,7 +342,7 @@ export default class OpenCageProvider implements ProviderInterface {
       <OpenCageGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
@@ -332,8 +351,9 @@ export default class OpenCageProvider implements ProviderInterface {
       | string
       | OpenCageReverseQuery
       | OpenCageReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    longitudeOrCallback: number | string | OpenCageGeocodedResultsCallback,
+    callbackOrErrorCallback?: OpenCageGeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -342,7 +362,12 @@ export default class OpenCageProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -360,7 +385,7 @@ export default class OpenCageProvider implements ProviderInterface {
       <OpenCageReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   private withCommonParams(
@@ -383,7 +408,10 @@ export default class OpenCageProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback
+    callback: OpenCageGeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
+    errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
       params,
@@ -394,57 +422,56 @@ export default class OpenCageProvider implements ProviderInterface {
           )
         );
       },
-      {},
+      headers,
+      body,
       (error) => {
-        error
-          .getResponse()
-          .json()
-          .then((data: OpenCageResponse) => {
-            if (data.status) {
-              switch (data.status.code) {
-                case 400:
-                  throw new Error(
-                    `Invalid request (400): ${data.status.message}`
-                  );
-                case 401:
-                  throw new Error(
-                    `Unable to authenticate (401): ${data.status.message}`
-                  );
-                case 402:
-                  throw new Error(
-                    `Quota exceeded (402): ${data.status.message}`
-                  );
-                case 403:
-                  throw new Error(`Forbidden (403): ${data.status.message}`);
-                case 404:
-                  throw new Error(
-                    `Invalid API endpoint (404): ${data.status.message}`
-                  );
-                case 405:
-                  throw new Error(
-                    `Method not allowed (405): ${data.status.message}`
-                  );
-                case 408:
-                  throw new Error(`Timeout (408): ${data.status.message}`);
-                case 410:
-                  throw new Error(
-                    `Request too long (410): ${data.status.message}`
-                  );
-                case 429:
-                  throw new Error(
-                    `Too many requests (429): ${data.status.message}`
-                  );
-                case 503:
-                  throw new Error(
-                    `Internal server error (503): ${data.status.message}`
-                  );
-                default:
-                  throw new Error(
-                    `Error (${data.status.code}): ${data.status.message}`
-                  );
-              }
+        const response = <Response>error.getResponse();
+        response.json().then((data: OpenCageResponse) => {
+          if (data.status) {
+            let errorMessage: string;
+            switch (data.status.code) {
+              case 400:
+                errorMessage = `Invalid request (400): ${data.status.message}`;
+                break;
+              case 401:
+                errorMessage = `Unable to authenticate (401): ${data.status.message}`;
+                break;
+              case 402:
+                errorMessage = `Quota exceeded (402): ${data.status.message}`;
+                break;
+              case 403:
+                errorMessage = `Forbidden (403): ${data.status.message}`;
+                break;
+              case 404:
+                errorMessage = `Invalid API endpoint (404): ${data.status.message}`;
+                break;
+              case 405:
+                errorMessage = `Method not allowed (405): ${data.status.message}`;
+                break;
+              case 408:
+                errorMessage = `Timeout (408): ${data.status.message}`;
+                break;
+              case 410:
+                errorMessage = `Request too long (410): ${data.status.message}`;
+                break;
+              case 429:
+                errorMessage = `Too many requests (429): ${data.status.message}`;
+                break;
+              case 503:
+                errorMessage = `Internal server error (503): ${data.status.message}`;
+                break;
+              default:
+                errorMessage = `Error (${data.status.code}): ${data.status.message}`;
             }
-          });
+            if (errorCallback) {
+              errorCallback(new ResponseError(errorMessage, data));
+              return;
+            }
+            setTimeout(() => {
+              throw new Error(errorMessage);
+            });
+          }
+        });
       }
     );
   }

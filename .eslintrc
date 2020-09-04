@@ -13,7 +13,18 @@
   "ignorePatterns": ["/types/**/*.ts", "/website/vendor/**/*"],
   "rules": {
     "prettier/prettier": ["error"],
-    "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true }]
+    "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true }],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "mjs": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
   },
   "overrides": [
     {

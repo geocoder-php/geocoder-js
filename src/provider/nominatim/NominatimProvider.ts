@@ -1,9 +1,11 @@
 import {
+  ExternalLoaderBody,
   ExternalLoaderHeaders,
   ExternalLoaderInterface,
   ExternalLoaderParams,
 } from "ExternalLoader";
 import {
+  ErrorCallback,
   GeocodedResultsCallback,
   NominatimGeocoded,
   NominatimReverseQuery,
@@ -16,6 +18,7 @@ import {
   defaultProviderOptions,
 } from "provider";
 import AdminLevel from "AdminLevel";
+import { ResponseError } from "error";
 
 interface NominatimRequestParams {
   [param: string]: string | undefined;
@@ -34,6 +37,10 @@ interface NominatimRequestParams {
   readonly viewbox?: string;
   readonly bounded?: string;
   readonly jsonpCallback?: string;
+}
+
+interface NominatimErrorResponse {
+  error: string;
 }
 
 export interface NominatimResult {
@@ -74,6 +81,11 @@ export interface NominatimResult {
   };
 }
 
+export type NominatimResponse =
+  | NominatimErrorResponse
+  | NominatimResult
+  | NominatimResult[];
+
 export interface NominatimProviderOptionsInterface
   extends ProviderOptionsInterface {
   readonly host?: string;
@@ -87,7 +99,12 @@ export const defaultNominatimProviderOptions = {
   userAgent: "",
 };
 
-export default class NominatimProvider implements ProviderInterface {
+type NominatimGeocodedResultsCallback = GeocodedResultsCallback<
+  NominatimGeocoded
+>;
+
+export default class NominatimProvider
+  implements ProviderInterface<NominatimGeocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: NominatimProviderOptionsInterface;
@@ -110,12 +127,19 @@ export default class NominatimProvider implements ProviderInterface {
 
   public geocode(
     query: string | NominatimGeocodeQuery | NominatimGeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: NominatimGeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
       query,
       NominatimGeocodeQuery
     );
+
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The OpenStreetMap / Nominatim provider does not support IP geolocation, only location geocoding."
+      );
+    }
 
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
@@ -147,7 +171,7 @@ export default class NominatimProvider implements ProviderInterface {
       <NominatimGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback, this.getHeaders());
+    this.executeRequest(params, callback, this.getHeaders(), {}, errorCallback);
   }
 
   public geodecode(
@@ -156,8 +180,9 @@ export default class NominatimProvider implements ProviderInterface {
       | string
       | NominatimReverseQuery
       | NominatimReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    longitudeOrCallback: number | string | NominatimGeocodedResultsCallback,
+    callbackOrErrorCallback?: NominatimGeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -166,7 +191,12 @@ export default class NominatimProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -185,7 +215,13 @@ export default class NominatimProvider implements ProviderInterface {
       <NominatimReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback, this.getHeaders());
+    this.executeRequest(
+      params,
+      reverseCallback,
+      this.getHeaders(),
+      {},
+      reverseErrorCallback
+    );
   }
 
   private withCommonParams(
@@ -210,26 +246,40 @@ export default class NominatimProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback,
-    headers?: ExternalLoaderHeaders
+    callback: NominatimGeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
+    errorCallback?: ErrorCallback
   ): void {
     this.externalLoader.executeRequest(
       params,
-      (data) => {
+      (data: NominatimResponse) => {
         let results = data;
         if (!Array.isArray(data)) {
-          if (data.error) {
-            throw new Error(`An error has occurred: ${data.error}`);
+          if ((<NominatimErrorResponse>data).error) {
+            const errorMessage = `An error has occurred: ${
+              (<NominatimErrorResponse>data).error
+            }`;
+            if (errorCallback) {
+              errorCallback(new ResponseError(errorMessage, data));
+              return;
+            }
+            setTimeout(() => {
+              throw new Error(errorMessage);
+            });
+            return;
           }
-          results = [data];
+          results = [<NominatimResult>data];
         }
         callback(
-          results.map((result: NominatimResult) =>
+          (<NominatimResult[]>results).map((result: NominatimResult) =>
             NominatimProvider.mapToGeocoded(result)
           )
         );
       },
-      headers
+      headers,
+      body,
+      errorCallback
     );
   }
 

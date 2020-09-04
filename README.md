@@ -2,12 +2,15 @@ GeocoderJS
 ==========
 
 [![CI](https://github.com/geocoder-php/geocoder-js/workflows/Continuous%20Integration/badge.svg?branch=main&event=push)](https://github.com/geocoder-php/geocoder-js/actions)
+[![codecov](https://codecov.io/gh/geocoder-php/geocoder-js/branch/main/graph/badge.svg)](https://codecov.io/gh/geocoder-php/geocoder-js)
 
 GeocoderJS is a universal JavaScript library for client-side geocoding applications with multiple built-in providers.
 
+Depending of the chosen provider, it can use geocoding, reverse geocoding or IP geolocation.
+
 It is a port of the [Geocoder PHP](https://geocoder-php.org/) library.
 
-This library is platform agnostic: it is available either server-side (Node) or client-side (browsers, React Native, Electron).
+This library is platform agnostic: it is available either server-side (**Node**) or client-side (**browsers**, **React Native**, **Electron**).
 
 Installation
 ------------
@@ -91,6 +94,7 @@ googleGeocoder.geodecode(reverseQuery, (result) => {
 ### Common `geocode` parameters (`GeocodeQuery` object)
 
 - `text`: what is searched
+- `ip`: the IP searched
 - `south`, `west`, `north`, `east` (`withBounds` method): the bounds to use
 - `locale`: the locale to use for the query
 - `limit`: the maximum number of results to have
@@ -123,12 +127,10 @@ The following table summarizes the features of each:
   <thead>
     <tr>
       <th>Provider</th>
-      <th>Name</th>
-      <th>Works in browsers?</th>
-      <th>Works in Node?</th>
-      <th>Works in React Native?</th>
-      <th>Works in Electron?</th>
+      <th>Codename</th>
+      <th>Supports location geocoding?</th>
       <th>Supports reverse geocoding?</th>
+      <th>Supports IP geolocation?</th>
     </tr>
   </thead>
   <tbody>
@@ -137,62 +139,55 @@ The following table summarizes the features of each:
       <td>openstreetmap or nominatim</td>
       <td>✅️ yes</td>
       <td>✅️ yes</td>
-      <td>❓️ untested</td>
-      <td>❓️ untested</td>
-      <td>✅️ yes</td>
+      <td>❌️ no</td>
     </tr>
     <tr>
       <td>OpenCage</td>
       <td>opencage</td>
       <td>✅️ yes</td>
       <td>✅️ yes</td>
-      <td>❓️ untested</td>
-      <td>❓️ untested</td>
-      <td>✅️ yes</td>
+      <td>❌️ no</td>
     </tr>
     <tr>
       <td>Google Maps (Geocoding API)</td>
       <td>google or googlemaps</td>
       <td>✅️ yes</td>
       <td>✅️ yes</td>
-      <td>❓️ untested</td>
-      <td>❓️ untested</td>
-      <td>✅️ yes</td>
+      <td>❌️ no</td>
     </tr>
     <tr>
       <td>Mapbox</td>
       <td>mapbox</td>
       <td>✅️ yes</td>
       <td>✅️ yes</td>
-      <td>❓️ untested</td>
-      <td>❓️ untested</td>
-      <td>✅️ yes</td>
+      <td>❌️ no</td>
     </tr>
     <tr>
       <td>MapQuest</td>
       <td>mapquest</td>
       <td>✅️ yes</td>
       <td>✅️ yes</td>
-      <td>❓️ untested</td>
-      <td>❓️ untested</td>
-      <td>✅️ yes</td>
+      <td>❌️ no</td>
     </tr>
     <tr>
       <td>Bing</td>
       <td>bing</td>
       <td>✅️ yes</td>
       <td>✅️ yes</td>
-      <td>❓️ untested</td>
-      <td>❓️ untested</td>
-      <td>✅️ yes</td>
+      <td>❌️ no</td>
     </tr>
     <tr>
       <td>Yandex</td>
       <td>yandex</td>
       <td>✅️ yes</td>
       <td>✅️ yes</td>
-      <td>❓️ untested</td>
-      <td>❓️ untested</td>
+      <td>❌️ no</td>
+    </tr>
+    <tr>
+      <td>GeoPlugin</td>
+      <td>geoplugin</td>
+      <td>❌️ no</td>
+      <td>❌️ no</td>
       <td>✅️ yes</td>
     </tr>
   </tbody>
@@ -201,6 +196,13 @@ The following table summarizes the features of each:
 ### Specific Provider Usage
 
 The documentation for specific provider options, parameters and results can be found [here](docs/provider_usage.md).
+
+Special Providers
+-----------------
+
+A `chain` provider is available: it iterates over multiple providers.
+
+For more information, see [its documentation](docs/provider_usage/chain.md).
 
 Dumpers
 -------
@@ -234,10 +236,16 @@ npm run build
 Testing
 -------
 
-Unit tests are handled by Jasmine. To run unit tests from the command line, use:
+Unit and functional tests are handled by Jasmine. To run tests from the command line, use:
 
 ```shell
 npm test
+```
+
+If you need to record new API calls, use:
+
+```shell
+npm run test-record
 ```
 
 You can also check if the examples are running correctly.

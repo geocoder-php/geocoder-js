@@ -1,11 +1,9 @@
 import { DEFAULT_RESULT_LIMIT } from "provider";
-import { PartialSome } from "types";
 import { Bounds } from "index";
 
-type GeocodeQueryObjectCreate = PartialSome<GeocodeQueryObject, "limit">;
-
 export interface GeocodeQueryObject {
-  readonly text: string;
+  readonly text?: string;
+  readonly ip?: string;
   readonly south?: number | string;
   readonly west?: number | string;
   readonly north?: number | string;
@@ -15,7 +13,9 @@ export interface GeocodeQueryObject {
 }
 
 export default class GeocodeQuery {
-  private readonly text: string;
+  private readonly text?: string;
+
+  private readonly ip?: string;
 
   private readonly south?: number | string;
 
@@ -31,14 +31,19 @@ export default class GeocodeQuery {
 
   protected constructor({
     text,
+    ip,
     south,
     west,
     north,
     east,
     locale,
     limit = DEFAULT_RESULT_LIMIT,
-  }: GeocodeQueryObjectCreate) {
+  }: GeocodeQueryObject) {
     this.text = text;
+    this.ip = ip;
+    if (!text && !ip) {
+      throw new Error('Either "text" or "ip" parameter is required.');
+    }
     this.south = south;
     this.west = west;
     this.north = north;
@@ -47,13 +52,14 @@ export default class GeocodeQuery {
     this.limit = limit;
   }
 
-  public static create(object: GeocodeQueryObjectCreate): GeocodeQuery {
+  public static create(object: GeocodeQueryObject): GeocodeQuery {
     return new this(object);
   }
 
   public toObject(): GeocodeQueryObject {
     return {
       text: this.text,
+      ip: this.ip,
       south: this.south,
       west: this.west,
       north: this.north,
@@ -67,6 +73,13 @@ export default class GeocodeQuery {
     return (<typeof GeocodeQuery>this.constructor).create({
       ...this.toObject(),
       text,
+    });
+  }
+
+  public withIp(ip: string): GeocodeQuery {
+    return (<typeof GeocodeQuery>this.constructor).create({
+      ...this.toObject(),
+      ip,
     });
   }
 
@@ -99,8 +112,12 @@ export default class GeocodeQuery {
     });
   }
 
-  public getText(): string {
+  public getText(): undefined | string {
     return this.text;
+  }
+
+  public getIp(): undefined | string {
+    return this.ip;
   }
 
   public getBounds(): undefined | Bounds {

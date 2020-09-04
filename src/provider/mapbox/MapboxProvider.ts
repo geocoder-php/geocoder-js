@@ -1,5 +1,11 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalLoader";
 import {
+  ExternalLoaderBody,
+  ExternalLoaderHeaders,
+  ExternalLoaderInterface,
+  ExternalLoaderParams,
+} from "ExternalLoader";
+import {
+  ErrorCallback,
   GeocodedResultsCallback,
   MapboxGeocoded,
   MapboxGeocodeQuery,
@@ -12,7 +18,7 @@ import {
   defaultProviderOptions,
 } from "provider";
 import { Box } from "types";
-import AdminLevel from "AdminLevel";
+import AdminLevel, { ADMIN_LEVEL_CODES } from "AdminLevel";
 
 interface MapboxRequestParams {
   [param: string]: string | undefined;
@@ -25,13 +31,6 @@ interface MapboxRequestParams {
   readonly proximity?: string;
   readonly reverseMode?: "distance" | "score";
   readonly types?: string;
-}
-
-interface MapboxResponse {
-  type: "FeatureCollection";
-  query: string[];
-  features: MapboxResult[];
-  attribution: string;
 }
 
 interface MapboxFeatureContextProperties {
@@ -93,6 +92,14 @@ export interface MapboxResult {
   };
 }
 
+export interface MapboxResponse {
+  type: "FeatureCollection";
+  query: string[];
+  features: MapboxResult[];
+  attribution: string;
+}
+
+// eslint-disable-next-line no-shadow
 export enum MAPBOX_GEOCODING_MODES {
   GEOCODING_MODE_PLACES = "mapbox.places",
   GEOCODING_MODE_PLACES_PERMANENT = "mapbox.places-permanent",
@@ -111,7 +118,10 @@ export const defaultMapboxProviderOptions = {
   geocodingMode: MAPBOX_GEOCODING_MODES.GEOCODING_MODE_PLACES,
 };
 
-export default class MapboxProvider implements ProviderInterface {
+type MapboxGeocodedResultsCallback = GeocodedResultsCallback<MapboxGeocoded>;
+
+export default class MapboxProvider
+  implements ProviderInterface<MapboxGeocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: MapboxProviderOptionsInterface;
@@ -131,12 +141,19 @@ export default class MapboxProvider implements ProviderInterface {
 
   public geocode(
     query: string | MapboxGeocodeQuery | MapboxGeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: MapboxGeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
       query,
       MapboxGeocodeQuery
     );
+
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The Mapbox provider does not support IP geolocation, only location geocoding."
+      );
+    }
 
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
@@ -167,7 +184,7 @@ export default class MapboxProvider implements ProviderInterface {
       <MapboxGeocodeQuery>geocodeQuery
     );
 
-    this.executeRequest(params, callback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
@@ -176,8 +193,9 @@ export default class MapboxProvider implements ProviderInterface {
       | string
       | MapboxReverseQuery
       | MapboxReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    longitudeOrCallback: number | string | MapboxGeocodedResultsCallback,
+    callbackOrErrorCallback?: MapboxGeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -186,7 +204,12 @@ export default class MapboxProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -209,7 +232,7 @@ export default class MapboxProvider implements ProviderInterface {
       <MapboxReverseQuery>reverseQuery
     );
 
-    this.executeRequest(params, reverseCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   private withCommonParams(
@@ -232,15 +255,24 @@ export default class MapboxProvider implements ProviderInterface {
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback
+    callback: MapboxGeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
+    errorCallback?: ErrorCallback
   ): void {
-    this.externalLoader.executeRequest(params, (data: MapboxResponse) => {
-      callback(
-        data.features.map((result: MapboxResult) =>
-          MapboxProvider.mapToGeocoded(result)
-        )
-      );
-    });
+    this.externalLoader.executeRequest(
+      params,
+      (data: MapboxResponse) => {
+        callback(
+          data.features.map((result: MapboxResult) =>
+            MapboxProvider.mapToGeocoded(result)
+          )
+        );
+      },
+      headers,
+      body,
+      errorCallback
+    );
   }
 
   public static mapToGeocoded(result: MapboxResult): MapboxGeocoded {
@@ -268,7 +300,7 @@ export default class MapboxProvider implements ProviderInterface {
           locality = feature.text;
           adminLevels.push(
             AdminLevel.create({
-              level: 2,
+              level: ADMIN_LEVEL_CODES.COUNTY_CODE,
               name: locality,
             })
           );
@@ -284,7 +316,7 @@ export default class MapboxProvider implements ProviderInterface {
           }
           adminLevels.push(
             AdminLevel.create({
-              level: 1,
+              level: ADMIN_LEVEL_CODES.STATE_CODE,
               name: region,
               code: adminLevelCode,
             })

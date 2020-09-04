@@ -1,5 +1,11 @@
-import { ExternalLoaderInterface, ExternalLoaderParams } from "ExternalLoader";
 import {
+  ExternalLoaderBody,
+  ExternalLoaderHeaders,
+  ExternalLoaderInterface,
+  ExternalLoaderParams,
+} from "ExternalLoader";
+import {
+  ErrorCallback,
   GeocodedResultsCallback,
   ProviderHelpers,
   ProviderInterface,
@@ -22,10 +28,6 @@ interface YandexRequestParams {
   readonly lang?: string;
   readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
   readonly jsonpCallback?: string;
-}
-
-interface YandexCollectionResult {
-  GeoObject: YandexResult;
 }
 
 export interface YandexResult {
@@ -71,6 +73,10 @@ export interface YandexResult {
   };
 }
 
+interface YandexCollectionResult {
+  GeoObject: YandexResult;
+}
+
 interface YandexFlattenedAddressDetails {
   CountryNameCode?: string;
   CountryName?: string;
@@ -86,7 +92,9 @@ export interface YandexProviderOptionsInterface
   readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
 }
 
-export default class YandexProvider implements ProviderInterface {
+type YandexGeocodedResultsCallback = GeocodedResultsCallback<Geocoded>;
+
+export default class YandexProvider implements ProviderInterface<Geocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: YandexProviderOptionsInterface;
@@ -101,9 +109,16 @@ export default class YandexProvider implements ProviderInterface {
 
   public geocode(
     query: string | GeocodeQuery | GeocodeQueryObject,
-    callback: GeocodedResultsCallback
+    callback: YandexGeocodedResultsCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
+
+    if (geocodeQuery.getIp()) {
+      throw new Error(
+        "The Yandex provider does not support IP geolocation, only location geocoding."
+      );
+    }
 
     this.externalLoader.setOptions({
       protocol: this.options.useSsl ? "https" : "http",
@@ -113,19 +128,20 @@ export default class YandexProvider implements ProviderInterface {
 
     const params: YandexRequestParams = {
       apikey: this.options.apiKey,
-      geocode: geocodeQuery.getText(),
+      geocode: geocodeQuery.getText() || "",
       format: "json",
       lang: geocodeQuery.getLocale(),
       jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
-    this.executeRequest(params, callback);
+    this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
+    longitudeOrCallback: number | string | YandexGeocodedResultsCallback,
+    callbackOrErrorCallback?: YandexGeocodedResultsCallback | ErrorCallback,
+    errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
@@ -133,7 +149,12 @@ export default class YandexProvider implements ProviderInterface {
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
-      callback
+      callbackOrErrorCallback
+    );
+    const reverseErrorCallback = ProviderHelpers.getErrorCallbackFromParameters(
+      longitudeOrCallback,
+      callbackOrErrorCallback,
+      errorCallback
     );
 
     this.externalLoader.setOptions({
@@ -153,21 +174,30 @@ export default class YandexProvider implements ProviderInterface {
       jsonpCallback: this.options.useJsonp ? "callback" : undefined,
     };
 
-    this.executeRequest(params, reverseCallback);
+    this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
   }
 
   public executeRequest(
     params: ExternalLoaderParams,
-    callback: GeocodedResultsCallback
+    callback: YandexGeocodedResultsCallback,
+    headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
+    errorCallback?: ErrorCallback
   ): void {
-    this.externalLoader.executeRequest(params, (data) => {
-      callback(
-        data.response.GeoObjectCollection.featureMember.map(
-          (result: YandexCollectionResult) =>
-            YandexProvider.mapToGeocoded(result.GeoObject)
-        )
-      );
-    });
+    this.externalLoader.executeRequest(
+      params,
+      (data) => {
+        callback(
+          data.response.GeoObjectCollection.featureMember.map(
+            (result: YandexCollectionResult) =>
+              YandexProvider.mapToGeocoded(result.GeoObject)
+          )
+        );
+      },
+      headers,
+      body,
+      errorCallback
+    );
   }
 
   public static mapToGeocoded(result: YandexResult): Geocoded {
@@ -212,8 +242,8 @@ export default class YandexProvider implements ProviderInterface {
   }
 
   private static flattenObject<
-    O extends { [key: string]: O[keyof O] | S },
-    S extends string | string[]
+    S extends string | string[],
+    O extends { [key: string]: O[keyof O] | S }
   >(object: O) {
     const flattened: { [key: string]: S } = {};
 

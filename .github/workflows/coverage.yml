@@ -1,0 +1,26 @@
+name: Coverage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  coverage:
+    name: Measure coverage and upload it
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests with coverage
+        run: npm run coverage-lcov
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./coverage

@@ -1,91 +1,128 @@
-import { YandexProvider, YandexResult } from "provider";
-import Geocoded from "Geocoded";
+import GeocoderJS from "GeocoderJS";
+import setupPolly, { cleanRecording } from "../setupPolly";
 
-describe("Yandex Geocoder Provider raw result to Geocoded mapping", () => {
-  let geocoded: Geocoded;
-
-  const stubYandexResult: YandexResult = {
-    metaDataProperty: {
-      GeocoderMetaData: {
-        kind: "house",
-        text:
-          "United States, District of Columbia, Washington, Pennsylvania Ave NW, 1600",
-        precision: "exact",
-        AddressDetails: {
-          Country: {
-            AddressLine:
-              "District of Columbia, Washington, Pennsylvania Ave NW, 1600",
-            CountryNameCode: "US",
-            CountryName: "United States",
-            AdministrativeArea: {
-              AdministrativeAreaName: "District of Columbia",
-              SubAdministrativeArea: {
-                SubAdministrativeAreaName: "District of Columbia",
-                Locality: {
-                  LocalityName: "Washington",
-                  Thoroughfare: {
-                    ThoroughfareName: "Pennsylvania Ave NW",
-                    Premise: {
-                      PremiseNumber: "1600",
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    description: "Washington, District of Columbia, United States",
-    name: "Pennsylvania Ave NW, 1600",
-    boundedBy: {
-      Envelope: {
-        lowerCorner: "-77.046921 38.891265",
-        upperCorner: "-77.030464 38.904125",
-      },
-    },
-    Point: {
-      pos: "-77.038692 38.897695",
-    },
-  };
+describe("Yandex Geocoder Provider", () => {
+  const pollyContext = setupPolly();
 
   beforeEach(() => {
-    geocoded = YandexProvider.mapToGeocoded(stubYandexResult);
+    cleanRecording(pollyContext);
   });
 
-  it("receives results from the Yandex geocoder", () => {
-    expect(geocoded).toBeDefined();
+  afterEach(async () => {
+    await pollyContext.polly.flush();
   });
 
-  it("maps coordinates correctly", () => {
-    expect(geocoded.getCoordinates()).toEqual([38.897695, -77.038692]);
+  it("expects to not support IP geolocation", () => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "yandex",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    expect(() =>
+      provider?.geocode(
+        "66.147.244.214",
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        () => {}
+      )
+    ).toThrowError(
+      Error,
+      "The Yandex provider does not support IP geolocation, only location geocoding."
+    );
   });
 
-  it("maps street number correctly", () => {
-    expect(geocoded.getStreetNumber()).toEqual("1600");
+  it("receives correct geocoding results", (done) => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "yandex",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    provider?.geocode(
+      { text: "1600 Pennsylvania Ave, Washington, DC", locale: "en_US" },
+      (results) => {
+        const geocoded = results[0];
+
+        expect(geocoded).toBeDefined();
+        expect(geocoded.getCoordinates()).toEqual([38.895512, -77.033608]);
+        expect(geocoded.getBounds()).toEqual([
+          38.890612,
+          -77.058105,
+          38.905248,
+          -77.012426,
+        ]);
+        expect(geocoded.getFormattedAddress()).toEqual(undefined);
+        expect(geocoded.getStreetNumber()).toEqual(undefined);
+        expect(geocoded.getStreetName()).toEqual(
+          "Pennsylvania Avenue Northwest"
+        );
+        expect(geocoded.getSubLocality()).toEqual(undefined);
+        expect(geocoded.getLocality()).toEqual("Washington");
+        expect(geocoded.getPostalCode()).toEqual(undefined);
+        expect(geocoded.getRegion()).toEqual("District of Columbia");
+        expect(geocoded.getAdminLevels()).toEqual([]);
+        expect(geocoded.getCountry()).toEqual("United States of America");
+        expect(geocoded.getCountryCode()).toEqual("US");
+
+        done();
+      }
+    );
   });
 
-  it("maps street name correctly", () => {
-    expect(geocoded.getStreetName()).toEqual("Pennsylvania Ave NW");
+  it("receives correct geodecoding results", (done) => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "yandex",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+
+    provider?.geodecode(
+      { latitude: 48.8631507, longitude: 2.388911, locale: "en_US" },
+      (results) => {
+        const geocoded = results[0];
+
+        expect(geocoded).toBeDefined();
+        expect(geocoded.getCoordinates()).toEqual([48.8631, 2.388899]);
+        expect(geocoded.getBounds()).toEqual([
+          48.860391,
+          2.384794,
+          48.865808,
+          2.393004,
+        ]);
+        expect(geocoded.getFormattedAddress()).toEqual(undefined);
+        expect(geocoded.getStreetNumber()).toEqual("10");
+        expect(geocoded.getStreetName()).toEqual("Avenue Gambetta");
+        expect(geocoded.getSubLocality()).toEqual("20e Arrondissement");
+        expect(geocoded.getLocality()).toEqual("Paris");
+        expect(geocoded.getPostalCode()).toEqual(undefined);
+        expect(geocoded.getRegion()).toEqual("Île-de-France");
+        expect(geocoded.getAdminLevels()).toEqual([]);
+        expect(geocoded.getCountry()).toEqual("France");
+        expect(geocoded.getCountryCode()).toEqual("FR");
+
+        done();
+      }
+    );
   });
 
-  it("maps sublocality correctly", () => {
-    expect(geocoded.getSubLocality()).toEqual(undefined);
-  });
+  it("receives error when the API key is bad", (done) => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "yandex",
+      useSsl: true,
+      apiKey: "api_key",
+    });
 
-  it("maps locality correctly", () => {
-    expect(geocoded.getLocality()).toEqual("Washington");
-  });
-
-  it("maps region correctly", () => {
-    expect(geocoded.getRegion()).toEqual("District of Columbia");
-  });
-
-  it("maps country correctly", () => {
-    expect(geocoded.getCountry()).toEqual("United States");
-  });
-
-  it("maps country code correctly", () => {
-    expect(geocoded.getCountryCode()).toEqual("US");
+    provider?.geocode(
+      "1600 Pennsylvania Ave, Washington, DC",
+      () => {
+        done();
+      },
+      (error) => {
+        expect(error.message).toEqual(
+          "Received HTTP status code 403 when attempting geocoding request."
+        );
+        done();
+      }
+    );
   });
 });

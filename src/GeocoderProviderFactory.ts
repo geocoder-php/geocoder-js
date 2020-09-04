@@ -1,10 +1,14 @@
 import {
   BingProvider,
+  ChainProvider,
+  ChainProviderOptionsInterface,
+  GeoPluginProvider,
   GoogleMapsProvider,
   GoogleMapsProviderOptionsInterface,
   MapboxProvider,
   MapboxProviderOptionsInterface,
-  MapquestProvider,
+  MapQuestProvider,
+  MapQuestProviderOptionsInterface,
   NominatimProvider,
   NominatimProviderOptionsInterface,
   OpenCageProvider,
@@ -12,7 +16,9 @@ import {
   YandexProvider,
   YandexProviderOptionsInterface,
   ProviderOptionsInterface,
+  defaultChainProviderOptions,
   defaultMapboxProviderOptions,
+  defaultMapQuestProviderOptions,
   defaultNominatimProviderOptions,
   defaultOpenCageProviderOptions,
   defaultProviderOptions,
@@ -22,6 +28,8 @@ import ExternalLoader from "ExternalLoader";
 interface ProviderOptionInterface {
   provider:
     | "bing"
+    | "chain"
+    | "geoplugin"
     | "google"
     | "googlemaps"
     | "mapbox"
@@ -36,6 +44,17 @@ interface ProviderFactoryOptions
   extends ProviderOptionsInterface,
     ProviderOptionInterface {}
 
+interface ChainGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    ChainProviderOptionsInterface {
+  provider: "chain";
+}
+
+interface GeoPluginGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface {
+  provider: "geoplugin";
+}
+
 interface GoogleMapsGeocoderProviderFactoryOptions
   extends ProviderOptionInterface,
     GoogleMapsProviderOptionsInterface {
@@ -46,6 +65,12 @@ interface MapboxGeocoderProviderFactoryOptions
   extends ProviderOptionInterface,
     MapboxProviderOptionsInterface {
   provider: "mapbox";
+}
+
+interface MapQuestGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    MapQuestProviderOptionsInterface {
+  provider: "mapquest";
 }
 
 interface NominatimGeocoderProviderFactoryOptions
@@ -68,27 +93,38 @@ interface YandexGeocoderProviderFactoryOptions
 
 export type GeocoderProviderFactoryOptions =
   | ProviderFactoryOptions
+  | ChainGeocoderProviderFactoryOptions
+  | GeoPluginGeocoderProviderFactoryOptions
   | GoogleMapsGeocoderProviderFactoryOptions
   | MapboxGeocoderProviderFactoryOptions
+  | MapQuestGeocoderProviderFactoryOptions
   | NominatimGeocoderProviderFactoryOptions
   | OpenCageGeocoderProviderFactoryOptions
   | YandexGeocoderProviderFactoryOptions;
 
 export type GeocoderProvider =
   | BingProvider
+  | ChainProvider
+  | GeoPluginProvider
   | GoogleMapsProvider
   | MapboxProvider
-  | MapquestProvider
+  | MapQuestProvider
   | NominatimProvider
   | OpenCageProvider
   | YandexProvider;
 
 export type GeocoderProviderByOptionsType<
   O
-> = O extends GoogleMapsGeocoderProviderFactoryOptions
+> = O extends ChainGeocoderProviderFactoryOptions
+  ? ChainProvider
+  : O extends GeoPluginGeocoderProviderFactoryOptions
+  ? GeoPluginProvider
+  : O extends GoogleMapsGeocoderProviderFactoryOptions
   ? GoogleMapsProvider
   : O extends MapboxGeocoderProviderFactoryOptions
   ? MapboxProvider
+  : O extends MapQuestGeocoderProviderFactoryOptions
+  ? MapQuestProvider
   : O extends NominatimGeocoderProviderFactoryOptions
   ? NominatimProvider
   : O extends OpenCageGeocoderProviderFactoryOptions
@@ -124,6 +160,15 @@ export default class ProviderFactory {
         return <GeocoderProviderByOptionsType<O>>(
           new BingProvider(externalLoader, providerOptions)
         );
+      case "chain":
+        return <GeocoderProviderByOptionsType<O>>new ChainProvider({
+          ...defaultChainProviderOptions,
+          ...providerOptions,
+        });
+      case "geoplugin":
+        return <GeocoderProviderByOptionsType<O>>(
+          new GeoPluginProvider(externalLoader, providerOptions)
+        );
       case "google":
       case "googlemaps":
         return <GeocoderProviderByOptionsType<O>>(
@@ -138,7 +183,10 @@ export default class ProviderFactory {
         );
       case "mapquest":
         return <GeocoderProviderByOptionsType<O>>(
-          new MapquestProvider(externalLoader, providerOptions)
+          new MapQuestProvider(externalLoader, {
+            ...defaultMapQuestProviderOptions,
+            ...providerOptions,
+          })
         );
       case "openstreetmap":
       case "nominatim":

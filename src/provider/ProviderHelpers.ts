@@ -1,10 +1,12 @@
-import { GeocodedResultsCallback } from "provider";
+import { ErrorCallback, GeocodedResultsCallback } from "provider";
+import Geocoded from "Geocoded";
 import {
   GeocodeQuery,
   GeocodeQueryObject,
   ReverseQuery,
   ReverseQueryObject,
 } from "query";
+import { isIpv4, isIpv6 } from "utils";
 
 export default class ProviderHelpers {
   public static getGeocodeQueryFromParameter(
@@ -12,6 +14,9 @@ export default class ProviderHelpers {
     geocodeQuery = GeocodeQuery
   ): GeocodeQuery {
     if (typeof query === "string") {
+      if (isIpv4(query) || isIpv6(query)) {
+        return geocodeQuery.create({ ip: query });
+      }
       return geocodeQuery.create({ text: query });
     }
     if (!(query instanceof geocodeQuery)) {
@@ -21,9 +26,9 @@ export default class ProviderHelpers {
     return query;
   }
 
-  public static getReverseQueryFromParameters(
+  public static getReverseQueryFromParameters<G extends Geocoded>(
     latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
+    longitudeOrCallback: number | string | GeocodedResultsCallback<G>,
     reverseQuery = ReverseQuery
   ): ReverseQuery {
     if (
@@ -52,10 +57,10 @@ export default class ProviderHelpers {
     return latitudeOrQuery;
   }
 
-  public static getCallbackFromParameters(
-    longitudeOrCallback: number | string | GeocodedResultsCallback,
-    callback?: GeocodedResultsCallback
-  ): GeocodedResultsCallback {
+  public static getCallbackFromParameters<G extends Geocoded>(
+    longitudeOrCallback: number | string | GeocodedResultsCallback<G>,
+    callbackOrErrorCallback?: GeocodedResultsCallback<G> | ErrorCallback
+  ): GeocodedResultsCallback<G> {
     if (
       !(
         typeof longitudeOrCallback === "number" ||
@@ -64,12 +69,31 @@ export default class ProviderHelpers {
     ) {
       return longitudeOrCallback;
     }
-    if (callback) {
-      return callback;
+    if (callbackOrErrorCallback) {
+      return <GeocodedResultsCallback<G>>callbackOrErrorCallback;
     }
 
     throw new Error(
       "A callback must be set at the last parameter of geodecode"
     );
+  }
+
+  public static getErrorCallbackFromParameters<G extends Geocoded>(
+    longitudeOrCallback: number | string | GeocodedResultsCallback<G>,
+    callbackOrErrorCallback?: GeocodedResultsCallback<G> | ErrorCallback,
+    errorCallback?: ErrorCallback
+  ): undefined | ErrorCallback {
+    if (errorCallback) {
+      return errorCallback;
+    }
+
+    if (
+      typeof longitudeOrCallback === "number" ||
+      typeof longitudeOrCallback === "string"
+    ) {
+      return undefined;
+    }
+
+    return <undefined | ErrorCallback>callbackOrErrorCallback;
   }
 }

@@ -1,4 +1,7 @@
 node_modules
-/dist
 /.couscous
+/.nyc_output
+/coverage
+/dist
+/types
 /website/vendor

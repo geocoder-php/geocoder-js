@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.0
+
+* [MapQuest] Better MapQuest provider
+
+## 0.5.0
+
+* Add special chain provider
+* Add GeoPlugin provider
+* Add `errorCallback` parameter to `geocode` and `geodecode`
+* Add `body` parameter to `executeRequest`
+* [MapQuest] Fix geocode request (bad encoded query)
+
 ## 0.4.0
 
 * [Google] Better Google Maps provider
