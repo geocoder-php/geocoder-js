@@ -1,4 +1,4 @@
 {
   "cache": false,
-  "exclude": ["spec/**", "**/index.ts", "**/AdminLevel.ts", "**/*Geocoded.ts", "**/*GeocodeQuery.ts", "**/*ReverseQuery.ts", "**/ResponseError.ts"]
+  "exclude": ["spec/**", "**/index.ts", "**/AdminLevel.ts", "**/*Geocoded.ts", "**/*GeocodeQuery.ts", "**/*ReverseQuery.ts", "**/ResponseError.ts", "src/provider/mapquest/MapQuestLocation.ts"]
 }
