@@ -4,18 +4,6 @@ import { ResponseError } from "error";
 import { isBrowser, filterUndefinedObjectValues } from "utils";
 import { PartialSome } from "types";
 
-export interface ExternalLoaderInterface {
-  setOptions(options: PartialSome<ExternalLoaderOptions, "method">): void;
-  getOptions(): ExternalLoaderOptions;
-  executeRequest(
-    params: ExternalLoaderParams,
-    callback: ResponseCallback,
-    headers?: ExternalLoaderHeaders,
-    body?: ExternalLoaderBody,
-    errorCallback?: ErrorCallback
-  ): void;
-}
-
 export interface ExternalLoaderOptions {
   readonly protocol: string;
   readonly host?: string;
@@ -24,7 +12,7 @@ export interface ExternalLoaderOptions {
 }
 
 export interface ExternalLoaderBody {
-  [param: string]: string | undefined;
+  [param: string]: ExternalLoaderBody | string | number | undefined;
 }
 
 export interface ExternalLoaderParams {
@@ -38,6 +26,18 @@ export interface ExternalLoaderHeaders {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ResponseCallback = (response: any) => void;
+
+export interface ExternalLoaderInterface {
+  setOptions(options: PartialSome<ExternalLoaderOptions, "method">): void;
+  getOptions(): ExternalLoaderOptions;
+  executeRequest(
+    params: ExternalLoaderParams,
+    callback: ResponseCallback,
+    headers?: ExternalLoaderHeaders,
+    body?: ExternalLoaderBody,
+    errorCallback?: ErrorCallback
+  ): void;
+}
 
 const defaultOptions: ExternalLoaderOptions = {
   protocol: "http",

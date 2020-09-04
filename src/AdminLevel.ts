@@ -4,6 +4,12 @@ export interface AdminLevelObject {
   readonly code?: string;
 }
 
+// eslint-disable-next-line no-shadow
+export enum ADMIN_LEVEL_CODES {
+  STATE_CODE = 1,
+  COUNTY_CODE = 2,
+}
+
 export default class AdminLevel {
   private readonly level: number;
 

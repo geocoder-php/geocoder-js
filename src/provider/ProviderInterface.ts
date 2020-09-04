@@ -14,16 +14,16 @@ import { ResponseError } from "error";
 
 export const DEFAULT_RESULT_LIMIT = 5;
 
-export const defaultProviderOptions: ProviderOptionsInterface = {
-  useSsl: false,
-  useJsonp: false,
-};
-
 export interface ProviderOptionsInterface {
   readonly useSsl?: boolean;
   readonly useJsonp?: boolean;
   readonly apiKey?: string;
 }
+
+export const defaultProviderOptions: ProviderOptionsInterface = {
+  useSsl: false,
+  useJsonp: false,
+};
 
 export type GeocodedResultsCallback<G extends Geocoded> = (
   results: G[]

@@ -18,7 +18,7 @@ import {
   defaultProviderOptions,
 } from "provider";
 import { Box } from "types";
-import AdminLevel from "AdminLevel";
+import AdminLevel, { ADMIN_LEVEL_CODES } from "AdminLevel";
 
 interface MapboxRequestParams {
   [param: string]: string | undefined;
@@ -31,13 +31,6 @@ interface MapboxRequestParams {
   readonly proximity?: string;
   readonly reverseMode?: "distance" | "score";
   readonly types?: string;
-}
-
-export interface MapboxResponse {
-  type: "FeatureCollection";
-  query: string[];
-  features: MapboxResult[];
-  attribution: string;
 }
 
 interface MapboxFeatureContextProperties {
@@ -99,6 +92,14 @@ export interface MapboxResult {
   };
 }
 
+export interface MapboxResponse {
+  type: "FeatureCollection";
+  query: string[];
+  features: MapboxResult[];
+  attribution: string;
+}
+
+// eslint-disable-next-line no-shadow
 export enum MAPBOX_GEOCODING_MODES {
   GEOCODING_MODE_PLACES = "mapbox.places",
   GEOCODING_MODE_PLACES_PERMANENT = "mapbox.places-permanent",
@@ -299,7 +300,7 @@ export default class MapboxProvider
           locality = feature.text;
           adminLevels.push(
             AdminLevel.create({
-              level: 2,
+              level: ADMIN_LEVEL_CODES.COUNTY_CODE,
               name: locality,
             })
           );
@@ -315,7 +316,7 @@ export default class MapboxProvider
           }
           adminLevels.push(
             AdminLevel.create({
-              level: 1,
+              level: ADMIN_LEVEL_CODES.STATE_CODE,
               name: region,
               code: adminLevelCode,
             })

@@ -43,11 +43,6 @@ interface NominatimErrorResponse {
   error: string;
 }
 
-export type NominatimResponse =
-  | NominatimErrorResponse
-  | NominatimResult
-  | NominatimResult[];
-
 export interface NominatimResult {
   // eslint-disable-next-line camelcase
   place_id: number;
@@ -85,6 +80,11 @@ export interface NominatimResult {
     country_code?: string;
   };
 }
+
+export type NominatimResponse =
+  | NominatimErrorResponse
+  | NominatimResult
+  | NominatimResult[];
 
 export interface NominatimProviderOptionsInterface
   extends ProviderOptionsInterface {

@@ -7,7 +7,8 @@ import {
   GoogleMapsProviderOptionsInterface,
   MapboxProvider,
   MapboxProviderOptionsInterface,
-  MapquestProvider,
+  MapQuestProvider,
+  MapQuestProviderOptionsInterface,
   NominatimProvider,
   NominatimProviderOptionsInterface,
   OpenCageProvider,
@@ -17,6 +18,7 @@ import {
   ProviderOptionsInterface,
   defaultChainProviderOptions,
   defaultMapboxProviderOptions,
+  defaultMapQuestProviderOptions,
   defaultNominatimProviderOptions,
   defaultOpenCageProviderOptions,
   defaultProviderOptions,
@@ -65,6 +67,12 @@ interface MapboxGeocoderProviderFactoryOptions
   provider: "mapbox";
 }
 
+interface MapQuestGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    MapQuestProviderOptionsInterface {
+  provider: "mapquest";
+}
+
 interface NominatimGeocoderProviderFactoryOptions
   extends ProviderOptionInterface,
     NominatimProviderOptionsInterface {
@@ -89,6 +97,7 @@ export type GeocoderProviderFactoryOptions =
   | GeoPluginGeocoderProviderFactoryOptions
   | GoogleMapsGeocoderProviderFactoryOptions
   | MapboxGeocoderProviderFactoryOptions
+  | MapQuestGeocoderProviderFactoryOptions
   | NominatimGeocoderProviderFactoryOptions
   | OpenCageGeocoderProviderFactoryOptions
   | YandexGeocoderProviderFactoryOptions;
@@ -99,7 +108,7 @@ export type GeocoderProvider =
   | GeoPluginProvider
   | GoogleMapsProvider
   | MapboxProvider
-  | MapquestProvider
+  | MapQuestProvider
   | NominatimProvider
   | OpenCageProvider
   | YandexProvider;
@@ -114,6 +123,8 @@ export type GeocoderProviderByOptionsType<
   ? GoogleMapsProvider
   : O extends MapboxGeocoderProviderFactoryOptions
   ? MapboxProvider
+  : O extends MapQuestGeocoderProviderFactoryOptions
+  ? MapQuestProvider
   : O extends NominatimGeocoderProviderFactoryOptions
   ? NominatimProvider
   : O extends OpenCageGeocoderProviderFactoryOptions
@@ -172,7 +183,10 @@ export default class ProviderFactory {
         );
       case "mapquest":
         return <GeocoderProviderByOptionsType<O>>(
-          new MapquestProvider(externalLoader, providerOptions)
+          new MapQuestProvider(externalLoader, {
+            ...defaultMapQuestProviderOptions,
+            ...providerOptions,
+          })
         );
       case "openstreetmap":
       case "nominatim":

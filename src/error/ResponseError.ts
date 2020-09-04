@@ -2,6 +2,7 @@ import {
   GeoPluginResult,
   GoogleMapsResponse,
   MapboxResponse,
+  MapQuestResponse,
   NominatimResponse,
   OpenCageResponse,
 } from "provider";
@@ -14,6 +15,7 @@ export default class ResponseError extends Error {
     | GeoPluginResult
     | GoogleMapsResponse
     | MapboxResponse
+    | MapQuestResponse
     | NominatimResponse
     | OpenCageResponse;
 
@@ -24,6 +26,7 @@ export default class ResponseError extends Error {
       | GeoPluginResult
       | GoogleMapsResponse
       | MapboxResponse
+      | MapQuestResponse
       | NominatimResponse
       | OpenCageResponse
   ) {
@@ -40,6 +43,7 @@ export default class ResponseError extends Error {
     | GeoPluginResult
     | GoogleMapsResponse
     | MapboxResponse
+    | MapQuestResponse
     | NominatimResponse
     | OpenCageResponse {
     return this.response;

@@ -11,14 +11,22 @@ Polly.register(FSPersister);
 const excludedQueryParams = ["access_token", "apikey", "key"];
 
 export const cleanRecording = (context: Context): void => {
-  context.polly.server.any().on("beforePersist", (req, { request }) => {
-    request.queryString = request.queryString.filter(
-      ({ name }: { name: string }) => !excludedQueryParams.includes(name)
-    );
-    const url = new URL(request.url);
-    excludedQueryParams.forEach((param) => url.searchParams.delete(param));
-    request.url = url.toString();
-  });
+  context.polly.server
+    .any()
+    .on("beforePersist", (req, { request, response }) => {
+      request.queryString = request.queryString.filter(
+        ({ name }: { name: string }) => !excludedQueryParams.includes(name)
+      );
+      const url = new URL(request.url);
+      excludedQueryParams.forEach((param) => url.searchParams.delete(param));
+      request.url = url.toString();
+      excludedQueryParams.forEach((param) => {
+        response.content.text = response.content.text.replace(
+          new RegExp(`${param}=[^&]+&`),
+          ""
+        );
+      });
+    });
 };
 
 export default (): Context =>

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+* [MapQuest] Better MapQuest provider
+
 ## 0.5.0
 
 * Add special chain provider

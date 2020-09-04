@@ -20,7 +20,7 @@ import {
   ReverseQueryObject,
 } from "query";
 import { ResponseError } from "error";
-import AdminLevel from "AdminLevel";
+import AdminLevel, { ADMIN_LEVEL_CODES } from "AdminLevel";
 
 interface GeoPluginRequestParams {
   [param: string]: string | undefined;
@@ -191,7 +191,7 @@ export default class GeoPluginProvider
     if (result.geoplugin_regionName) {
       adminLevels.push(
         AdminLevel.create({
-          level: 1,
+          level: ADMIN_LEVEL_CODES.STATE_CODE,
           name: result.geoplugin_regionName,
           code: result.geoplugin_regionCode || undefined,
         })

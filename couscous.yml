@@ -38,6 +38,9 @@ menu:
         mapbox:
           text: 📌️ Mapbox
           relativeUrl: docs/provider_usage/mapbox.html
+        mapquest:
+          text: 📌️ MapQuest
+          relativeUrl: docs/provider_usage/mapquest.html
         yandex:
           text: 📌️ Yandex
           relativeUrl: docs/provider_usage/yandex.html

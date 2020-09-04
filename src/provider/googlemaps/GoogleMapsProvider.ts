@@ -103,20 +103,6 @@ type GoogleMapsPlaceType =
   | "transit_station"
   | "ward";
 
-export interface GoogleMapsResponse {
-  results: GoogleMapsResult[];
-  status:
-    | "OK"
-    | "ZERO_RESULTS"
-    | "OVER_DAILY_LIMIT"
-    | "OVER_QUERY_LIMIT"
-    | "REQUEST_DENIED"
-    | "INVALID_REQUEST"
-    | "UNKNOWN_ERROR";
-  // eslint-disable-next-line camelcase
-  error_message?: string;
-}
-
 export interface GoogleMapsResult {
   geometry: {
     location: GoogleMapsLatLng;
@@ -159,6 +145,20 @@ export interface GoogleMapsResult {
   postcode_localities?: string[];
   // eslint-disable-next-line camelcase
   partial_match?: boolean;
+}
+
+export interface GoogleMapsResponse {
+  results: GoogleMapsResult[];
+  status:
+    | "OK"
+    | "ZERO_RESULTS"
+    | "OVER_DAILY_LIMIT"
+    | "OVER_QUERY_LIMIT"
+    | "REQUEST_DENIED"
+    | "INVALID_REQUEST"
+    | "UNKNOWN_ERROR";
+  // eslint-disable-next-line camelcase
+  error_message?: string;
 }
 
 export interface GoogleMapsProviderOptionsInterface

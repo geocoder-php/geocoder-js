@@ -7,5 +7,6 @@ Each provider has its own options, parameters or results because of its specific
 - [OpenCage](provider_usage/opencage.md)
 - [Google Maps (Geocoding API)](provider_usage/googlemaps.md)
 - [Mapbox](provider_usage/mapbox.md)
+- [MapQuest](provider_usage/mapquest.md)
 - [Yandex](provider_usage/yandex.md)
 - [GeoPlugin](provider_usage/geoplugin.md)

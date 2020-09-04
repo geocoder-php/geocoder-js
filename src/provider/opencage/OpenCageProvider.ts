@@ -48,38 +48,6 @@ interface OpenCageSun {
   nautical: number;
 }
 
-export interface OpenCageResponse {
-  documentation: string;
-  licences: {
-    name: string;
-    url: string;
-  }[];
-  rate: {
-    limit: number;
-    remaining: number;
-    reset: number;
-  };
-  results: OpenCageResult[];
-  status: {
-    code: 200 | 400 | 401 | 402 | 403 | 404 | 405 | 408 | 410 | 429 | 503;
-    message: string;
-  };
-  // eslint-disable-next-line camelcase
-  stay_informed: {
-    blog: string;
-    twitter: string;
-  };
-  thanks: string;
-  timestamp: {
-    // eslint-disable-next-line camelcase
-    created_http: string;
-    // eslint-disable-next-line camelcase
-    created_unix: number;
-  };
-  // eslint-disable-next-line camelcase
-  total_results: number;
-}
-
 export interface OpenCageResult {
   annotations: {
     callingcode: number;
@@ -265,6 +233,38 @@ export interface OpenCageResult {
   confidence: number;
   formatted: string;
   geometry: OpenCageCoordinates;
+}
+
+export interface OpenCageResponse {
+  documentation: string;
+  licences: {
+    name: string;
+    url: string;
+  }[];
+  rate: {
+    limit: number;
+    remaining: number;
+    reset: number;
+  };
+  results: OpenCageResult[];
+  status: {
+    code: 200 | 400 | 401 | 402 | 403 | 404 | 405 | 408 | 410 | 429 | 503;
+    message: string;
+  };
+  // eslint-disable-next-line camelcase
+  stay_informed: {
+    blog: string;
+    twitter: string;
+  };
+  thanks: string;
+  timestamp: {
+    // eslint-disable-next-line camelcase
+    created_http: string;
+    // eslint-disable-next-line camelcase
+    created_unix: number;
+  };
+  // eslint-disable-next-line camelcase
+  total_results: number;
 }
 
 export interface OpenCageProviderOptionsInterface

@@ -30,10 +30,6 @@ interface YandexRequestParams {
   readonly jsonpCallback?: string;
 }
 
-interface YandexCollectionResult {
-  GeoObject: YandexResult;
-}
-
 export interface YandexResult {
   metaDataProperty: {
     GeocoderMetaData: {
@@ -75,6 +71,10 @@ export interface YandexResult {
   Point: {
     pos: string;
   };
+}
+
+interface YandexCollectionResult {
+  GeoObject: YandexResult;
 }
 
 interface YandexFlattenedAddressDetails {
@@ -242,8 +242,8 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
   }
 
   private static flattenObject<
-    O extends { [key: string]: O[keyof O] | S },
-    S extends string | string[]
+    S extends string | string[],
+    O extends { [key: string]: O[keyof O] | S }
   >(object: O) {
     const flattened: { [key: string]: S } = {};
 
