@@ -49,6 +49,15 @@ img[alt="CI"] {
 img[alt="codecov"] {
     display: none;
 }
+img[alt="npm"] {
+    display: none;
+}
+img[alt="minified-size"] {
+    display: none;
+}
+img[alt="downloads"] {
+    display: none;
+}
 
 #content img {
     max-width: 100%;
