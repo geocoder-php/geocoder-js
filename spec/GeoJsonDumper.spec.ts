@@ -5,10 +5,12 @@ describe("GeoJSON Dumper", () => {
   const geocoded = Geocoded.create({
     latitude: 38.8978378,
     longitude: -77.0365123,
-    south: 38.89380528242933,
-    west: -77.04317326462667,
-    north: 38.90153071757068,
-    east: -77.02993873537334,
+    bounds: {
+      latitude1: 38.89380528242933,
+      longitude1: -77.04317326462667,
+      latitude2: 38.90153071757068,
+      longitude2: -77.02993873537334,
+    },
     formattedAddress:
       "1600 Pennsylvania Avenue Northwest, Washington, DC 20050",
   });
@@ -24,10 +26,10 @@ describe("GeoJSON Dumper", () => {
       coordinates: [-77.0365123, 38.8978378],
     },
     bounds: {
-      south: 38.89380528242933,
-      west: -77.04317326462667,
-      north: 38.90153071757068,
-      east: -77.02993873537334,
+      latitude1: 38.89380528242933,
+      longitude1: -77.04317326462667,
+      latitude2: 38.90153071757068,
+      longitude2: -77.02993873537334,
     },
   };
 

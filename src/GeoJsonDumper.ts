@@ -1,5 +1,6 @@
 import Geocoded from "Geocoded";
 import AdminLevel, { AdminLevelObject } from "AdminLevel";
+import { BoundingBox } from "types";
 
 export interface GeoJson {
   readonly type: "Feature";
@@ -9,6 +10,7 @@ export interface GeoJson {
       | string[]
       | number
       | boolean
+      | BoundingBox
       | AdminLevel[]
       | AdminLevelObject[]
       | undefined;
@@ -17,12 +19,7 @@ export interface GeoJson {
     readonly type: "Point";
     readonly coordinates: [number | undefined, number | undefined];
   };
-  readonly bounds?: {
-    readonly south: number;
-    readonly west: number;
-    readonly north: number;
-    readonly east: number;
-  };
+  readonly bounds?: BoundingBox;
 }
 
 export default class GeoJsonDumper {
@@ -49,10 +46,7 @@ export default class GeoJsonDumper {
     const {
       latitude,
       longitude,
-      south,
-      west,
-      north,
-      east,
+      bounds,
       adminLevels,
       ...geocodedProperties
     } = geocoded.toObject();
@@ -63,6 +57,7 @@ export default class GeoJsonDumper {
         | string[]
         | number
         | boolean
+        | BoundingBox
         | AdminLevel[]
         | AdminLevelObject[]
         | undefined;
@@ -80,8 +75,8 @@ export default class GeoJsonDumper {
     }
 
     result = { ...result, properties };
-    if (south && west && north && east) {
-      result = { ...result, bounds: { south, west, north, east } };
+    if (bounds) {
+      result = { ...result, bounds };
     }
 
     return result;

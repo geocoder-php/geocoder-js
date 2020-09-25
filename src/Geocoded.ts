@@ -1,4 +1,5 @@
 import AdminLevel from "AdminLevel";
+import { BoundingBox } from "types";
 
 export interface GeocodedObject {
   readonly [property: string]:
@@ -6,14 +7,12 @@ export interface GeocodedObject {
     | string[]
     | number
     | boolean
+    | BoundingBox
     | AdminLevel[]
     | undefined;
   readonly latitude?: number;
   readonly longitude?: number;
-  readonly south?: number;
-  readonly west?: number;
-  readonly north?: number;
-  readonly east?: number;
+  readonly bounds?: BoundingBox;
   readonly formattedAddress?: string;
   readonly streetNumber?: string;
   readonly streetName?: string;
@@ -32,13 +31,7 @@ export default class Geocoded {
 
   private readonly longitude?: number;
 
-  private readonly south?: number;
-
-  private readonly west?: number;
-
-  private readonly north?: number;
-
-  private readonly east?: number;
+  private readonly bounds?: BoundingBox;
 
   private readonly formattedAddress?: string;
 
@@ -65,10 +58,7 @@ export default class Geocoded {
   protected constructor({
     latitude,
     longitude,
-    south,
-    west,
-    north,
-    east,
+    bounds,
     formattedAddress,
     streetNumber,
     streetName,
@@ -83,10 +73,7 @@ export default class Geocoded {
   }: GeocodedObject) {
     this.latitude = latitude;
     this.longitude = longitude;
-    this.south = south;
-    this.west = west;
-    this.north = north;
-    this.east = east;
+    this.bounds = bounds;
     this.formattedAddress = formattedAddress;
     this.streetNumber = streetNumber;
     this.streetName = streetName;
@@ -108,10 +95,7 @@ export default class Geocoded {
     return {
       latitude: this.latitude,
       longitude: this.longitude,
-      south: this.south,
-      west: this.west,
-      north: this.north,
-      east: this.east,
+      bounds: this.bounds,
       formattedAddress: this.formattedAddress,
       streetNumber: this.streetNumber,
       streetName: this.streetName,
@@ -126,18 +110,10 @@ export default class Geocoded {
     };
   }
 
-  public withBounds(
-    south?: number,
-    west?: number,
-    north?: number,
-    east?: number
-  ): Geocoded {
+  public withBounds(bounds: BoundingBox): Geocoded {
     return (<typeof Geocoded>this.constructor).create({
       ...this.toObject(),
-      south,
-      west,
-      north,
-      east,
+      bounds,
     });
   }
 
@@ -161,13 +137,8 @@ export default class Geocoded {
     return this.longitude;
   }
 
-  public getBounds(): [
-    undefined | number,
-    undefined | number,
-    undefined | number,
-    undefined | number
-  ] {
-    return [this.south, this.west, this.north, this.east];
+  public getBounds(): undefined | BoundingBox {
+    return this.bounds;
   }
 
   public getFormattedAddress(): undefined | string {

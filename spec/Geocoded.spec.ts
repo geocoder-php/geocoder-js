@@ -62,12 +62,12 @@ describe("Geocoded returns data properly", () => {
     countryCode: "US",
     timezone: "America/New_York",
   });
-  geocoded = geocoded.withBounds(
-    38.89380528242933,
-    -77.04317326462667,
-    38.90153071757068,
-    -77.02993873537334
-  );
+  geocoded = geocoded.withBounds({
+    latitude1: 38.89380528242933,
+    longitude1: -77.04317326462667,
+    latitude2: 38.90153071757068,
+    longitude2: -77.02993873537334,
+  });
 
   it("returns proper coordinates", () => {
     const expectedCoordinates = [38.8978378, -77.0365123];
@@ -80,12 +80,12 @@ describe("Geocoded returns data properly", () => {
   });
 
   it("returns proper bounds", () => {
-    expect(geocoded.getBounds()).toEqual([
-      38.89380528242933,
-      -77.04317326462667,
-      38.90153071757068,
-      -77.02993873537334,
-    ]);
+    expect(geocoded.getBounds()).toEqual({
+      latitude1: 38.89380528242933,
+      longitude1: -77.04317326462667,
+      latitude2: 38.90153071757068,
+      longitude2: -77.02993873537334,
+    });
   });
 
   it("returns proper formatted address", () => {

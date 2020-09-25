@@ -11,5 +11,4 @@ export * from "provider/mapbox";
 export * from "provider/mapquest";
 export * from "provider/nominatim";
 export * from "provider/opencage";
-export { default as YandexProvider } from "provider/YandexProvider";
-export * from "provider/YandexProvider";
+export * from "provider/yandex";

@@ -53,12 +53,7 @@ describe("Mapbox Geocoder Provider", () => {
 
       expect(geocoded).toBeDefined();
       expect(geocoded.getCoordinates()).toEqual([38.87925, -76.98204]);
-      expect(geocoded.getBounds()).toEqual([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-      ]);
+      expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(
         "1600 Pennsylvania Ave SE, Washington, District of Columbia 20003, United States"
       );
@@ -96,12 +91,7 @@ describe("Mapbox Geocoder Provider", () => {
 
       expect(geocoded).toBeDefined();
       expect(geocoded.getCoordinates()).toEqual([48.863134, 2.388886]);
-      expect(geocoded.getBounds()).toEqual([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-      ]);
+      expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(
         "12 Avenue Gambetta, 75020 Paris, France"
       );

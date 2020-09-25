@@ -1,5 +1,5 @@
 import { GeocodeQuery, GeocodeQueryObject } from "query";
-import { Coordinates } from "index";
+import { Coordinates } from "types";
 
 export interface OpenCageGeocodeQueryObject extends GeocodeQueryObject {
   readonly countryCodes?: string[];
@@ -26,6 +26,11 @@ export default class OpenCageGeocodeQuery extends GeocodeQuery {
   }: OpenCageGeocodeQueryObject) {
     super(geocodeQueryObject);
     this.countryCodes = countryCodes;
+    if (proximity && (!proximity.latitude || !proximity.longitude)) {
+      throw new Error(
+        'The "proximity" parameter must be an object with the keys: "latitude", "longitude".'
+      );
+    }
     this.proximity = proximity;
     if (
       minConfidence &&

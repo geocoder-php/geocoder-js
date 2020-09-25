@@ -327,10 +327,10 @@ export default class OpenCageProvider
       {
         q: geocodeQuery.getText() || "",
         bounds: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.west},${
-              geocodeQuery.getBounds()?.south
-            },${geocodeQuery.getBounds()?.east},${
-              geocodeQuery.getBounds()?.north
+          ? `${geocodeQuery.getBounds()?.longitude1},${
+              geocodeQuery.getBounds()?.latitude1
+            },${geocodeQuery.getBounds()?.longitude2},${
+              geocodeQuery.getBounds()?.latitude2
             }`
           : undefined,
         proximity: (<OpenCageGeocodeQuery>geocodeQuery).getProximity()
@@ -544,14 +544,12 @@ export default class OpenCageProvider
     });
 
     if (result.bounds) {
-      geocoded = <OpenCageGeocoded>(
-        geocoded.withBounds(
-          result.bounds.southwest.lat,
-          result.bounds.southwest.lng,
-          result.bounds.northeast.lat,
-          result.bounds.northeast.lng
-        )
-      );
+      geocoded = <OpenCageGeocoded>geocoded.withBounds({
+        latitude1: result.bounds.southwest.lat,
+        longitude1: result.bounds.southwest.lng,
+        latitude2: result.bounds.northeast.lat,
+        longitude2: result.bounds.northeast.lng,
+      });
     }
 
     const adminLevels: {

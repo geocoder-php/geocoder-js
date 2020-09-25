@@ -6,12 +6,12 @@ import setupPolly, { cleanRecording } from "../setupPolly";
 const expectGeocodedYandex = (geocoded: Geocoded) => {
   expect(geocoded).toBeDefined();
   expect(geocoded.getCoordinates()).toEqual([38.895512, -77.033608]);
-  expect(geocoded.getBounds()).toEqual([
-    38.890612,
-    -77.058105,
-    38.905248,
-    -77.012426,
-  ]);
+  expect(geocoded.getBounds()).toEqual({
+    latitude1: 38.890612,
+    longitude1: -77.058105,
+    latitude2: 38.905248,
+    longitude2: -77.012426,
+  });
   expect(geocoded.getFormattedAddress()).toEqual(undefined);
   expect(geocoded.getStreetNumber()).toEqual(undefined);
   expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue Northwest");
@@ -19,7 +19,9 @@ const expectGeocodedYandex = (geocoded: Geocoded) => {
   expect(geocoded.getLocality()).toEqual("Washington");
   expect(geocoded.getPostalCode()).toEqual(undefined);
   expect(geocoded.getRegion()).toEqual("District of Columbia");
-  expect(geocoded.getAdminLevels()).toEqual([]);
+  expect(geocoded.getAdminLevels()).toEqual([
+    AdminLevel.create({ level: 1, name: "District of Columbia" }),
+  ]);
   expect(geocoded.getCountry()).toEqual("United States of America");
   expect(geocoded.getCountryCode()).toEqual("US");
 };
@@ -27,12 +29,12 @@ const expectGeocodedYandex = (geocoded: Geocoded) => {
 const expectGeodecodedYandex = (geocoded: Geocoded) => {
   expect(geocoded).toBeDefined();
   expect(geocoded.getCoordinates()).toEqual([48.8631, 2.388899]);
-  expect(geocoded.getBounds()).toEqual([
-    48.860391,
-    2.384794,
-    48.865808,
-    2.393004,
-  ]);
+  expect(geocoded.getBounds()).toEqual({
+    latitude1: 48.860391,
+    longitude1: 2.384794,
+    latitude2: 48.865808,
+    longitude2: 2.393004,
+  });
   expect(geocoded.getFormattedAddress()).toEqual(undefined);
   expect(geocoded.getStreetNumber()).toEqual("10");
   expect(geocoded.getStreetName()).toEqual("Avenue Gambetta");
@@ -40,7 +42,9 @@ const expectGeodecodedYandex = (geocoded: Geocoded) => {
   expect(geocoded.getLocality()).toEqual("Paris");
   expect(geocoded.getPostalCode()).toEqual(undefined);
   expect(geocoded.getRegion()).toEqual("Île-de-France");
-  expect(geocoded.getAdminLevels()).toEqual([]);
+  expect(geocoded.getAdminLevels()).toEqual([
+    AdminLevel.create({ level: 1, name: "Île-de-France" }),
+  ]);
   expect(geocoded.getCountry()).toEqual("France");
   expect(geocoded.getCountryCode()).toEqual("FR");
 };
@@ -48,12 +52,12 @@ const expectGeodecodedYandex = (geocoded: Geocoded) => {
 const expectGeocodedOpenStreetMap = (geocoded: Geocoded) => {
   expect(geocoded).toBeDefined();
   expect(geocoded.getCoordinates()).toEqual([38.8636383, -76.9463651]);
-  expect(geocoded.getBounds()).toEqual([
-    38.8633822,
-    -76.9467576,
-    38.8637409,
-    -76.945632,
-  ]);
+  expect(geocoded.getBounds()).toEqual({
+    latitude1: 38.8633822,
+    longitude1: -76.9467576,
+    latitude2: 38.8637409,
+    longitude2: -76.945632,
+  });
   expect(geocoded.getFormattedAddress()).toEqual(undefined);
   expect(geocoded.getStreetNumber()).toEqual(undefined);
   expect(geocoded.getStreetName()).toEqual("Pennsylvania Avenue");
@@ -74,12 +78,12 @@ const expectGeodecodedOpenStreetMap = (geocoded: Geocoded) => {
     48.863744499999996,
     2.3911562136123106,
   ]);
-  expect(geocoded.getBounds()).toEqual([
-    48.8625929,
-    2.3877078,
-    48.8648832,
-    2.3956964,
-  ]);
+  expect(geocoded.getBounds()).toEqual({
+    latitude1: 48.8625929,
+    longitude1: 2.3877078,
+    latitude2: 48.8648832,
+    longitude2: 2.3956964,
+  });
   expect(geocoded.getFormattedAddress()).toEqual(undefined);
   expect(geocoded.getStreetNumber()).toEqual(undefined);
   expect(geocoded.getStreetName()).toEqual(undefined);

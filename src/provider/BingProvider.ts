@@ -179,12 +179,12 @@ export default class BingProvider implements ProviderInterface<Geocoded> {
       region,
       country,
     });
-    geocoded = geocoded.withBounds(
-      result.bbox[0],
-      result.bbox[1],
-      result.bbox[2],
-      result.bbox[3]
-    );
+    geocoded = geocoded.withBounds({
+      latitude1: result.bbox[0],
+      longitude1: result.bbox[1],
+      latitude2: result.bbox[2],
+      longitude2: result.bbox[3],
+    });
 
     return geocoded;
   }

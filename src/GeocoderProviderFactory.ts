@@ -21,6 +21,7 @@ import {
   defaultMapQuestProviderOptions,
   defaultNominatimProviderOptions,
   defaultOpenCageProviderOptions,
+  defaultYandexProviderOptions,
   defaultProviderOptions,
 } from "provider";
 import ExternalLoader from "ExternalLoader";
@@ -205,7 +206,10 @@ export default class ProviderFactory {
         );
       case "yandex":
         return <GeocoderProviderByOptionsType<O>>(
-          new YandexProvider(externalLoader, providerOptions)
+          new YandexProvider(externalLoader, {
+            ...defaultYandexProviderOptions,
+            ...providerOptions,
+          })
         );
       default:
     }

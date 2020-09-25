@@ -55,12 +55,12 @@ describe("Bing Geocoder Provider", () => {
 
         expect(geocoded).toBeDefined();
         expect(geocoded.getCoordinates()).toEqual([38.897668, -77.036556]);
-        expect(geocoded.getBounds()).toEqual([
-          38.89380528242933,
-          -77.04317326462667,
-          38.90153071757068,
-          -77.02993873537334,
-        ]);
+        expect(geocoded.getBounds()).toEqual({
+          latitude1: 38.89380528242933,
+          longitude1: -77.04317326462667,
+          latitude2: 38.90153071757068,
+          longitude2: -77.02993873537334,
+        });
         expect(geocoded.getFormattedAddress()).toEqual(
           "1600 Pennsylvania Ave NW, Washington, DC 20006"
         );
@@ -91,12 +91,12 @@ describe("Bing Geocoder Provider", () => {
 
       expect(geocoded).toBeDefined();
       expect(geocoded.getCoordinates()).toEqual([48.8631093, 2.3887809]);
-      expect(geocoded.getBounds()).toEqual([
-        48.85924658242932,
-        2.380952653445271,
-        48.866972017570674,
-        2.396609146554729,
-      ]);
+      expect(geocoded.getBounds()).toEqual({
+        latitude1: 48.85924658242932,
+        longitude1: 2.380952653445271,
+        latitude2: 48.866972017570674,
+        longitude2: 2.396609146554729,
+      });
       expect(geocoded.getFormattedAddress()).toEqual(
         "8 Avenue Gambetta, 75020 Paris"
       );

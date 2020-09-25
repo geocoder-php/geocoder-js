@@ -233,10 +233,10 @@ export default class GoogleMapsProvider
       {
         address: geocodeQuery.getText(),
         bounds: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.south},${
-              geocodeQuery.getBounds()?.west
-            }|${geocodeQuery.getBounds()?.north},${
-              geocodeQuery.getBounds()?.east
+          ? `${geocodeQuery.getBounds()?.latitude1},${
+              geocodeQuery.getBounds()?.longitude1
+            }|${geocodeQuery.getBounds()?.latitude2},${
+              geocodeQuery.getBounds()?.longitude2
             }`
           : undefined,
         components: (<GoogleMapsGeocodeQuery>geocodeQuery).getComponents()
@@ -587,29 +587,28 @@ export default class GoogleMapsProvider
 
     if (result.geometry.bounds) {
       const { bounds } = result.geometry;
-      geocoded = <GoogleMapsGeocoded>(
-        geocoded.withBounds(
-          bounds.southwest.lat,
-          bounds.southwest.lng,
-          bounds.northeast.lat,
-          bounds.northeast.lng
-        )
-      );
+      geocoded = <GoogleMapsGeocoded>geocoded.withBounds({
+        latitude1: bounds.southwest.lat,
+        longitude1: bounds.southwest.lng,
+        latitude2: bounds.northeast.lat,
+        longitude2: bounds.northeast.lng,
+      });
     } else if (result.geometry.viewport) {
       const { viewport } = result.geometry;
-      geocoded = <GoogleMapsGeocoded>(
-        geocoded.withBounds(
-          viewport.southwest.lat,
-          viewport.southwest.lng,
-          viewport.northeast.lat,
-          viewport.northeast.lng
-        )
-      );
+      geocoded = <GoogleMapsGeocoded>geocoded.withBounds({
+        latitude1: viewport.southwest.lat,
+        longitude1: viewport.southwest.lng,
+        latitude2: viewport.northeast.lat,
+        longitude2: viewport.northeast.lng,
+      });
     } else if (result.geometry.location_type === "ROOFTOP") {
       // Fake bounds
-      geocoded = <GoogleMapsGeocoded>(
-        geocoded.withBounds(latitude, longitude, latitude, longitude)
-      );
+      geocoded = <GoogleMapsGeocoded>geocoded.withBounds({
+        latitude1: latitude,
+        longitude1: longitude,
+        latitude2: latitude,
+        longitude2: longitude,
+      });
     }
 
     return geocoded;

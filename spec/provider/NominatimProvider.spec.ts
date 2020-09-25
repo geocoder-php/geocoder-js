@@ -55,12 +55,12 @@ describe("OpenStreetMap / Nominatim Geocoder Provider", () => {
 
         expect(geocoded).toBeDefined();
         expect(geocoded.getCoordinates()).toEqual([38.8958536, -77.0307129]);
-        expect(geocoded.getBounds()).toEqual([
-          38.8957842,
-          -77.0309688,
-          38.895924,
-          -77.0304609,
-        ]);
+        expect(geocoded.getBounds()).toEqual({
+          latitude1: 38.8957842,
+          longitude1: -77.0309688,
+          latitude2: 38.895924,
+          longitude2: -77.0304609,
+        });
         expect(geocoded.getFormattedAddress()).toEqual(undefined);
         expect(geocoded.getDisplayName()).toEqual(
           "Pennsylvania Avenue, Penn Quarter, Washington, District of Columbia, 20045, United States of America"
@@ -108,12 +108,12 @@ describe("OpenStreetMap / Nominatim Geocoder Provider", () => {
           48.863744499999996,
           2.3911562136123106,
         ]);
-        expect(geocoded.getBounds()).toEqual([
-          48.8625929,
-          2.3877078,
-          48.8648832,
-          2.3956964,
-        ]);
+        expect(geocoded.getBounds()).toEqual({
+          latitude1: 48.8625929,
+          longitude1: 2.3877078,
+          latitude2: 48.8648832,
+          longitude2: 2.3956964,
+        });
         expect(geocoded.getFormattedAddress()).toEqual(undefined);
         expect(geocoded.getDisplayName()).toEqual(
           "Quartier du Père-Lachaise, Paris, Île-de-France, France métropolitaine, 75020, France"

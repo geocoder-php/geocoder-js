@@ -53,12 +53,12 @@ describe("OpenCage Geocoder Provider", () => {
 
       expect(geocoded).toBeDefined();
       expect(geocoded.getCoordinates()).toEqual([38.8636383, -76.9463651]);
-      expect(geocoded.getBounds()).toEqual([
-        38.8633822,
-        -76.9467576,
-        38.8637409,
-        -76.945632,
-      ]);
+      expect(geocoded.getBounds()).toEqual({
+        latitude1: 38.8633822,
+        longitude1: -76.9467576,
+        latitude2: 38.8637409,
+        longitude2: -76.945632,
+      });
       expect(geocoded.getFormattedAddress()).toEqual(
         "Pennsylvania Avenue, Washington, DC 20746-8001, United States of America"
       );
@@ -102,12 +102,7 @@ describe("OpenCage Geocoder Provider", () => {
 
       expect(geocoded).toBeDefined();
       expect(geocoded.getCoordinates()).toEqual([48.863116, 2.38878]);
-      expect(geocoded.getBounds()).toEqual([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-      ]);
+      expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(
         "8 Avenue Gambetta, 75020 Paris, France"
       );

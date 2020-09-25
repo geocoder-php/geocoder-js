@@ -166,10 +166,10 @@ export default class MapboxProvider
     const params: MapboxRequestParams = this.withCommonParams(
       {
         bbox: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.west},${
-              geocodeQuery.getBounds()?.south
-            },${geocodeQuery.getBounds()?.east},${
-              geocodeQuery.getBounds()?.north
+          ? `${geocodeQuery.getBounds()?.longitude1},${
+              geocodeQuery.getBounds()?.latitude1
+            },${geocodeQuery.getBounds()?.longitude2},${
+              geocodeQuery.getBounds()?.latitude2
             }`
           : undefined,
         proximity: (<MapboxGeocodeQuery>geocodeQuery).getProximity()
@@ -345,14 +345,12 @@ export default class MapboxProvider
       resultType,
     });
     if (result.bbox) {
-      geocoded = <MapboxGeocoded>(
-        geocoded.withBounds(
-          result.bbox[1],
-          result.bbox[0],
-          result.bbox[3],
-          result.bbox[2]
-        )
-      );
+      geocoded = <MapboxGeocoded>geocoded.withBounds({
+        latitude1: result.bbox[1],
+        longitude1: result.bbox[0],
+        latitude2: result.bbox[3],
+        longitude2: result.bbox[2],
+      });
     }
 
     return geocoded;

@@ -158,10 +158,10 @@ export default class MapQuestProvider
       maxResults?: string;
     } = {
       boundingBox: geocodeQuery.getBounds()
-        ? `${geocodeQuery.getBounds()?.north},${
-            geocodeQuery.getBounds()?.west
-          },${geocodeQuery.getBounds()?.south},${
-            geocodeQuery.getBounds()?.east
+        ? `${geocodeQuery.getBounds()?.latitude1},${
+            geocodeQuery.getBounds()?.longitude1
+          },${geocodeQuery.getBounds()?.latitude2},${
+            geocodeQuery.getBounds()?.longitude2
           }`
         : undefined,
       maxResults: geocodeQuery.getLimit().toString(),
@@ -193,12 +193,12 @@ export default class MapQuestProvider
               boundingBox: geocodeQuery.getBounds()
                 ? {
                     ul: {
-                      lat: geocodeQuery.getBounds()?.north,
-                      lng: geocodeQuery.getBounds()?.west,
+                      lat: geocodeQuery.getBounds()?.latitude1,
+                      lng: geocodeQuery.getBounds()?.longitude1,
                     },
                     lr: {
-                      lat: geocodeQuery.getBounds()?.south,
-                      lng: geocodeQuery.getBounds()?.east,
+                      lat: geocodeQuery.getBounds()?.latitude2,
+                      lng: geocodeQuery.getBounds()?.longitude2,
                     },
                   }
                 : undefined,

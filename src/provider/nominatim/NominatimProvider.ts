@@ -161,8 +161,12 @@ export default class NominatimProvider
               .getExcludePlaceIds()
               ?.join(",")
           : undefined,
-        viewbox: (<NominatimGeocodeQuery>geocodeQuery).getViewBox()
-          ? (<NominatimGeocodeQuery>geocodeQuery).getViewBox()?.join(",")
+        viewbox: geocodeQuery.getBounds()
+          ? `${geocodeQuery.getBounds()?.longitude1},${
+              geocodeQuery.getBounds()?.latitude1
+            },${geocodeQuery.getBounds()?.longitude2},${
+              geocodeQuery.getBounds()?.latitude2
+            }`
           : undefined,
         bounded: (<NominatimGeocodeQuery>geocodeQuery).getBounded()
           ? (<NominatimGeocodeQuery>geocodeQuery).getBounded()?.toString()
@@ -334,14 +338,12 @@ export default class NominatimProvider
       attribution,
     });
 
-    geocoded = <NominatimGeocoded>(
-      geocoded.withBounds(
-        parseFloat(result.boundingbox[0]),
-        parseFloat(result.boundingbox[2]),
-        parseFloat(result.boundingbox[1]),
-        parseFloat(result.boundingbox[3])
-      )
-    );
+    geocoded = <NominatimGeocoded>geocoded.withBounds({
+      latitude1: parseFloat(result.boundingbox[0]),
+      longitude1: parseFloat(result.boundingbox[2]),
+      latitude2: parseFloat(result.boundingbox[1]),
+      longitude2: parseFloat(result.boundingbox[3]),
+    });
 
     const adminLevels: ("state" | "county")[] = ["state", "county"];
     adminLevels.forEach((adminLevel, level) => {

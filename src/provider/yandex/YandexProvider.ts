@@ -10,15 +10,41 @@ import {
   ProviderHelpers,
   ProviderInterface,
   ProviderOptionsInterface,
+  YandexGeocoded,
+  YandexGeocodeQuery,
+  YandexGeocodeQueryObject,
+  YandexReverseQuery,
+  YandexReverseQueryObject,
   defaultProviderOptions,
 } from "provider";
-import Geocoded from "Geocoded";
-import {
-  GeocodeQuery,
-  GeocodeQueryObject,
-  ReverseQuery,
-  ReverseQueryObject,
-} from "query";
+import AdminLevel from "AdminLevel";
+
+export type YandexKind =
+  | "house"
+  | "street"
+  | "metro"
+  | "district"
+  | "locality"
+  | "area"
+  | "province"
+  | "country"
+  | "region"
+  | "hydro"
+  | "railway_station"
+  | "station"
+  | "route"
+  | "vegetation"
+  | "airport"
+  | "entrance"
+  | "other";
+
+export type YandexPrecision =
+  | "exact"
+  | "number"
+  | "near"
+  | "range"
+  | "street"
+  | "other";
 
 interface YandexRequestParams {
   [param: string]: string | undefined;
@@ -26,16 +52,22 @@ interface YandexRequestParams {
   readonly geocode: string;
   readonly format: string;
   readonly lang?: string;
-  readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
+  readonly kind?: YandexKind;
+  readonly rspn?: "0" | "1";
+  readonly ll?: string;
+  readonly spn?: string;
+  readonly bbox?: string;
+  readonly skip?: string;
+  readonly results?: string;
   readonly jsonpCallback?: string;
 }
 
 export interface YandexResult {
   metaDataProperty: {
     GeocoderMetaData: {
-      kind: string;
+      kind: YandexKind;
       text: string;
-      precision: string;
+      precision: YandexPrecision;
       AddressDetails: {
         Country: {
           AddressLine: string;
@@ -73,14 +105,32 @@ export interface YandexResult {
   };
 }
 
-interface YandexCollectionResult {
-  GeoObject: YandexResult;
+export interface YandexResponse {
+  response: {
+    GeoObjectCollection: {
+      metaDataProperty: {
+        GeocoderResponseMetaData: {
+          request: string;
+          suggest?: {
+            fix: string;
+          };
+          found: string;
+          results: string;
+          skip: string;
+        };
+      };
+      featureMember: {
+        GeoObject: YandexResult;
+      }[];
+    };
+  };
 }
 
 interface YandexFlattenedAddressDetails {
   CountryNameCode?: string;
   CountryName?: string;
   AdministrativeAreaName?: string;
+  SubAdministrativeAreaName?: string;
   LocalityName?: string;
   DependentLocalityName?: string;
   ThoroughfareName?: string;
@@ -89,30 +139,44 @@ interface YandexFlattenedAddressDetails {
 
 export interface YandexProviderOptionsInterface
   extends ProviderOptionsInterface {
-  readonly toponym?: "house" | "street" | "metro" | "district" | "locality";
+  readonly apiKey: string;
 }
 
-type YandexGeocodedResultsCallback = GeocodedResultsCallback<Geocoded>;
+export const defaultYandexProviderOptions = {
+  ...defaultProviderOptions,
+  apiKey: "",
+};
 
-export default class YandexProvider implements ProviderInterface<Geocoded> {
+type YandexGeocodedResultsCallback = GeocodedResultsCallback<YandexGeocoded>;
+
+export default class YandexProvider
+  implements ProviderInterface<YandexGeocoded> {
   private externalLoader: ExternalLoaderInterface;
 
   private options: YandexProviderOptionsInterface;
 
   public constructor(
     _externalLoader: ExternalLoaderInterface,
-    options: YandexProviderOptionsInterface = defaultProviderOptions
+    options: YandexProviderOptionsInterface = defaultYandexProviderOptions
   ) {
     this.externalLoader = _externalLoader;
-    this.options = { ...defaultProviderOptions, ...options };
+    this.options = { ...defaultYandexProviderOptions, ...options };
+    if (!this.options.apiKey) {
+      throw new Error(
+        'An API key is required for the Yandex provider. Please add it in the "apiKey" option.'
+      );
+    }
   }
 
   public geocode(
-    query: string | GeocodeQuery | GeocodeQueryObject,
+    query: string | YandexGeocodeQuery | YandexGeocodeQueryObject,
     callback: YandexGeocodedResultsCallback,
     errorCallback?: ErrorCallback
   ): void {
-    const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(query);
+    const geocodeQuery = ProviderHelpers.getGeocodeQueryFromParameter(
+      query,
+      YandexGeocodeQuery
+    );
 
     if (geocodeQuery.getIp()) {
       throw new Error(
@@ -126,26 +190,55 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
       pathname: "1.x",
     });
 
-    const params: YandexRequestParams = {
-      apikey: this.options.apiKey,
-      geocode: geocodeQuery.getText() || "",
-      format: "json",
-      lang: geocodeQuery.getLocale(),
-      jsonpCallback: this.options.useJsonp ? "callback" : undefined,
-    };
+    let rspn: "0" | "1" | undefined;
+    if ((<YandexGeocodeQuery>geocodeQuery).getBounded() === false) {
+      rspn = "0";
+    } else if ((<YandexGeocodeQuery>geocodeQuery).getBounded() === true) {
+      rspn = "1";
+    }
+
+    const params: YandexRequestParams = this.withCommonParams(
+      {
+        geocode: geocodeQuery.getText() || "",
+        rspn,
+        ll: (<YandexGeocodeQuery>geocodeQuery).getProximity()
+          ? `${(<YandexGeocodeQuery>geocodeQuery).getProximity()?.longitude},${
+              (<YandexGeocodeQuery>geocodeQuery).getProximity()?.latitude
+            }`
+          : undefined,
+        spn: (<YandexGeocodeQuery>geocodeQuery).getSpan()
+          ? `${(<YandexGeocodeQuery>geocodeQuery).getSpan()?.spanLongitude},${
+              (<YandexGeocodeQuery>geocodeQuery).getSpan()?.spanLatitude
+            }`
+          : undefined,
+        bbox: geocodeQuery.getBounds()
+          ? `${geocodeQuery.getBounds()?.longitude1},${
+              geocodeQuery.getBounds()?.latitude1
+            }~${geocodeQuery.getBounds()?.longitude2},${
+              geocodeQuery.getBounds()?.latitude2
+            }`
+          : undefined,
+      },
+      <YandexGeocodeQuery>geocodeQuery
+    );
 
     this.executeRequest(params, callback, {}, {}, errorCallback);
   }
 
   public geodecode(
-    latitudeOrQuery: number | string | ReverseQuery | ReverseQueryObject,
+    latitudeOrQuery:
+      | number
+      | string
+      | YandexReverseQuery
+      | YandexReverseQueryObject,
     longitudeOrCallback: number | string | YandexGeocodedResultsCallback,
     callbackOrErrorCallback?: YandexGeocodedResultsCallback | ErrorCallback,
     errorCallback?: ErrorCallback
   ): void {
     const reverseQuery = ProviderHelpers.getReverseQueryFromParameters(
       latitudeOrQuery,
-      longitudeOrCallback
+      longitudeOrCallback,
+      YandexReverseQuery
     );
     const reverseCallback = ProviderHelpers.getCallbackFromParameters(
       longitudeOrCallback,
@@ -163,18 +256,37 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
       pathname: "1.x",
     });
 
-    const params: YandexRequestParams = {
-      apikey: this.options.apiKey,
-      geocode: `${reverseQuery.getCoordinates().longitude},${
-        reverseQuery.getCoordinates().latitude
-      }`,
-      format: "json",
-      lang: reverseQuery.getLocale(),
-      toponym: this.options.toponym,
-      jsonpCallback: this.options.useJsonp ? "callback" : undefined,
-    };
+    const params: YandexRequestParams = this.withCommonParams(
+      {
+        geocode: `${reverseQuery.getCoordinates().longitude},${
+          reverseQuery.getCoordinates().latitude
+        }`,
+        kind: (<YandexReverseQuery>reverseQuery).getLocationTypes()
+          ? (<YandexReverseQuery>reverseQuery).getLocationTypes()?.[0]
+          : undefined,
+      },
+      <YandexReverseQuery>reverseQuery
+    );
 
     this.executeRequest(params, reverseCallback, {}, {}, reverseErrorCallback);
+  }
+
+  private withCommonParams(
+    params: Pick<
+      YandexRequestParams,
+      "geocode" | "rspn" | "ll" | "spn" | "bbox" | "kind"
+    >,
+    query: YandexGeocodeQuery | YandexReverseQuery
+  ): YandexRequestParams {
+    return {
+      ...params,
+      apikey: this.options.apiKey,
+      format: "json",
+      lang: query.getLocale(),
+      results: query.getLimit().toString(),
+      skip: query.getSkip()?.toString(),
+      jsonpCallback: this.options.useJsonp ? "callback" : undefined,
+    };
   }
 
   public executeRequest(
@@ -186,11 +298,10 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
   ): void {
     this.externalLoader.executeRequest(
       params,
-      (data) => {
+      (data: YandexResponse) => {
         callback(
-          data.response.GeoObjectCollection.featureMember.map(
-            (result: YandexCollectionResult) =>
-              YandexProvider.mapToGeocoded(result.GeoObject)
+          data.response.GeoObjectCollection.featureMember.map((result) =>
+            YandexProvider.mapToGeocoded(result.GeoObject)
           )
         );
       },
@@ -200,7 +311,7 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
     );
   }
 
-  public static mapToGeocoded(result: YandexResult): Geocoded {
+  public static mapToGeocoded(result: YandexResult): YandexGeocoded {
     const point = result.Point.pos.split(" ");
     const latitude = parseFloat(point[1]);
     const longitude = parseFloat(point[0]);
@@ -216,8 +327,10 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
     const region = addressDetails.AdministrativeAreaName;
     const country = addressDetails.CountryName;
     const countryCode = addressDetails.CountryNameCode;
+    const locationType = result.metaDataProperty.GeocoderMetaData.kind;
+    const { precision } = result.metaDataProperty.GeocoderMetaData;
 
-    let geocoded = Geocoded.create({
+    let geocoded = YandexGeocoded.create({
       latitude,
       longitude,
       streetNumber,
@@ -227,16 +340,33 @@ export default class YandexProvider implements ProviderInterface<Geocoded> {
       region,
       country,
       countryCode,
+      locationType,
+      precision,
+    });
+
+    const adminLevels: (
+      | "AdministrativeAreaName"
+      | "SubAdministrativeAreaName"
+    )[] = ["AdministrativeAreaName", "SubAdministrativeAreaName"];
+    adminLevels.forEach((adminLevel, level) => {
+      if (addressDetails[adminLevel]) {
+        geocoded.addAdminLevel(
+          AdminLevel.create({
+            level: level + 1,
+            name: addressDetails[adminLevel] || "",
+          })
+        );
+      }
     });
 
     const lowerCorner = result.boundedBy.Envelope.lowerCorner.split(" ");
     const upperCorner = result.boundedBy.Envelope.upperCorner.split(" ");
-    geocoded = geocoded.withBounds(
-      parseFloat(lowerCorner[1]),
-      parseFloat(lowerCorner[0]),
-      parseFloat(upperCorner[1]),
-      parseFloat(upperCorner[0])
-    );
+    geocoded = <YandexGeocoded>geocoded.withBounds({
+      latitude1: parseFloat(lowerCorner[1]),
+      longitude1: parseFloat(lowerCorner[0]),
+      latitude2: parseFloat(upperCorner[1]),
+      longitude2: parseFloat(upperCorner[0]),
+    });
 
     return geocoded;
   }

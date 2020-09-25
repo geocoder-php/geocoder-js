@@ -1,5 +1,5 @@
 import { DEFAULT_RESULT_LIMIT } from "provider";
-import { Coordinates } from "index";
+import { Coordinates } from "types";
 
 export interface ReverseQueryObject {
   readonly latitude: number | string;

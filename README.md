@@ -103,7 +103,7 @@ googleGeocoder.geodecode(reverseQuery, (result) => {
 
 - `text`: what is searched
 - `ip`: the IP searched
-- `south`, `west`, `north`, `east` (`withBounds` method): the bounds to use
+- `bounds` (object with `latitude1`, `longitude1`, `latitude2` and `longitude2` keys): the bounds to use
 - `locale`: the locale to use for the query
 - `limit`: the maximum number of results to have
 
@@ -117,7 +117,7 @@ googleGeocoder.geodecode(reverseQuery, (result) => {
 
 The result of a query is a `Geocoded` object which maps the following common information:
 - Coordinates (latitute and longitude)
-- Bounds (south, west, north, east)
+- Bounds (latitude1, longitude1, latitude2, longitude2)
 - Formatted address
 - Address details: street number, street name, (sub) locality, postal code, region, administration levels, country (with its code)
 - Time zone
