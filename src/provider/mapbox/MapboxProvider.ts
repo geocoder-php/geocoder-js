@@ -17,7 +17,7 @@ import {
   ProviderOptionsInterface,
   defaultProviderOptions,
 } from "provider";
-import { Box } from "types";
+import { FlatBoundingBox } from "types";
 import AdminLevel, { ADMIN_LEVEL_CODES } from "AdminLevel";
 
 interface MapboxRequestParams {
@@ -77,7 +77,7 @@ export interface MapboxResult {
   // eslint-disable-next-line camelcase
   matching_place_name?: string;
   language?: string;
-  bbox?: Box;
+  bbox?: FlatBoundingBox;
   center: [number, number];
   geometry: {
     type: "Point";
@@ -166,10 +166,10 @@ export default class MapboxProvider
     const params: MapboxRequestParams = this.withCommonParams(
       {
         bbox: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.longitude1},${
-              geocodeQuery.getBounds()?.latitude1
-            },${geocodeQuery.getBounds()?.longitude2},${
-              geocodeQuery.getBounds()?.latitude2
+          ? `${geocodeQuery.getBounds()?.longitudeSW},${
+              geocodeQuery.getBounds()?.latitudeSW
+            },${geocodeQuery.getBounds()?.longitudeNE},${
+              geocodeQuery.getBounds()?.latitudeNE
             }`
           : undefined,
         proximity: (<MapboxGeocodeQuery>geocodeQuery).getProximity()
@@ -331,8 +331,10 @@ export default class MapboxProvider
     });
 
     let geocoded = MapboxGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       formattedAddress,
       streetNumber,
       streetName,
@@ -346,10 +348,10 @@ export default class MapboxProvider
     });
     if (result.bbox) {
       geocoded = <MapboxGeocoded>geocoded.withBounds({
-        latitude1: result.bbox[1],
-        longitude1: result.bbox[0],
-        latitude2: result.bbox[3],
-        longitude2: result.bbox[2],
+        latitudeSW: result.bbox[1],
+        longitudeSW: result.bbox[0],
+        latitudeNE: result.bbox[3],
+        longitudeNE: result.bbox[2],
       });
     }
 

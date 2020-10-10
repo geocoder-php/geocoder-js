@@ -199,8 +199,10 @@ export default class GeoPluginProvider
     }
 
     const geocoded = GeoPluginGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       locality,
       region,
       adminLevels,

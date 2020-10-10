@@ -158,10 +158,10 @@ export default class MapQuestProvider
       maxResults?: string;
     } = {
       boundingBox: geocodeQuery.getBounds()
-        ? `${geocodeQuery.getBounds()?.latitude1},${
-            geocodeQuery.getBounds()?.longitude1
-          },${geocodeQuery.getBounds()?.latitude2},${
-            geocodeQuery.getBounds()?.longitude2
+        ? `${geocodeQuery.getBounds()?.latitudeNE},${
+            geocodeQuery.getBounds()?.longitudeSW
+          },${geocodeQuery.getBounds()?.latitudeSW},${
+            geocodeQuery.getBounds()?.longitudeNE
           }`
         : undefined,
       maxResults: geocodeQuery.getLimit().toString(),
@@ -193,12 +193,12 @@ export default class MapQuestProvider
               boundingBox: geocodeQuery.getBounds()
                 ? {
                     ul: {
-                      lat: geocodeQuery.getBounds()?.latitude1,
-                      lng: geocodeQuery.getBounds()?.longitude1,
+                      lat: geocodeQuery.getBounds()?.latitudeNE,
+                      lng: geocodeQuery.getBounds()?.longitudeSW,
                     },
                     lr: {
-                      lat: geocodeQuery.getBounds()?.latitude2,
-                      lng: geocodeQuery.getBounds()?.longitude2,
+                      lat: geocodeQuery.getBounds()?.latitudeSW,
+                      lng: geocodeQuery.getBounds()?.longitudeNE,
                     },
                   }
                 : undefined,
@@ -336,8 +336,10 @@ export default class MapQuestProvider
     const { mapUrl } = result;
 
     const geocoded = MapQuestGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       streetName,
       subLocality,
       locality,

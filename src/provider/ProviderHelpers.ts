@@ -46,8 +46,10 @@ export default class ProviderHelpers {
         );
       }
       return reverseQuery.create({
-        latitude: latitudeOrQuery,
-        longitude: longitudeOrCallback,
+        coordinates: {
+          latitude: latitudeOrQuery,
+          longitude: longitudeOrCallback,
+        },
       });
     }
     if (!(latitudeOrQuery instanceof reverseQuery)) {

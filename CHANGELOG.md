@@ -4,9 +4,11 @@
 
 * [Yandex] Better Yandex provider
 * [Nominatim] Remove `viewBox` parameter in `GeocodeQuery` to use `bounds` instead
-* [GeoJsonDumper] Returns an object with `latitude1`, `longitude1`, `latitude2`, `longitude2` keys for `bounds`.
-* The `bounds` parameter in `GeocodeQuery` is now an object with `latitude1`, `longitude1`, `latitude2`, `longitude2` keys.
-* `Geocoded` returns an object with `latitude1`, `longitude1`, `latitude2`, `longitude2` keys for the `bounds`.
+* [GeoJsonDumper] Use `bbox` member for `bounds`.
+* The `bounds` parameter in `GeocodeQuery` is now an object with `latitudeSW`, `longitudeSW`, `latitudeNE`, `longitudeNE` keys.
+* The `latitude` and `longitude` parameters in `GeocodeQuery` are replaced by a `coordinates` parameter (an object with `latitude` and `longitude` keys).
+* `Geocoded` returns an object with `latitudeSW`, `longitudeSW`, `latitudeNE`, `longitudeNE` keys for the `bounds`.
+* The `latitude` and `longitude` parameters in `Geocoded` are replaced by a `coordinates` parameter (an object with `latitude` and `longitude` keys).
 
 ## 0.6.0
 

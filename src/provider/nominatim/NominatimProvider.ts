@@ -162,10 +162,10 @@ export default class NominatimProvider
               ?.join(",")
           : undefined,
         viewbox: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.longitude1},${
-              geocodeQuery.getBounds()?.latitude1
-            },${geocodeQuery.getBounds()?.longitude2},${
-              geocodeQuery.getBounds()?.latitude2
+          ? `${geocodeQuery.getBounds()?.longitudeSW},${
+              geocodeQuery.getBounds()?.latitudeSW
+            },${geocodeQuery.getBounds()?.longitudeNE},${
+              geocodeQuery.getBounds()?.latitudeNE
             }`
           : undefined,
         bounded: (<NominatimGeocodeQuery>geocodeQuery).getBounded()
@@ -320,8 +320,10 @@ export default class NominatimProvider
     });
 
     let geocoded = NominatimGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       displayName,
       streetNumber,
       streetName,
@@ -339,10 +341,10 @@ export default class NominatimProvider
     });
 
     geocoded = <NominatimGeocoded>geocoded.withBounds({
-      latitude1: parseFloat(result.boundingbox[0]),
-      longitude1: parseFloat(result.boundingbox[2]),
-      latitude2: parseFloat(result.boundingbox[1]),
-      longitude2: parseFloat(result.boundingbox[3]),
+      latitudeSW: parseFloat(result.boundingbox[0]),
+      longitudeSW: parseFloat(result.boundingbox[2]),
+      latitudeNE: parseFloat(result.boundingbox[1]),
+      longitudeNE: parseFloat(result.boundingbox[3]),
     });
 
     const adminLevels: ("state" | "county")[] = ["state", "county"];

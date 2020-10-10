@@ -327,10 +327,10 @@ export default class OpenCageProvider
       {
         q: geocodeQuery.getText() || "",
         bounds: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.longitude1},${
-              geocodeQuery.getBounds()?.latitude1
-            },${geocodeQuery.getBounds()?.longitude2},${
-              geocodeQuery.getBounds()?.latitude2
+          ? `${geocodeQuery.getBounds()?.longitudeSW},${
+              geocodeQuery.getBounds()?.latitudeSW
+            },${geocodeQuery.getBounds()?.longitudeNE},${
+              geocodeQuery.getBounds()?.latitudeNE
             }`
           : undefined,
         proximity: (<OpenCageGeocodeQuery>geocodeQuery).getProximity()
@@ -523,8 +523,10 @@ export default class OpenCageProvider
       result.components.croft;
 
     let geocoded = OpenCageGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       formattedAddress,
       streetNumber,
       streetName,
@@ -545,10 +547,10 @@ export default class OpenCageProvider
 
     if (result.bounds) {
       geocoded = <OpenCageGeocoded>geocoded.withBounds({
-        latitude1: result.bounds.southwest.lat,
-        longitude1: result.bounds.southwest.lng,
-        latitude2: result.bounds.northeast.lat,
-        longitude2: result.bounds.northeast.lng,
+        latitudeSW: result.bounds.southwest.lat,
+        longitudeSW: result.bounds.southwest.lng,
+        latitudeNE: result.bounds.northeast.lat,
+        longitudeNE: result.bounds.northeast.lng,
       });
     }
 

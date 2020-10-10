@@ -1,5 +1,5 @@
 import AdminLevel from "AdminLevel";
-import { BoundingBox } from "types";
+import { BoundingBox, Coordinates } from "types";
 
 export interface GeocodedObject {
   readonly [property: string]:
@@ -7,11 +7,11 @@ export interface GeocodedObject {
     | string[]
     | number
     | boolean
+    | Coordinates
     | BoundingBox
     | AdminLevel[]
     | undefined;
-  readonly latitude?: number;
-  readonly longitude?: number;
+  readonly coordinates?: Coordinates;
   readonly bounds?: BoundingBox;
   readonly formattedAddress?: string;
   readonly streetNumber?: string;
@@ -27,9 +27,7 @@ export interface GeocodedObject {
 }
 
 export default class Geocoded {
-  private readonly latitude?: number;
-
-  private readonly longitude?: number;
+  private readonly coordinates?: Coordinates;
 
   private readonly bounds?: BoundingBox;
 
@@ -56,8 +54,7 @@ export default class Geocoded {
   private readonly timezone?: string;
 
   protected constructor({
-    latitude,
-    longitude,
+    coordinates,
     bounds,
     formattedAddress,
     streetNumber,
@@ -71,8 +68,7 @@ export default class Geocoded {
     countryCode,
     timezone,
   }: GeocodedObject) {
-    this.latitude = latitude;
-    this.longitude = longitude;
+    this.coordinates = coordinates;
     this.bounds = bounds;
     this.formattedAddress = formattedAddress;
     this.streetNumber = streetNumber;
@@ -93,8 +89,7 @@ export default class Geocoded {
 
   public toObject(): GeocodedObject {
     return {
-      latitude: this.latitude,
-      longitude: this.longitude,
+      coordinates: this.coordinates,
       bounds: this.bounds,
       formattedAddress: this.formattedAddress,
       streetNumber: this.streetNumber,
@@ -117,24 +112,15 @@ export default class Geocoded {
     });
   }
 
-  public withCoordinates(latitude?: number, longitude?: number): Geocoded {
+  public withCoordinates(coordinates: Coordinates): Geocoded {
     return (<typeof Geocoded>this.constructor).create({
       ...this.toObject(),
-      latitude,
-      longitude,
+      coordinates,
     });
   }
 
-  public getCoordinates(): [undefined | number, undefined | number] {
-    return [this.latitude, this.longitude];
-  }
-
-  public getLatitude(): undefined | number {
-    return this.latitude;
-  }
-
-  public getLongitude(): undefined | number {
-    return this.longitude;
+  public getCoordinates(): undefined | Coordinates {
+    return this.coordinates;
   }
 
   public getBounds(): undefined | BoundingBox {

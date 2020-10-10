@@ -48,6 +48,51 @@ openStreetMapGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", (resul
 });
 ```
 
+For this example, the output will be something like this:
+
+```javascript
+[
+  NominatimGeocoded {
+    coordinates: { latitude: 38.8976998, longitude: -77.03655348862276 },
+    bounds: {
+      latitudeSW: 38.8974898,
+      longitudeSW: -77.0368542,
+      latitudeNE: 38.897911,
+      longitudeNE: -77.0362526
+    },
+    formattedAddress: undefined,
+    streetNumber: '1600',
+    streetName: 'Pennsylvania Avenue Northwest',
+    subLocality: undefined,
+    locality: 'Washington',
+    postalCode: '20500',
+    region: 'District of Columbia',
+    adminLevels: [
+      AdminLevel {
+        level: 1,
+        name: 'District of Columbia',
+        code: undefined
+      },
+      AdminLevel {
+        level: 2,
+        name: 'Washington',
+        code: undefined
+      }
+    ],
+    country: 'United States of America',
+    countryCode: 'us',
+    timezone: undefined,
+    displayName: 'White House, 1600, Pennsylvania Avenue Northwest, Washington, District of Columbia, 20500, United States of America',
+    osmId: 238241022,
+    osmType: 'way',
+    category: 'historic',
+    type: 'castle',
+    attribution: 'Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright'
+  },
+  // ... (other results)
+]
+```
+
 If you want to use the library as a direct dependecy (for browsers only), copy `dist/universal-geocoder.js` or `dist/universal-geocoder.min.js` to your dependencies.
 
 Universal Geocoder will be available in the global environment:
@@ -83,8 +128,10 @@ googleGeocoder.geocode({
 });
 
 const reverseQuery = ReverseQuery.create({
-  latitude: "44.915",
-  longitude: "-93.21",
+  coordinates: {
+    latitude: "44.915",
+    longitude: "-93.21",
+  },
 })
 .withLocale("FR")
 .withLimit(7);
@@ -103,21 +150,21 @@ googleGeocoder.geodecode(reverseQuery, (result) => {
 
 - `text`: what is searched
 - `ip`: the IP searched
-- `bounds` (object with `latitude1`, `longitude1`, `latitude2` and `longitude2` keys): the bounds to use
+- `bounds` (object with `latitudeSW`, `longitudeSW`, `latitudeNE` and `longitudeNE` keys): the bounds to use (either bias or filter the results)
 - `locale`: the locale to use for the query
 - `limit`: the maximum number of results to have
 
 ### Common `geodecode` parameters (`ReverseQuery` object)
 
-- `latitude`, `longitude` (`withCoordinates` method): the coordinates to search for
+- `coordinates` (object with `latitude`, `longitude` keys): the coordinates to search for
 - `locale`: the locale to use for the query
 - `limit`: the maximum number of results to have
 
 ### Common Result Properties (`Geocoded` object)
 
 The result of a query is a `Geocoded` object which maps the following common information:
-- Coordinates (latitute and longitude)
-- Bounds (latitude1, longitude1, latitude2, longitude2)
+- Coordinates (object with `latitute` and `longitude` keys)
+- Bounds (object with `latitudeSW`, `longitudeSW`, `latitudeNE`, `longitudeNE` keys)
 - Formatted address
 - Address details: street number, street name, (sub) locality, postal code, region, administration levels, country (with its code)
 - Time zone

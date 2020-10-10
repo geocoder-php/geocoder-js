@@ -2,29 +2,29 @@ import { DEFAULT_RESULT_LIMIT } from "provider";
 import { Coordinates } from "types";
 
 export interface ReverseQueryObject {
-  readonly latitude: number | string;
-  readonly longitude: number | string;
+  readonly coordinates: Coordinates;
   readonly locale?: string;
   readonly limit?: number;
 }
 
 export default class ReverseQuery {
-  private readonly latitude: number | string;
-
-  private readonly longitude: number | string;
+  private readonly coordinates: Coordinates;
 
   private readonly locale?: string;
 
   private readonly limit: number = DEFAULT_RESULT_LIMIT;
 
   protected constructor({
-    latitude,
-    longitude,
+    coordinates,
     locale,
     limit = DEFAULT_RESULT_LIMIT,
   }: ReverseQueryObject) {
-    this.latitude = latitude;
-    this.longitude = longitude;
+    if (coordinates && (!coordinates.latitude || !coordinates.longitude)) {
+      throw new Error(
+        'The "coordinates" parameter must be an object with the keys: "latitude", "longitude".'
+      );
+    }
+    this.coordinates = coordinates;
     this.locale = locale;
     this.limit = limit;
   }
@@ -35,18 +35,16 @@ export default class ReverseQuery {
 
   public toObject(): ReverseQueryObject {
     return {
-      latitude: this.latitude,
-      longitude: this.longitude,
+      coordinates: this.coordinates,
       locale: this.locale,
       limit: this.limit,
     };
   }
 
-  public withCoordinates(latitude: number, longitude: number): ReverseQuery {
+  public withCoordinates(coordinates: Coordinates): ReverseQuery {
     return (<typeof ReverseQuery>this.constructor).create({
       ...this.toObject(),
-      latitude,
-      longitude,
+      coordinates,
     });
   }
 
@@ -65,7 +63,7 @@ export default class ReverseQuery {
   }
 
   public getCoordinates(): Coordinates {
-    return { latitude: this.latitude, longitude: this.longitude };
+    return this.coordinates;
   }
 
   public getLocale(): undefined | string {

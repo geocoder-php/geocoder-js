@@ -54,7 +54,10 @@ describe("MapQuest Geocoder Provider", () => {
         const geocoded = results[0];
 
         expect(geocoded).toBeDefined();
-        expect(geocoded.getCoordinates()).toEqual([38.895206, -77.036515]);
+        expect(geocoded.getCoordinates()).toEqual({
+          latitude: 38.895206,
+          longitude: -77.036515,
+        });
         expect(geocoded.getBounds()).toEqual(undefined);
         expect(geocoded.getFormattedAddress()).toEqual(undefined);
         expect(geocoded.getStreetNumber()).toEqual(undefined);
@@ -96,7 +99,10 @@ describe("MapQuest Geocoder Provider", () => {
         const geocoded = results[0];
 
         expect(geocoded).toBeDefined();
-        expect(geocoded.getCoordinates()).toEqual([38.895854, -77.030713]);
+        expect(geocoded.getCoordinates()).toEqual({
+          latitude: 38.895854,
+          longitude: -77.030713,
+        });
         expect(geocoded.getBounds()).toEqual(undefined);
         expect(geocoded.getFormattedAddress()).toEqual(undefined);
         expect(geocoded.getStreetNumber()).toEqual(undefined);
@@ -133,7 +139,10 @@ describe("MapQuest Geocoder Provider", () => {
       const geocoded = results[0];
 
       expect(geocoded).toBeDefined();
-      expect(geocoded.getCoordinates()).toEqual([48.863116, 2.38878]);
+      expect(geocoded.getCoordinates()).toEqual({
+        latitude: 48.863116,
+        longitude: 2.38878,
+      });
       expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(undefined);
       expect(geocoded.getStreetNumber()).toEqual(undefined);
@@ -171,7 +180,10 @@ describe("MapQuest Geocoder Provider", () => {
       const geocoded = results[0];
 
       expect(geocoded).toBeDefined();
-      expect(geocoded.getCoordinates()).toEqual([48.863116, 2.38878]);
+      expect(geocoded.getCoordinates()).toEqual({
+        latitude: 48.863116,
+        longitude: 2.38878,
+      });
       expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(undefined);
       expect(geocoded.getStreetNumber()).toEqual(undefined);

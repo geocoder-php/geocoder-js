@@ -54,12 +54,15 @@ describe("Yandex Geocoder Provider", () => {
         const geocoded = results[0];
 
         expect(geocoded).toBeDefined();
-        expect(geocoded.getCoordinates()).toEqual([38.895512, -77.033608]);
+        expect(geocoded.getCoordinates()).toEqual({
+          latitude: 38.895512,
+          longitude: -77.033608,
+        });
         expect(geocoded.getBounds()).toEqual({
-          latitude1: 38.890612,
-          longitude1: -77.058105,
-          latitude2: 38.905248,
-          longitude2: -77.012426,
+          latitudeSW: 38.890612,
+          longitudeSW: -77.058105,
+          latitudeNE: 38.905248,
+          longitudeNE: -77.012426,
         });
         expect(geocoded.getFormattedAddress()).toEqual(undefined);
         expect(geocoded.getStreetNumber()).toEqual(undefined);
@@ -94,17 +97,23 @@ describe("Yandex Geocoder Provider", () => {
     });
 
     provider?.geodecode(
-      { latitude: 48.8631507, longitude: 2.388911, locale: "en_US" },
+      {
+        coordinates: { latitude: 48.8631507, longitude: 2.388911 },
+        locale: "en_US",
+      },
       (results: YandexGeocoded[]) => {
         const geocoded = results[0];
 
         expect(geocoded).toBeDefined();
-        expect(geocoded.getCoordinates()).toEqual([48.8631, 2.388899]);
+        expect(geocoded.getCoordinates()).toEqual({
+          latitude: 48.8631,
+          longitude: 2.388899,
+        });
         expect(geocoded.getBounds()).toEqual({
-          latitude1: 48.860391,
-          longitude1: 2.384794,
-          latitude2: 48.865808,
-          longitude2: 2.393004,
+          latitudeSW: 48.860391,
+          longitudeSW: 2.384794,
+          latitudeNE: 48.865808,
+          longitudeNE: 2.393004,
         });
         expect(geocoded.getFormattedAddress()).toEqual(undefined);
         expect(geocoded.getStreetNumber()).toEqual("10");

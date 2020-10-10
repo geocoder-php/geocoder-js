@@ -212,10 +212,10 @@ export default class YandexProvider
             }`
           : undefined,
         bbox: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.longitude1},${
-              geocodeQuery.getBounds()?.latitude1
-            }~${geocodeQuery.getBounds()?.longitude2},${
-              geocodeQuery.getBounds()?.latitude2
+          ? `${geocodeQuery.getBounds()?.longitudeSW},${
+              geocodeQuery.getBounds()?.latitudeSW
+            }~${geocodeQuery.getBounds()?.longitudeNE},${
+              geocodeQuery.getBounds()?.latitudeNE
             }`
           : undefined,
       },
@@ -331,8 +331,10 @@ export default class YandexProvider
     const { precision } = result.metaDataProperty.GeocoderMetaData;
 
     let geocoded = YandexGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       streetNumber,
       streetName,
       subLocality,
@@ -362,10 +364,10 @@ export default class YandexProvider
     const lowerCorner = result.boundedBy.Envelope.lowerCorner.split(" ");
     const upperCorner = result.boundedBy.Envelope.upperCorner.split(" ");
     geocoded = <YandexGeocoded>geocoded.withBounds({
-      latitude1: parseFloat(lowerCorner[1]),
-      longitude1: parseFloat(lowerCorner[0]),
-      latitude2: parseFloat(upperCorner[1]),
-      longitude2: parseFloat(upperCorner[0]),
+      latitudeSW: parseFloat(lowerCorner[1]),
+      longitudeSW: parseFloat(lowerCorner[0]),
+      latitudeNE: parseFloat(upperCorner[1]),
+      longitudeNE: parseFloat(upperCorner[0]),
     });
 
     return geocoded;

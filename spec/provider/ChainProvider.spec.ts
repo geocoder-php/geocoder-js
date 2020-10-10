@@ -5,12 +5,15 @@ import setupPolly, { cleanRecording } from "../setupPolly";
 
 const expectGeocodedYandex = (geocoded: Geocoded) => {
   expect(geocoded).toBeDefined();
-  expect(geocoded.getCoordinates()).toEqual([38.895512, -77.033608]);
+  expect(geocoded.getCoordinates()).toEqual({
+    latitude: 38.895512,
+    longitude: -77.033608,
+  });
   expect(geocoded.getBounds()).toEqual({
-    latitude1: 38.890612,
-    longitude1: -77.058105,
-    latitude2: 38.905248,
-    longitude2: -77.012426,
+    latitudeSW: 38.890612,
+    longitudeSW: -77.058105,
+    latitudeNE: 38.905248,
+    longitudeNE: -77.012426,
   });
   expect(geocoded.getFormattedAddress()).toEqual(undefined);
   expect(geocoded.getStreetNumber()).toEqual(undefined);
@@ -28,12 +31,15 @@ const expectGeocodedYandex = (geocoded: Geocoded) => {
 
 const expectGeodecodedYandex = (geocoded: Geocoded) => {
   expect(geocoded).toBeDefined();
-  expect(geocoded.getCoordinates()).toEqual([48.8631, 2.388899]);
+  expect(geocoded.getCoordinates()).toEqual({
+    latitude: 48.8631,
+    longitude: 2.388899,
+  });
   expect(geocoded.getBounds()).toEqual({
-    latitude1: 48.860391,
-    longitude1: 2.384794,
-    latitude2: 48.865808,
-    longitude2: 2.393004,
+    latitudeSW: 48.860391,
+    longitudeSW: 2.384794,
+    latitudeNE: 48.865808,
+    longitudeNE: 2.393004,
   });
   expect(geocoded.getFormattedAddress()).toEqual(undefined);
   expect(geocoded.getStreetNumber()).toEqual("10");
@@ -51,12 +57,15 @@ const expectGeodecodedYandex = (geocoded: Geocoded) => {
 
 const expectGeocodedOpenStreetMap = (geocoded: Geocoded) => {
   expect(geocoded).toBeDefined();
-  expect(geocoded.getCoordinates()).toEqual([38.8636383, -76.9463651]);
+  expect(geocoded.getCoordinates()).toEqual({
+    latitude: 38.8636383,
+    longitude: -76.9463651,
+  });
   expect(geocoded.getBounds()).toEqual({
-    latitude1: 38.8633822,
-    longitude1: -76.9467576,
-    latitude2: 38.8637409,
-    longitude2: -76.945632,
+    latitudeSW: 38.8633822,
+    longitudeSW: -76.9467576,
+    latitudeNE: 38.8637409,
+    longitudeNE: -76.945632,
   });
   expect(geocoded.getFormattedAddress()).toEqual(undefined);
   expect(geocoded.getStreetNumber()).toEqual(undefined);
@@ -74,15 +83,15 @@ const expectGeocodedOpenStreetMap = (geocoded: Geocoded) => {
 };
 
 const expectGeodecodedOpenStreetMap = (geocoded: Geocoded) => {
-  expect(geocoded.getCoordinates()).toEqual([
-    48.863744499999996,
-    2.3911562136123106,
-  ]);
+  expect(geocoded.getCoordinates()).toEqual({
+    latitude: 48.863744499999996,
+    longitude: 2.3911562136123106,
+  });
   expect(geocoded.getBounds()).toEqual({
-    latitude1: 48.8625929,
-    longitude1: 2.3877078,
-    latitude2: 48.8648832,
-    longitude2: 2.3956964,
+    latitudeSW: 48.8625929,
+    longitudeSW: 2.3877078,
+    latitudeNE: 48.8648832,
+    longitudeNE: 2.3956964,
   });
   expect(geocoded.getFormattedAddress()).toEqual(undefined);
   expect(geocoded.getStreetNumber()).toEqual(undefined);
@@ -270,7 +279,10 @@ describe("Chain Geocoder Provider", () => {
     });
 
     provider?.geodecode(
-      { latitude: 48.8631507, longitude: 2.388911, locale: "en_US" },
+      {
+        coordinates: { latitude: 48.8631507, longitude: 2.388911 },
+        locale: "en_US",
+      },
       (results: Geocoded[]) => {
         const geocoded = results[0];
 
@@ -298,7 +310,10 @@ describe("Chain Geocoder Provider", () => {
     });
 
     provider?.geodecode(
-      { latitude: 48.8631507, longitude: 2.388911, locale: "en_US" },
+      {
+        coordinates: { latitude: 48.8631507, longitude: 2.388911 },
+        locale: "en_US",
+      },
       (results: Geocoded[]) => {
         const geocoded = results[0];
 
@@ -327,7 +342,10 @@ describe("Chain Geocoder Provider", () => {
     });
 
     provider?.geodecode(
-      { latitude: 48.8631507, longitude: 2.388911, locale: "en_US" },
+      {
+        coordinates: { latitude: 48.8631507, longitude: 2.388911 },
+        locale: "en_US",
+      },
       (results: Geocoded[]) => {
         const geocoded = results[0];
 
@@ -356,7 +374,10 @@ describe("Chain Geocoder Provider", () => {
     });
 
     provider?.geodecode(
-      { latitude: 48.8631507, longitude: 2.388911, locale: "en_US" },
+      {
+        coordinates: { latitude: 48.8631507, longitude: 2.388911 },
+        locale: "en_US",
+      },
       (results: Geocoded[]) => {
         const geocoded = results[0];
 
@@ -385,7 +406,10 @@ describe("Chain Geocoder Provider", () => {
     });
 
     provider?.geodecode(
-      { latitude: 48.8631507, longitude: 2.388911, locale: "en_US" },
+      {
+        coordinates: { latitude: 48.8631507, longitude: 2.388911 },
+        locale: "en_US",
+      },
       (results: Geocoded[]) => {
         const geocoded = results[0];
 

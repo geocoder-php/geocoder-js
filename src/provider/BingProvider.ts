@@ -19,7 +19,7 @@ import {
   ReverseQuery,
   ReverseQueryObject,
 } from "query";
-import { Box } from "types";
+import { FlatBoundingBox } from "types";
 
 interface BingRequestParams {
   [param: string]: string | undefined;
@@ -29,7 +29,7 @@ interface BingRequestParams {
 
 export interface BingResult {
   __type: string;
-  bbox: Box;
+  bbox: FlatBoundingBox;
   name: string;
   point: {
     type: string;
@@ -170,8 +170,10 @@ export default class BingProvider implements ProviderInterface<Geocoded> {
     const country = result.address.countryRegion;
 
     let geocoded = Geocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       formattedAddress,
       streetName,
       locality,
@@ -180,10 +182,10 @@ export default class BingProvider implements ProviderInterface<Geocoded> {
       country,
     });
     geocoded = geocoded.withBounds({
-      latitude1: result.bbox[0],
-      longitude1: result.bbox[1],
-      latitude2: result.bbox[2],
-      longitude2: result.bbox[3],
+      latitudeSW: result.bbox[0],
+      longitudeSW: result.bbox[1],
+      latitudeNE: result.bbox[2],
+      longitudeNE: result.bbox[3],
     });
 
     return geocoded;

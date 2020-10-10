@@ -34,13 +34,13 @@ export default class GeocodeQuery {
     }
     if (
       bounds &&
-      (!bounds.latitude1 ||
-        !bounds.longitude1 ||
-        !bounds.latitude2 ||
-        !bounds.longitude2)
+      (!bounds.latitudeSW ||
+        !bounds.longitudeSW ||
+        !bounds.latitudeNE ||
+        !bounds.longitudeNE)
     ) {
       throw new Error(
-        'The "bounds" parameter must be an object with the keys: "latitude1", "longitude1", "latitude2", "longitude2".'
+        'The "bounds" parameter must be an object with the keys: "latitudeSW", "longitudeSW", "latitudeNE", "longitudeNE".'
       );
     }
     this.bounds = bounds;

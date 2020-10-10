@@ -5,7 +5,9 @@ export type PartialSome<
   R = { [K in P]?: O[P] }
 > = Q & R;
 
-export type Box = [number, number, number, number];
+export type FlatCoordinates = [number, number];
+
+export type FlatBoundingBox = [number, number, number, number];
 
 export type Coordinates = {
   readonly latitude: number | string;
@@ -13,10 +15,10 @@ export type Coordinates = {
 };
 
 export type BoundingBox = {
-  // Often South-West (Lower-Left) but also North-West (Upper-Left)
-  readonly latitude1: number | string;
-  readonly longitude1: number | string;
-  // Often North-East (Upper-Right) but also South-East (Lower-Right)
-  readonly latitude2: number | string;
-  readonly longitude2: number | string;
+  // South-West (Lower-Left, minY-minX, minLat-minLon, SouthLatitude-WestLongitude)
+  readonly latitudeSW: number | string;
+  readonly longitudeSW: number | string;
+  // North-East (Upper-Right, maxY-maxX, maxLat-maxLon, NorthLatitude-EastLongitude)
+  readonly latitudeNE: number | string;
+  readonly longitudeNE: number | string;
 };

@@ -58,7 +58,10 @@ describe("GeoPlugin Geocoder Provider", () => {
       const geocoded = results[0];
 
       expect(geocoded).toBeDefined();
-      expect(geocoded.getCoordinates()).toEqual([-32.2167, -58.1333]);
+      expect(geocoded.getCoordinates()).toEqual({
+        latitude: -32.2167,
+        longitude: -58.1333,
+      });
       expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(undefined);
       expect(geocoded.getStreetNumber()).toEqual(undefined);
@@ -86,7 +89,7 @@ describe("GeoPlugin Geocoder Provider", () => {
       const geocoded = results[0];
 
       expect(geocoded).toBeDefined();
-      expect(geocoded.getCoordinates()).toEqual([undefined, undefined]);
+      expect(geocoded.getCoordinates()).toEqual(undefined);
       expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(undefined);
       expect(geocoded.getStreetNumber()).toEqual(undefined);
