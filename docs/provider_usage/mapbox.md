@@ -9,6 +9,7 @@
 
 - `countryCodes`: to restrict the results to one or more countries (ISO 3166 alpha 2 country codes)
 - `proximity` (object with `latitude` and `longitude` keys): to bias the response to favor results that are closer to the specified location
+- `fuzzyMatch`: to approximate the request terms or do an exact matching
 - `locationTypes` (possible values: "country", "region", "postcode", "district", "place", "locality", "neighborhood", "address", "poi"): to filter the results to a subset of location types
 
 ## `geodecode` parameters

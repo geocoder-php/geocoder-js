@@ -82,6 +82,37 @@ describe("Mapbox Geocoder Provider", () => {
     });
   });
 
+  it("receives correct geocoding results with and without fuzzy match", (done) => {
+    const provider = UniversalGeocoder.createGeocoder({
+      provider: "mapbox",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+    let numberResultsWithFuzzyMatch = -1;
+    let numberResultsWithoutFuzzyMatch = -1;
+
+    const assertion = () =>
+      expect(numberResultsWithFuzzyMatch).toBeGreaterThan(
+        numberResultsWithoutFuzzyMatch
+      );
+
+    provider?.geocode({ text: "wahsington", fuzzyMatch: true }, (results) => {
+      numberResultsWithFuzzyMatch = results.length;
+      if (numberResultsWithoutFuzzyMatch !== -1) {
+        assertion();
+        done();
+      }
+    });
+
+    provider?.geocode({ text: "wahsington", fuzzyMatch: false }, (results) => {
+      numberResultsWithoutFuzzyMatch = results.length;
+      if (numberResultsWithFuzzyMatch !== -1) {
+        assertion();
+        done();
+      }
+    });
+  });
+
   it("receives correct geodecoding results", (done) => {
     const provider = UniversalGeocoder.createGeocoder({
       provider: "mapbox",

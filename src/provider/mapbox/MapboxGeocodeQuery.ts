@@ -5,6 +5,7 @@ export interface MapboxGeocodeQueryObject extends GeocodeQueryObject {
   readonly countryCodes?: string[];
   readonly proximity?: Coordinates;
   readonly locationTypes?: string[];
+  readonly fuzzyMatch?: boolean;
 }
 
 export default class MapboxGeocodeQuery extends GeocodeQuery {
@@ -14,10 +15,13 @@ export default class MapboxGeocodeQuery extends GeocodeQuery {
 
   private readonly locationTypes?: string[];
 
+  private readonly fuzzyMatch?: boolean;
+
   protected constructor({
     countryCodes,
     proximity,
     locationTypes,
+    fuzzyMatch,
     ...geocodeQueryObject
   }: MapboxGeocodeQueryObject) {
     super(geocodeQueryObject);
@@ -29,6 +33,7 @@ export default class MapboxGeocodeQuery extends GeocodeQuery {
     }
     this.proximity = proximity;
     this.locationTypes = locationTypes;
+    this.fuzzyMatch = fuzzyMatch;
   }
 
   public static create(object: MapboxGeocodeQueryObject): MapboxGeocodeQuery {
@@ -41,6 +46,7 @@ export default class MapboxGeocodeQuery extends GeocodeQuery {
       countryCodes: this.countryCodes,
       proximity: this.proximity,
       locationTypes: this.locationTypes,
+      fuzzyMatch: this.fuzzyMatch,
     };
   }
 
@@ -66,5 +72,13 @@ export default class MapboxGeocodeQuery extends GeocodeQuery {
 
   public getLocationTypes(): undefined | string[] {
     return this.locationTypes;
+  }
+
+  public withFuzzyMatch(fuzzyMatch: boolean): MapboxGeocodeQuery {
+    return new MapboxGeocodeQuery({ ...this.toObject(), fuzzyMatch });
+  }
+
+  public getFuzzyMatch(): undefined | boolean {
+    return this.fuzzyMatch;
   }
 }

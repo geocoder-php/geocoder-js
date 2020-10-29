@@ -28,6 +28,7 @@ interface MapboxRequestParams {
   readonly language?: string;
   readonly limit?: string;
   readonly bbox?: string;
+  readonly fuzzyMatch?: string;
   readonly proximity?: string;
   readonly reverseMode?: "distance" | "score";
   readonly types?: string;
@@ -163,6 +164,9 @@ export default class MapboxProvider
       }/${geocodeQuery.getText()}.json`,
     });
 
+    const fuzzyMatch = (<MapboxGeocodeQuery>geocodeQuery).getFuzzyMatch()
+      ? "true"
+      : "false";
     const params: MapboxRequestParams = this.withCommonParams(
       {
         bbox: geocodeQuery.getBounds()
@@ -172,6 +176,10 @@ export default class MapboxProvider
               geocodeQuery.getBounds()?.latitudeNE
             }`
           : undefined,
+        fuzzyMatch:
+          (<MapboxGeocodeQuery>geocodeQuery).getFuzzyMatch() !== undefined
+            ? fuzzyMatch
+            : undefined,
         proximity: (<MapboxGeocodeQuery>geocodeQuery).getProximity()
           ? `${(<MapboxGeocodeQuery>geocodeQuery).getProximity()?.longitude},${
               (<MapboxGeocodeQuery>geocodeQuery).getProximity()?.latitude
@@ -238,7 +246,7 @@ export default class MapboxProvider
   private withCommonParams(
     params: Pick<
       MapboxRequestParams,
-      "bbox" | "proximity" | "reverseMode" | "types"
+      "bbox" | "fuzzyMatch" | "proximity" | "reverseMode" | "types"
     >,
     query: MapboxGeocodeQuery | MapboxReverseQuery
   ): MapboxRequestParams {

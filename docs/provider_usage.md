@@ -97,6 +97,12 @@ Here is a table listing the parameters according to the providers:
     </tr>
     <tr>
       <td>geocode</td>
+      <td>fuzzyMatch</td>
+      <td>Should approximate the request terms or do an exact matching</td>
+      <td>Mapbox</td>
+    </tr>
+    <tr>
+      <td>geocode</td>
       <td>span</td>
       <td>Bias or filter the response to favor results that are closer to the specified span</td>
       <td>Yandex</td>

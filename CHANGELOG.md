@@ -1,14 +1,18 @@
 # Changelog
 
+## 0.8.0
+
+* [Mapbox] Add `fuzzyMatch` geocode parameter
+
 ## 0.7.0
 
 * [Yandex] Better Yandex provider
 * [Nominatim] Remove `viewBox` parameter in `GeocodeQuery` to use `bounds` instead
-* [GeoJsonDumper] Use `bbox` member for `bounds`.
-* The `bounds` parameter in `GeocodeQuery` is now an object with `latitudeSW`, `longitudeSW`, `latitudeNE`, `longitudeNE` keys.
-* The `latitude` and `longitude` parameters in `GeocodeQuery` are replaced by a `coordinates` parameter (an object with `latitude` and `longitude` keys).
-* `Geocoded` returns an object with `latitudeSW`, `longitudeSW`, `latitudeNE`, `longitudeNE` keys for the `bounds`.
-* The `latitude` and `longitude` parameters in `Geocoded` are replaced by a `coordinates` parameter (an object with `latitude` and `longitude` keys).
+* [GeoJsonDumper] Use `bbox` member for `bounds`
+* The `bounds` parameter in `GeocodeQuery` is now an object with `latitudeSW`, `longitudeSW`, `latitudeNE`, `longitudeNE` keys
+* The `latitude` and `longitude` parameters in `GeocodeQuery` are replaced by a `coordinates` parameter (an object with `latitude` and `longitude` keys)
+* `Geocoded` returns an object with `latitudeSW`, `longitudeSW`, `latitudeNE`, `longitudeNE` keys for the `bounds`
+* The `latitude` and `longitude` parameters in `Geocoded` are replaced by a `coordinates` parameter (an object with `latitude` and `longitude` keys)
 
 ## 0.6.0
 
