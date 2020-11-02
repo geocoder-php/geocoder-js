@@ -2,7 +2,10 @@
 
 ## 0.8.0
 
+* [Bing] Better Bing provider
 * [Mapbox] Add `fuzzyMatch` geocode parameter
+* [OpenCage] Add `precision` to `OpenCageGeocoded`
+* [OpenCage] Replace `minConfidence` with `minPrecision` for geocode and geodecode
 
 ## 0.7.0
 

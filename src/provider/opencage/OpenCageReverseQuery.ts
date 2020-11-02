@@ -2,37 +2,37 @@ import { ReverseQuery, ReverseQueryObject } from "query";
 
 export interface OpenCageReverseQueryObject extends ReverseQueryObject {
   readonly countryCodes?: string[];
-  readonly minConfidence?: number;
+  readonly minPrecision?: number;
   readonly noRecord?: boolean;
 }
 
 export default class OpenCageReverseQuery extends ReverseQuery {
   private readonly countryCodes?: string[];
 
-  private readonly minConfidence?: number;
+  private readonly minPrecision?: number;
 
   private readonly noRecord?: boolean;
 
   protected constructor({
     countryCodes,
-    minConfidence,
+    minPrecision,
     noRecord,
     ...reverseQueryObject
   }: OpenCageReverseQueryObject) {
     super(reverseQueryObject);
     this.countryCodes = countryCodes;
     if (
-      minConfidence &&
-      (minConfidence.toString() !==
-        parseInt(minConfidence.toString(), 10).toString() ||
-        minConfidence < 1 ||
-        minConfidence > 10)
+      minPrecision &&
+      (minPrecision.toString() !==
+        parseInt(minPrecision.toString(), 10).toString() ||
+        minPrecision < 1 ||
+        minPrecision > 10)
     ) {
       throw new Error(
-        'The "minConfidence" parameter must be an integer from 1 to 10.'
+        'The "minPrecision" parameter must be an integer from 1 to 10.'
       );
     }
-    this.minConfidence = minConfidence;
+    this.minPrecision = minPrecision;
     this.noRecord = noRecord;
   }
 
@@ -46,7 +46,7 @@ export default class OpenCageReverseQuery extends ReverseQuery {
     return {
       ...super.toObject(),
       countryCodes: this.countryCodes,
-      minConfidence: this.minConfidence,
+      minPrecision: this.minPrecision,
       noRecord: this.noRecord,
     };
   }
@@ -59,12 +59,12 @@ export default class OpenCageReverseQuery extends ReverseQuery {
     return this.countryCodes;
   }
 
-  public withMinConfidence(minConfidence: number): OpenCageReverseQuery {
-    return new OpenCageReverseQuery({ ...this.toObject(), minConfidence });
+  public withMinPrecision(minPrecision: number): OpenCageReverseQuery {
+    return new OpenCageReverseQuery({ ...this.toObject(), minPrecision });
   }
 
-  public getMinConfidence(): undefined | number {
-    return this.minConfidence;
+  public getMinPrecision(): undefined | number {
+    return this.minPrecision;
   }
 
   public withNoRecord(noRecord: boolean): OpenCageReverseQuery {

@@ -41,6 +41,9 @@ menu:
         mapquest:
           text: 📌️ MapQuest
           relativeUrl: docs/provider_usage/mapquest.html
+        bing:
+          text: 📌️ Bing Maps
+          relativeUrl: docs/provider_usage/bing.html
         yandex:
           text: 📌️ Yandex
           relativeUrl: docs/provider_usage/yandex.html

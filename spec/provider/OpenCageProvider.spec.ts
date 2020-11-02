@@ -84,6 +84,7 @@ describe("OpenCage Geocoder Provider", () => {
       expect(geocoded.getTimezone()).toEqual("America/New_York");
       expect(geocoded.getCallingCode()).toEqual(1);
       expect(geocoded.getFlag()).toEqual("🇺🇸");
+      expect(geocoded.getPrecision()).toEqual(9);
       expect(geocoded.getMgrs()).toEqual("18SUJ3113003444");
       expect(geocoded.getMaidenhead()).toEqual("FM18mu67kg");
       expect(geocoded.getGeohash()).toEqual("dqcm14cm5er8th99jt7w");
@@ -130,6 +131,7 @@ describe("OpenCage Geocoder Provider", () => {
       expect(geocoded.getTimezone()).toEqual("Europe/Paris");
       expect(geocoded.getCallingCode()).toEqual(33);
       expect(geocoded.getFlag()).toEqual("🇫🇷");
+      expect(geocoded.getPrecision()).toEqual(10);
       expect(geocoded.getMgrs()).toEqual("31UDQ5517112419");
       expect(geocoded.getMaidenhead()).toEqual("JN18eu67pd");
       expect(geocoded.getGeohash()).toEqual("u09tyr72q952wcz9bf5x");

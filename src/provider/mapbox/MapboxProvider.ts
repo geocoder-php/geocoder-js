@@ -17,7 +17,7 @@ import {
   ProviderOptionsInterface,
   defaultProviderOptions,
 } from "provider";
-import { FlatBoundingBox } from "types";
+import { FlatBoundingBox, FlatCoordinates } from "types";
 import AdminLevel, { ADMIN_LEVEL_CODES } from "AdminLevel";
 
 interface MapboxRequestParams {
@@ -79,16 +79,16 @@ export interface MapboxResult {
   matching_place_name?: string;
   language?: string;
   bbox?: FlatBoundingBox;
-  center: [number, number];
+  center: FlatCoordinates;
   geometry: {
     type: "Point";
-    coordinates: [number, number];
+    coordinates: FlatCoordinates;
   };
   context?: MapboxFeatureContextProperties[];
   // eslint-disable-next-line camelcase
   routable_points?: {
     points?: {
-      coordinates: [number, number];
+      coordinates: FlatCoordinates;
     }[];
   };
 }

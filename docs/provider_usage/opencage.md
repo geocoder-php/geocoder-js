@@ -8,13 +8,13 @@
 
 - `countryCodes`: to restrict the results to one or more countries (ISO 3166 alpha 2 country codes)
 - `proximity` (object with `latitude` and `longitude` keys): to provide a hint to bias results in favour of those closer to the specified location
-- `minConfidence` (from 1 to 10): only results with at least this confidence will be returned
+- `minPrecision` (from 1 to 10): only results with at least this precision will be returned
 - `noRecord`: boolean to ask for the query to not be logged
 
 ## `geodecode` parameters
 
 - `countryCodes`: to restrict the results to one or more countries (ISO 3166 alpha 2 country codes)
-- `minConfidence` (from 1 to 10): only results with at least this confidence will be returned
+- `minPrecision` (from 1 to 10): only results with at least this precision will be returned
 - `noRecord`: boolean to ask for the query to not be logged
 
 ## `Geocoded` properties

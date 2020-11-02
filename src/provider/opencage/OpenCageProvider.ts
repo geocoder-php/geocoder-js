@@ -400,7 +400,7 @@ export default class OpenCageProvider
         : this.options.countryCodes?.join(","),
       language: query.getLocale(),
       limit: query.getLimit().toString(),
-      min_confidence: query.getMinConfidence()?.toString(),
+      min_confidence: query.getMinPrecision()?.toString(),
       no_record: query.getNoRecord()?.toString(),
       jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
@@ -488,6 +488,7 @@ export default class OpenCageProvider
     const timezone = result.annotations.timezone.name;
     const callingCode = result.annotations.callingcode;
     const { flag } = result.annotations;
+    const precision = result.confidence;
     const mgrs = result.annotations.MGRS;
     const maidenhead = result.annotations.Maidenhead;
     const { geohash } = result.annotations;
@@ -539,6 +540,7 @@ export default class OpenCageProvider
       timezone,
       callingCode,
       flag,
+      precision,
       mgrs,
       maidenhead,
       geohash,

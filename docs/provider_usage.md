@@ -8,6 +8,7 @@ Each provider has its own options, parameters or results because of its specific
 - [Google Maps (Geocoding API)](provider_usage/googlemaps.md)
 - [Mapbox](provider_usage/mapbox.md)
 - [MapQuest](provider_usage/mapquest.md)
+- [Bing Maps](provider_usage/bing.md)
 - [Yandex](provider_usage/yandex.md)
 - [GeoPlugin](provider_usage/geoplugin.md)
 
@@ -109,8 +110,8 @@ Here is a table listing the parameters according to the providers:
     </tr>
     <tr>
       <td>geocode</td>
-      <td>minConfidence</td>
-      <td>Only results with at least this confidence will be returned</td>
+      <td>minPrecision</td>
+      <td>Only results with at least this precision will be returned</td>
       <td>OpenCage</td>
     </tr>
     <tr>
@@ -157,8 +158,8 @@ Here is a table listing the parameters according to the providers:
     </tr>
     <tr>
       <td>geodecode</td>
-      <td>minConfidence</td>
-      <td>Only results with at least this confidence will be returned</td>
+      <td>minPrecision</td>
+      <td>Only results with at least this precision will be returned</td>
       <td>OpenCage</td>
     </tr>
     <tr>
@@ -207,13 +208,13 @@ Here is a table listing the parameters according to the providers:
       <td>geocoded</td>
       <td>attribution</td>
       <td>Credit information</td>
-      <td>GeoPlugin, MapQuest, Nominatim</td>
+      <td>Bing, GeoPlugin, MapQuest, Nominatim</td>
     </tr>
     <tr>
       <td>geocoded</td>
       <td>precision</td>
       <td>Quality of the geocoding result</td>
-      <td>MapQuest, Yandex</td>
+      <td>Bing, MapQuest, Yandex</td>
     </tr>
     <tr>
       <td>geocoded</td>

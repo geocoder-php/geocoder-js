@@ -1,10 +1,9 @@
 export { default as ProviderHelpers } from "provider/ProviderHelpers";
 export { default as ProviderInterface } from "provider/ProviderInterface";
 export * from "provider/ProviderInterface";
-export { default as BingProvider } from "provider/BingProvider";
-export * from "provider/BingProvider";
 export { default as ChainProvider } from "provider/ChainProvider";
 export * from "provider/ChainProvider";
+export * from "provider/bing";
 export * from "provider/geoplugin";
 export * from "provider/googlemaps";
 export * from "provider/mapbox";

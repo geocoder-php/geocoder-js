@@ -1,4 +1,5 @@
 import {
+  BingResponse,
   GeoPluginResult,
   GoogleMapsResponse,
   MapboxResponse,
@@ -12,6 +13,7 @@ export default class ResponseError extends Error {
 
   private readonly response:
     | Response
+    | BingResponse
     | GeoPluginResult
     | GoogleMapsResponse
     | MapboxResponse
@@ -23,6 +25,7 @@ export default class ResponseError extends Error {
     message: string,
     response:
       | Response
+      | BingResponse
       | GeoPluginResult
       | GoogleMapsResponse
       | MapboxResponse
@@ -40,6 +43,7 @@ export default class ResponseError extends Error {
 
   public getResponse():
     | Response
+    | BingResponse
     | GeoPluginResult
     | GoogleMapsResponse
     | MapboxResponse
