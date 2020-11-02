@@ -1,5 +1,10 @@
-.idea
-lib
 node_modules
-.grunt
-.DS_Store
+/.couscous
+/.nyc_output
+/coverage
+/dist
+/types
+/website/vendor
+/website/webfonts
+/website/package-lock.json
+/website/yarn.lock

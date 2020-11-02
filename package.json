@@ -1,16 +1,104 @@
 {
   "name": "geocoder-js",
-  "version": "0.0.0",
+  "description": "Universal geocoding abstraction with multiple built-in providers",
+  "version": "0.8.0",
+  "keywords": [
+    "geocoder",
+    "geocoding",
+    "geolocation",
+    "ip-geolocation",
+    "typescript",
+    "isomorphic",
+    "universal",
+    "node",
+    "browser",
+    "react-native",
+    "electron"
+  ],
+  "license": "(MIT AND GPL-2.0)",
+  "author": "Brandon Morrison <brandon@brandonmorrison.com>",
+  "contributors": [
+    "Alan Poulain <contact@alanpoulain.eu>"
+  ],
+  "homepage": "https://geocoder-php.github.io/geocoder-js/",
+  "bugs": "https://github.com/geocoder-php/geocoder-js/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geocoder-php/geocoder-js.git"
+  },
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "/dist",
+    "/src",
+    "/types"
+  ],
+  "dependencies": {
+    "cross-fetch": "^3.0.0"
+  },
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-uglify": "~0.6",
-    "grunt-contrib-watch": "~0.6",
-    "grunt-contrib-jasmine": "~0.8.0",
-    "grunt-contrib-jshint": "~0.10",
-    "grunt-complexity": "~0.2.0"
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@pollyjs/adapter-node-http": "^5.0.0",
+    "@pollyjs/core": "^5.0.0",
+    "@pollyjs/persister-fs": "^5.0.0",
+    "@pollyjs/utils": "^5.0.0",
+    "@types/jasmine": "^3.5.0",
+    "@types/node": "^14.0.0",
+    "@types/pollyjs__adapter-node-http": "^2.0.0",
+    "@types/pollyjs__core": "^4.3.0",
+    "@types/pollyjs__persister-fs": "^2.0.0",
+    "@types/pollyjs__utils": "^2.6.0",
+    "@types/setup-polly-jest": "^0.5.0",
+    "@types/webpack-env": "^1.15.0",
+    "@typescript-eslint/eslint-plugin": "^4.0.0",
+    "@typescript-eslint/parser": "^4.0.0",
+    "@zerollup/ts-transform-paths": "^1.7.0",
+    "eslint": "^7.0.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-import": "^2.0.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "http-server": "^0.12.0",
+    "husky": "^4.2.0",
+    "jasmine": "^3.5.0",
+    "jasmine-spec-reporter": "^6.0.0",
+    "lint-staged": "^10.2.0",
+    "nyc": "^15.1.0",
+    "prettier": "^2.0.0",
+    "setup-polly-jest": "^0.9.0",
+    "ts-loader": "^8.0.0",
+    "ts-node": "^9.0.0",
+    "tsconfig-paths": "^3.9.0",
+    "ttypescript": "^1.5.0",
+    "typescript": "^4.0.0",
+    "webpack": "^5.3.0",
+    "webpack-cli": "^4.1.0",
+    "webpack-merge": "^5.1.0"
   },
   "scripts": {
-    "build": "grunt --verbose",
-    "test": "grunt ci --verbose"
+    "build": "rm -rf types && rm -rf dist && webpack --config webpack.dev.js && webpack --config webpack.prod.js && ttsc",
+    "coverage": "nyc npm test",
+    "coverage-lcov": "nyc --reporter=lcov npm test",
+    "lint": "eslint --fix --ext .ts .",
+    "prepublishOnly": "npm run build",
+    "serve": "http-server",
+    "test": "ts-node --compiler ttypescript -r tsconfig-paths/register node_modules/.bin/jasmine",
+    "test-record": "POLLY_RECORD=1 npm test",
+    "ts-node": "ts-node --skip-project",
+    "watch": "webpack --config webpack.dev.js --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint --env HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint",
+      "git add"
+    ]
   }
 }

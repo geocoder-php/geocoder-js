@@ -1,0 +1,54 @@
+title: GeocoderJS
+subTitle: A universal JavaScript library for client-side geocoding applications with multiple built-in providers
+
+github:
+    user: geocoder-php
+    repo: geocoder-js
+
+menu:
+  sections:
+    main:
+      items:
+        readme:
+          text: 🌏️ Home
+        provider_usage:
+          text: 🔎️ Provider Usage
+          relativeUrl: docs/provider_usage.html
+        changelog:
+          text: 📃️ Changelog
+          relativeUrl: changelog.html
+    special_provider_usage:
+      name: Special Provider
+      items:
+        chain:
+          text: ⛓️ Chain
+          relativeUrl: docs/provider_usage/chain.html
+    provider_usage:
+      name: Provider
+      items:
+        nominatim:
+          text: 📌️ OpenStreetMap (Nominatim)
+          relativeUrl: docs/provider_usage/nominatim.html
+        opencage:
+          text: 📌️ OpenCage
+          relativeUrl: docs/provider_usage/opencage.html
+        googlemaps:
+          text: 📌️ Google Maps (Geocoding API)
+          relativeUrl: docs/provider_usage/googlemaps.html
+        mapbox:
+          text: 📌️ Mapbox
+          relativeUrl: docs/provider_usage/mapbox.html
+        mapquest:
+          text: 📌️ MapQuest
+          relativeUrl: docs/provider_usage/mapquest.html
+        bing:
+          text: 📌️ Bing Maps
+          relativeUrl: docs/provider_usage/bing.html
+        yandex:
+          text: 📌️ Yandex
+          relativeUrl: docs/provider_usage/yandex.html
+        geoplugin:
+          text: 📌️ GeoPlugin
+          relativeUrl: docs/provider_usage/geoplugin.html
+
+baseUrl: /geocoder-js/

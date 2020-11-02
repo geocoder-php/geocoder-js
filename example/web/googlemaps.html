@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geocoder.js: Google Maps Example</title>
+    <script src="../../dist/geocoder.js"></script>
+    <script>
+      var googleGeocoder = GeocoderJS.createGeocoder({ provider: "googlemaps", useSsl: true });
+      googleGeocoder.geocode("1600 Pennsylvania Ave, Washington, DC", function(result) {
+        console.log(result);
+      });
+
+      googleGeocoder.geodecode("44.915", "-93.21", function(result) {
+        console.log(result);
+      });
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>
