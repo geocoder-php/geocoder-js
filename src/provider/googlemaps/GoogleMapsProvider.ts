@@ -233,10 +233,10 @@ export default class GoogleMapsProvider
       {
         address: geocodeQuery.getText(),
         bounds: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.south},${
-              geocodeQuery.getBounds()?.west
-            }|${geocodeQuery.getBounds()?.north},${
-              geocodeQuery.getBounds()?.east
+          ? `${geocodeQuery.getBounds()?.latitudeSW},${
+              geocodeQuery.getBounds()?.longitudeSW
+            }|${geocodeQuery.getBounds()?.latitudeNE},${
+              geocodeQuery.getBounds()?.longitudeNE
             }`
           : undefined,
         components: (<GoogleMapsGeocodeQuery>geocodeQuery).getComponents()
@@ -552,8 +552,10 @@ export default class GoogleMapsProvider
     });
 
     let geocoded = GoogleMapsGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       formattedAddress,
       streetNumber,
       streetName,
@@ -587,29 +589,28 @@ export default class GoogleMapsProvider
 
     if (result.geometry.bounds) {
       const { bounds } = result.geometry;
-      geocoded = <GoogleMapsGeocoded>(
-        geocoded.withBounds(
-          bounds.southwest.lat,
-          bounds.southwest.lng,
-          bounds.northeast.lat,
-          bounds.northeast.lng
-        )
-      );
+      geocoded = <GoogleMapsGeocoded>geocoded.withBounds({
+        latitudeSW: bounds.southwest.lat,
+        longitudeSW: bounds.southwest.lng,
+        latitudeNE: bounds.northeast.lat,
+        longitudeNE: bounds.northeast.lng,
+      });
     } else if (result.geometry.viewport) {
       const { viewport } = result.geometry;
-      geocoded = <GoogleMapsGeocoded>(
-        geocoded.withBounds(
-          viewport.southwest.lat,
-          viewport.southwest.lng,
-          viewport.northeast.lat,
-          viewport.northeast.lng
-        )
-      );
+      geocoded = <GoogleMapsGeocoded>geocoded.withBounds({
+        latitudeSW: viewport.southwest.lat,
+        longitudeSW: viewport.southwest.lng,
+        latitudeNE: viewport.northeast.lat,
+        longitudeNE: viewport.northeast.lng,
+      });
     } else if (result.geometry.location_type === "ROOFTOP") {
       // Fake bounds
-      geocoded = <GoogleMapsGeocoded>(
-        geocoded.withBounds(latitude, longitude, latitude, longitude)
-      );
+      geocoded = <GoogleMapsGeocoded>geocoded.withBounds({
+        latitudeSW: latitude,
+        longitudeSW: longitude,
+        latitudeNE: latitude,
+        longitudeNE: longitude,
+      });
     }
 
     return geocoded;

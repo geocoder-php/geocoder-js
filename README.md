@@ -1,8 +1,12 @@
 GeocoderJS
 ==========
 
-[![CI](https://github.com/geocoder-php/geocoder-js/workflows/Continuous%20Integration/badge.svg?branch=main&event=push)](https://github.com/geocoder-php/geocoder-js/actions)
-[![codecov](https://codecov.io/gh/geocoder-php/geocoder-js/branch/main/graph/badge.svg)](https://codecov.io/gh/geocoder-php/geocoder-js)
+[![CI](https://img.shields.io/github/workflow/status/geocoder-php/geocoder-js/Continuous%20Integration?event=push)](https://github.com/geocoder-php/geocoder-js/actions)
+[![codecov](https://img.shields.io/codecov/c/gh/geocoder-php/geocoder-js/main)](https://codecov.io/gh/geocoder-php/geocoder-js)
+
+[![npm](https://img.shields.io/npm/v/geocoder-js)](https://www.npmjs.com/package/geocoder-js)
+[![minified-size](https://img.shields.io/bundlephobia/min/geocoder-js)](https://bundlephobia.com/result?p=geocoder-js)
+[![downloads](https://img.shields.io/npm/dw/geocoder-js)](https://www.npmjs.com/package/geocoder-js)
 
 GeocoderJS is a universal JavaScript library for client-side geocoding applications with multiple built-in providers.
 
@@ -40,6 +44,51 @@ openStreetMapGeocoder.geocode("1600 Pennsylvania Ave NW, Washington, DC", (resul
 });
 ```
 
+For this example, the output will be something like this:
+
+```javascript
+[
+  NominatimGeocoded {
+    coordinates: { latitude: 38.8976998, longitude: -77.03655348862276 },
+    bounds: {
+      latitudeSW: 38.8974898,
+      longitudeSW: -77.0368542,
+      latitudeNE: 38.897911,
+      longitudeNE: -77.0362526
+    },
+    formattedAddress: undefined,
+    streetNumber: '1600',
+    streetName: 'Pennsylvania Avenue Northwest',
+    subLocality: undefined,
+    locality: 'Washington',
+    postalCode: '20500',
+    region: 'District of Columbia',
+    adminLevels: [
+      AdminLevel {
+        level: 1,
+        name: 'District of Columbia',
+        code: undefined
+      },
+      AdminLevel {
+        level: 2,
+        name: 'Washington',
+        code: undefined
+      }
+    ],
+    country: 'United States of America',
+    countryCode: 'us',
+    timezone: undefined,
+    displayName: 'White House, 1600, Pennsylvania Avenue Northwest, Washington, District of Columbia, 20500, United States of America',
+    osmId: 238241022,
+    osmType: 'way',
+    category: 'historic',
+    type: 'castle',
+    attribution: 'Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright'
+  },
+  // ... (other results)
+]
+```
+
 If you want to use the library as a direct dependecy (for browsers only), copy `dist/geocoder.js` or `dist/geocoder.min.js` to your dependencies.
 
 GeocoderJS will be available in the global environment:
@@ -75,8 +124,10 @@ googleGeocoder.geocode({
 });
 
 const reverseQuery = ReverseQuery.create({
-  latitude: "44.915",
-  longitude: "-93.21",
+  coordinates: {
+    latitude: "44.915",
+    longitude: "-93.21",
+  },
 })
 .withLocale("FR")
 .withLimit(7);
@@ -95,21 +146,21 @@ googleGeocoder.geodecode(reverseQuery, (result) => {
 
 - `text`: what is searched
 - `ip`: the IP searched
-- `south`, `west`, `north`, `east` (`withBounds` method): the bounds to use
+- `bounds` (object with `latitudeSW`, `longitudeSW`, `latitudeNE` and `longitudeNE` keys): the bounds to use (either bias or filter the results)
 - `locale`: the locale to use for the query
 - `limit`: the maximum number of results to have
 
 ### Common `geodecode` parameters (`ReverseQuery` object)
 
-- `latitude`, `longitude` (`withCoordinates` method): the coordinates to search for
+- `coordinates` (object with `latitude`, `longitude` keys): the coordinates to search for
 - `locale`: the locale to use for the query
 - `limit`: the maximum number of results to have
 
 ### Common Result Properties (`Geocoded` object)
 
 The result of a query is a `Geocoded` object which maps the following common information:
-- Coordinates (latitute and longitude)
-- Bounds (south, west, north, east)
+- Coordinates (object with `latitute` and `longitude` keys)
+- Bounds (object with `latitudeSW`, `longitudeSW`, `latitudeNE`, `longitudeNE` keys)
 - Formatted address
 - Address details: street number, street name, (sub) locality, postal code, region, administration levels, country (with its code)
 - Time zone

@@ -52,13 +52,11 @@ describe("Mapbox Geocoder Provider", () => {
       const geocoded = results[0];
 
       expect(geocoded).toBeDefined();
-      expect(geocoded.getCoordinates()).toEqual([38.87925, -76.98204]);
-      expect(geocoded.getBounds()).toEqual([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-      ]);
+      expect(geocoded.getCoordinates()).toEqual({
+        latitude: 38.87925,
+        longitude: -76.98204,
+      });
+      expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(
         "1600 Pennsylvania Ave SE, Washington, District of Columbia 20003, United States"
       );
@@ -84,6 +82,37 @@ describe("Mapbox Geocoder Provider", () => {
     });
   });
 
+  it("receives correct geocoding results with and without fuzzy match", (done) => {
+    const provider = GeocoderJS.createGeocoder({
+      provider: "mapbox",
+      useSsl: true,
+      apiKey: "api_key",
+    });
+    let numberResultsWithFuzzyMatch = -1;
+    let numberResultsWithoutFuzzyMatch = -1;
+
+    const assertion = () =>
+      expect(numberResultsWithFuzzyMatch).toBeGreaterThan(
+        numberResultsWithoutFuzzyMatch
+      );
+
+    provider?.geocode({ text: "wahsington", fuzzyMatch: true }, (results) => {
+      numberResultsWithFuzzyMatch = results.length;
+      if (numberResultsWithoutFuzzyMatch !== -1) {
+        assertion();
+        done();
+      }
+    });
+
+    provider?.geocode({ text: "wahsington", fuzzyMatch: false }, (results) => {
+      numberResultsWithoutFuzzyMatch = results.length;
+      if (numberResultsWithFuzzyMatch !== -1) {
+        assertion();
+        done();
+      }
+    });
+  });
+
   it("receives correct geodecoding results", (done) => {
     const provider = GeocoderJS.createGeocoder({
       provider: "mapbox",
@@ -95,13 +124,11 @@ describe("Mapbox Geocoder Provider", () => {
       const geocoded = results[0];
 
       expect(geocoded).toBeDefined();
-      expect(geocoded.getCoordinates()).toEqual([48.863134, 2.388886]);
-      expect(geocoded.getBounds()).toEqual([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-      ]);
+      expect(geocoded.getCoordinates()).toEqual({
+        latitude: 48.863134,
+        longitude: 2.388886,
+      });
+      expect(geocoded.getBounds()).toEqual(undefined);
       expect(geocoded.getFormattedAddress()).toEqual(
         "12 Avenue Gambetta, 75020 Paris, France"
       );

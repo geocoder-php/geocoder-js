@@ -1,0 +1,23 @@
+{
+  "name": "geocoder-js-website",
+  "description": "Website for GeocoderJS",
+  "license": "(MIT AND GPL-2.0)",
+  "author": "Alan Poulain <contact@alanpoulain.eu>",
+  "homepage": "https://geocoder-php.github.io/geocoder-js/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geocoder-php/geocoder-js.git"
+  },
+  "private": true,
+  "files": [],
+  "dependencies": {
+    "bootstrap": "^4.5.0",
+    "bootswatch": "^4.5.0",
+    "components-font-awesome": "^5.9.0",
+    "@highlightjs/cdn-assets": "^10.2.0",
+    "jquery": "^3.5.0"
+  },
+  "scripts": {
+    "install": "./copy-vendor.sh"
+  }
+}

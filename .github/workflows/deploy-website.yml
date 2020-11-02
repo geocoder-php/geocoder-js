@@ -21,10 +21,8 @@ jobs:
         uses: actions/setup-node@v2-beta
         with:
           node-version: "14"
-      - name: Setup Bower
-        run: npm install -g bower
       - name: Setup Couscous
-        run: composer global require couscous/couscous
+        run: composer global require couscous/couscous:dev-master
       - name: Couscous
         run: couscous generate
       - name: Deploy

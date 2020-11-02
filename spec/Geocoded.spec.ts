@@ -6,12 +6,6 @@ describe("Geocoded API", () => {
   it("has getCoordinates method", () => {
     expect(geocoded.getCoordinates).toBeDefined();
   });
-  it("has getLatitude method", () => {
-    expect(geocoded.getLatitude).toBeDefined();
-  });
-  it("has getLongitude method", () => {
-    expect(geocoded.getLongitude).toBeDefined();
-  });
   it("has getBounds method", () => {
     expect(geocoded.getBounds).toBeDefined();
   });
@@ -49,8 +43,10 @@ describe("Geocoded API", () => {
 
 describe("Geocoded returns data properly", () => {
   let geocoded = Geocoded.create({
-    latitude: 38.8978378,
-    longitude: -77.0365123,
+    coordinates: {
+      latitude: 38.8978378,
+      longitude: -77.0365123,
+    },
     formattedAddress:
       "1600 Pennsylvania Avenue Northwest, Washington, DC 20050",
     streetNumber: "1600",
@@ -62,30 +58,28 @@ describe("Geocoded returns data properly", () => {
     countryCode: "US",
     timezone: "America/New_York",
   });
-  geocoded = geocoded.withBounds(
-    38.89380528242933,
-    -77.04317326462667,
-    38.90153071757068,
-    -77.02993873537334
-  );
+  geocoded = geocoded.withBounds({
+    latitudeSW: 38.89380528242933,
+    longitudeSW: -77.04317326462667,
+    latitudeNE: 38.90153071757068,
+    longitudeNE: -77.02993873537334,
+  });
 
   it("returns proper coordinates", () => {
-    const expectedCoordinates = [38.8978378, -77.0365123];
+    const expectedCoordinates = {
+      latitude: 38.8978378,
+      longitude: -77.0365123,
+    };
     expect(geocoded.getCoordinates()).toEqual(expectedCoordinates);
   });
 
-  it("returns latitude/longitude individually", () => {
-    expect(geocoded.getLatitude()).toEqual(38.8978378);
-    expect(geocoded.getLongitude()).toEqual(-77.0365123);
-  });
-
   it("returns proper bounds", () => {
-    expect(geocoded.getBounds()).toEqual([
-      38.89380528242933,
-      -77.04317326462667,
-      38.90153071757068,
-      -77.02993873537334,
-    ]);
+    expect(geocoded.getBounds()).toEqual({
+      latitudeSW: 38.89380528242933,
+      longitudeSW: -77.04317326462667,
+      latitudeNE: 38.90153071757068,
+      longitudeNE: -77.02993873537334,
+    });
   });
 
   it("returns proper formatted address", () => {

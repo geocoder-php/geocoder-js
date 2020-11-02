@@ -327,10 +327,10 @@ export default class OpenCageProvider
       {
         q: geocodeQuery.getText() || "",
         bounds: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.west},${
-              geocodeQuery.getBounds()?.south
-            },${geocodeQuery.getBounds()?.east},${
-              geocodeQuery.getBounds()?.north
+          ? `${geocodeQuery.getBounds()?.longitudeSW},${
+              geocodeQuery.getBounds()?.latitudeSW
+            },${geocodeQuery.getBounds()?.longitudeNE},${
+              geocodeQuery.getBounds()?.latitudeNE
             }`
           : undefined,
         proximity: (<OpenCageGeocodeQuery>geocodeQuery).getProximity()
@@ -400,7 +400,7 @@ export default class OpenCageProvider
         : this.options.countryCodes?.join(","),
       language: query.getLocale(),
       limit: query.getLimit().toString(),
-      min_confidence: query.getMinConfidence()?.toString(),
+      min_confidence: query.getMinPrecision()?.toString(),
       no_record: query.getNoRecord()?.toString(),
       jsonpCallback: this.options.useJsonp ? "jsonp" : undefined,
     };
@@ -488,6 +488,7 @@ export default class OpenCageProvider
     const timezone = result.annotations.timezone.name;
     const callingCode = result.annotations.callingcode;
     const { flag } = result.annotations;
+    const precision = result.confidence;
     const mgrs = result.annotations.MGRS;
     const maidenhead = result.annotations.Maidenhead;
     const { geohash } = result.annotations;
@@ -523,8 +524,10 @@ export default class OpenCageProvider
       result.components.croft;
 
     let geocoded = OpenCageGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       formattedAddress,
       streetNumber,
       streetName,
@@ -537,6 +540,7 @@ export default class OpenCageProvider
       timezone,
       callingCode,
       flag,
+      precision,
       mgrs,
       maidenhead,
       geohash,
@@ -544,14 +548,12 @@ export default class OpenCageProvider
     });
 
     if (result.bounds) {
-      geocoded = <OpenCageGeocoded>(
-        geocoded.withBounds(
-          result.bounds.southwest.lat,
-          result.bounds.southwest.lng,
-          result.bounds.northeast.lat,
-          result.bounds.northeast.lng
-        )
-      );
+      geocoded = <OpenCageGeocoded>geocoded.withBounds({
+        latitudeSW: result.bounds.southwest.lat,
+        longitudeSW: result.bounds.southwest.lng,
+        latitudeNE: result.bounds.northeast.lat,
+        longitudeNE: result.bounds.northeast.lng,
+      });
     }
 
     const adminLevels: {

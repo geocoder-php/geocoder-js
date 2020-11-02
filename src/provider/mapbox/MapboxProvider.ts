@@ -17,7 +17,7 @@ import {
   ProviderOptionsInterface,
   defaultProviderOptions,
 } from "provider";
-import { Box } from "types";
+import { FlatBoundingBox, FlatCoordinates } from "types";
 import AdminLevel, { ADMIN_LEVEL_CODES } from "AdminLevel";
 
 interface MapboxRequestParams {
@@ -28,6 +28,7 @@ interface MapboxRequestParams {
   readonly language?: string;
   readonly limit?: string;
   readonly bbox?: string;
+  readonly fuzzyMatch?: string;
   readonly proximity?: string;
   readonly reverseMode?: "distance" | "score";
   readonly types?: string;
@@ -77,17 +78,17 @@ export interface MapboxResult {
   // eslint-disable-next-line camelcase
   matching_place_name?: string;
   language?: string;
-  bbox?: Box;
-  center: [number, number];
+  bbox?: FlatBoundingBox;
+  center: FlatCoordinates;
   geometry: {
     type: "Point";
-    coordinates: [number, number];
+    coordinates: FlatCoordinates;
   };
   context?: MapboxFeatureContextProperties[];
   // eslint-disable-next-line camelcase
   routable_points?: {
     points?: {
-      coordinates: [number, number];
+      coordinates: FlatCoordinates;
     }[];
   };
 }
@@ -163,15 +164,22 @@ export default class MapboxProvider
       }/${geocodeQuery.getText()}.json`,
     });
 
+    const fuzzyMatch = (<MapboxGeocodeQuery>geocodeQuery).getFuzzyMatch()
+      ? "true"
+      : "false";
     const params: MapboxRequestParams = this.withCommonParams(
       {
         bbox: geocodeQuery.getBounds()
-          ? `${geocodeQuery.getBounds()?.west},${
-              geocodeQuery.getBounds()?.south
-            },${geocodeQuery.getBounds()?.east},${
-              geocodeQuery.getBounds()?.north
+          ? `${geocodeQuery.getBounds()?.longitudeSW},${
+              geocodeQuery.getBounds()?.latitudeSW
+            },${geocodeQuery.getBounds()?.longitudeNE},${
+              geocodeQuery.getBounds()?.latitudeNE
             }`
           : undefined,
+        fuzzyMatch:
+          (<MapboxGeocodeQuery>geocodeQuery).getFuzzyMatch() !== undefined
+            ? fuzzyMatch
+            : undefined,
         proximity: (<MapboxGeocodeQuery>geocodeQuery).getProximity()
           ? `${(<MapboxGeocodeQuery>geocodeQuery).getProximity()?.longitude},${
               (<MapboxGeocodeQuery>geocodeQuery).getProximity()?.latitude
@@ -238,7 +246,7 @@ export default class MapboxProvider
   private withCommonParams(
     params: Pick<
       MapboxRequestParams,
-      "bbox" | "proximity" | "reverseMode" | "types"
+      "bbox" | "fuzzyMatch" | "proximity" | "reverseMode" | "types"
     >,
     query: MapboxGeocodeQuery | MapboxReverseQuery
   ): MapboxRequestParams {
@@ -331,8 +339,10 @@ export default class MapboxProvider
     });
 
     let geocoded = MapboxGeocoded.create({
-      latitude,
-      longitude,
+      coordinates: {
+        latitude,
+        longitude,
+      },
       formattedAddress,
       streetNumber,
       streetName,
@@ -345,14 +355,12 @@ export default class MapboxProvider
       resultType,
     });
     if (result.bbox) {
-      geocoded = <MapboxGeocoded>(
-        geocoded.withBounds(
-          result.bbox[1],
-          result.bbox[0],
-          result.bbox[3],
-          result.bbox[2]
-        )
-      );
+      geocoded = <MapboxGeocoded>geocoded.withBounds({
+        latitudeSW: result.bbox[1],
+        longitudeSW: result.bbox[0],
+        latitudeNE: result.bbox[3],
+        longitudeNE: result.bbox[2],
+      });
     }
 
     return geocoded;

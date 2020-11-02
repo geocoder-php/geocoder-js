@@ -77,13 +77,16 @@ describe("Google Maps Geocoder Provider", () => {
       const geocoded = results[0];
 
       expect(geocoded).toBeDefined();
-      expect(geocoded.getCoordinates()).toEqual([38.8976633, -77.0365739]);
-      expect(geocoded.getBounds()).toEqual([
-        38.8973063,
-        -77.03795749999999,
-        38.8979044,
-        -77.0355124,
-      ]);
+      expect(geocoded.getCoordinates()).toEqual({
+        latitude: 38.8976633,
+        longitude: -77.0365739,
+      });
+      expect(geocoded.getBounds()).toEqual({
+        latitudeSW: 38.8973063,
+        longitudeSW: -77.03795749999999,
+        latitudeNE: 38.8979044,
+        longitudeNE: -77.0355124,
+      });
       expect(geocoded.getFormattedAddress()).toEqual(
         "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA"
       );
@@ -130,13 +133,16 @@ describe("Google Maps Geocoder Provider", () => {
         const geocoded = results[0];
 
         expect(geocoded).toBeDefined();
-        expect(geocoded.getCoordinates()).toEqual([48.8631361, 2.3889219]);
-        expect(geocoded.getBounds()).toEqual([
-          48.8617871197085,
-          2.387572919708498,
-          48.8644850802915,
-          2.390270880291502,
-        ]);
+        expect(geocoded.getCoordinates()).toEqual({
+          latitude: 48.8631361,
+          longitude: 2.3889219,
+        });
+        expect(geocoded.getBounds()).toEqual({
+          latitudeSW: 48.8617871197085,
+          longitudeSW: 2.387572919708498,
+          latitudeNE: 48.8644850802915,
+          longitudeNE: 2.390270880291502,
+        });
         expect(geocoded.getFormattedAddress()).toEqual(
           "12 Avenue Gambetta, 75020 Paris, France"
         );

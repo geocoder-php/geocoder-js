@@ -1,10 +1,10 @@
 import { GeocodeQuery, GeocodeQueryObject } from "query";
-import { Coordinates } from "index";
+import { Coordinates } from "types";
 
 export interface OpenCageGeocodeQueryObject extends GeocodeQueryObject {
   readonly countryCodes?: string[];
   readonly proximity?: Coordinates;
-  readonly minConfidence?: number;
+  readonly minPrecision?: number;
   readonly noRecord?: boolean;
 }
 
@@ -13,32 +13,37 @@ export default class OpenCageGeocodeQuery extends GeocodeQuery {
 
   private readonly proximity?: Coordinates;
 
-  private readonly minConfidence?: number;
+  private readonly minPrecision?: number;
 
   private readonly noRecord?: boolean;
 
   protected constructor({
     countryCodes,
     proximity,
-    minConfidence,
+    minPrecision,
     noRecord,
     ...geocodeQueryObject
   }: OpenCageGeocodeQueryObject) {
     super(geocodeQueryObject);
     this.countryCodes = countryCodes;
-    this.proximity = proximity;
-    if (
-      minConfidence &&
-      (minConfidence.toString() !==
-        parseInt(minConfidence.toString(), 10).toString() ||
-        minConfidence < 1 ||
-        minConfidence > 10)
-    ) {
+    if (proximity && (!proximity.latitude || !proximity.longitude)) {
       throw new Error(
-        'The "minConfidence" parameter must be an integer from 1 to 10.'
+        'The "proximity" parameter must be an object with the keys: "latitude", "longitude".'
       );
     }
-    this.minConfidence = minConfidence;
+    this.proximity = proximity;
+    if (
+      minPrecision &&
+      (minPrecision.toString() !==
+        parseInt(minPrecision.toString(), 10).toString() ||
+        minPrecision < 1 ||
+        minPrecision > 10)
+    ) {
+      throw new Error(
+        'The "minPrecision" parameter must be an integer from 1 to 10.'
+      );
+    }
+    this.minPrecision = minPrecision;
     this.noRecord = noRecord;
   }
 
@@ -53,7 +58,7 @@ export default class OpenCageGeocodeQuery extends GeocodeQuery {
       ...super.toObject(),
       countryCodes: this.countryCodes,
       proximity: this.proximity,
-      minConfidence: this.minConfidence,
+      minPrecision: this.minPrecision,
       noRecord: this.noRecord,
     };
   }
@@ -74,12 +79,12 @@ export default class OpenCageGeocodeQuery extends GeocodeQuery {
     return this.proximity;
   }
 
-  public withMinConfidence(minConfidence: number): OpenCageGeocodeQuery {
-    return new OpenCageGeocodeQuery({ ...this.toObject(), minConfidence });
+  public withMinPrecision(minPrecision: number): OpenCageGeocodeQuery {
+    return new OpenCageGeocodeQuery({ ...this.toObject(), minPrecision });
   }
 
-  public getMinConfidence(): undefined | number {
-    return this.minConfidence;
+  public getMinPrecision(): undefined | number {
+    return this.minPrecision;
   }
 
   public withNoRecord(noRecord: boolean): OpenCageGeocodeQuery {

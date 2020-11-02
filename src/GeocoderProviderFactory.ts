@@ -1,5 +1,6 @@
 import {
   BingProvider,
+  BingProviderOptionsInterface,
   ChainProvider,
   ChainProviderOptionsInterface,
   GeoPluginProvider,
@@ -16,11 +17,13 @@ import {
   YandexProvider,
   YandexProviderOptionsInterface,
   ProviderOptionsInterface,
+  defaultBingProviderOptions,
   defaultChainProviderOptions,
   defaultMapboxProviderOptions,
   defaultMapQuestProviderOptions,
   defaultNominatimProviderOptions,
   defaultOpenCageProviderOptions,
+  defaultYandexProviderOptions,
   defaultProviderOptions,
 } from "provider";
 import ExternalLoader from "ExternalLoader";
@@ -28,12 +31,14 @@ import ExternalLoader from "ExternalLoader";
 interface ProviderOptionInterface {
   provider:
     | "bing"
+    | "bingmaps"
     | "chain"
     | "geoplugin"
     | "google"
     | "googlemaps"
     | "mapbox"
     | "mapquest"
+    | "microsoft"
     | "nominatim"
     | "opencage"
     | "openstreetmap"
@@ -48,6 +53,12 @@ interface ChainGeocoderProviderFactoryOptions
   extends ProviderOptionInterface,
     ChainProviderOptionsInterface {
   provider: "chain";
+}
+
+interface BingGeocoderProviderFactoryOptions
+  extends ProviderOptionInterface,
+    BingProviderOptionsInterface {
+  provider: "bing" | "bingmaps" | "microsoft";
 }
 
 interface GeoPluginGeocoderProviderFactoryOptions
@@ -94,6 +105,7 @@ interface YandexGeocoderProviderFactoryOptions
 export type GeocoderProviderFactoryOptions =
   | ProviderFactoryOptions
   | ChainGeocoderProviderFactoryOptions
+  | BingGeocoderProviderFactoryOptions
   | GeoPluginGeocoderProviderFactoryOptions
   | GoogleMapsGeocoderProviderFactoryOptions
   | MapboxGeocoderProviderFactoryOptions
@@ -117,6 +129,8 @@ export type GeocoderProviderByOptionsType<
   O
 > = O extends ChainGeocoderProviderFactoryOptions
   ? ChainProvider
+  : O extends BingGeocoderProviderFactoryOptions
+  ? BingProvider
   : O extends GeoPluginGeocoderProviderFactoryOptions
   ? GeoPluginProvider
   : O extends GoogleMapsGeocoderProviderFactoryOptions
@@ -157,8 +171,13 @@ export default class ProviderFactory {
     const { provider, ...providerOptions } = createProviderOptions;
     switch (provider) {
       case "bing":
+      case "bingmaps":
+      case "microsoft":
         return <GeocoderProviderByOptionsType<O>>(
-          new BingProvider(externalLoader, providerOptions)
+          new BingProvider(externalLoader, {
+            ...defaultBingProviderOptions,
+            ...providerOptions,
+          })
         );
       case "chain":
         return <GeocoderProviderByOptionsType<O>>new ChainProvider({
@@ -205,7 +224,10 @@ export default class ProviderFactory {
         );
       case "yandex":
         return <GeocoderProviderByOptionsType<O>>(
-          new YandexProvider(externalLoader, providerOptions)
+          new YandexProvider(externalLoader, {
+            ...defaultYandexProviderOptions,
+            ...providerOptions,
+          })
         );
       default:
     }

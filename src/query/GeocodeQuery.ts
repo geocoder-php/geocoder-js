@@ -1,13 +1,10 @@
 import { DEFAULT_RESULT_LIMIT } from "provider";
-import { Bounds } from "index";
+import { BoundingBox } from "types";
 
 export interface GeocodeQueryObject {
   readonly text?: string;
   readonly ip?: string;
-  readonly south?: number | string;
-  readonly west?: number | string;
-  readonly north?: number | string;
-  readonly east?: number | string;
+  readonly bounds?: BoundingBox;
   readonly locale?: string;
   readonly limit?: number;
 }
@@ -17,13 +14,7 @@ export default class GeocodeQuery {
 
   private readonly ip?: string;
 
-  private readonly south?: number | string;
-
-  private readonly west?: number | string;
-
-  private readonly north?: number | string;
-
-  private readonly east?: number | string;
+  private readonly bounds?: BoundingBox;
 
   private readonly locale?: string;
 
@@ -32,10 +23,7 @@ export default class GeocodeQuery {
   protected constructor({
     text,
     ip,
-    south,
-    west,
-    north,
-    east,
+    bounds,
     locale,
     limit = DEFAULT_RESULT_LIMIT,
   }: GeocodeQueryObject) {
@@ -44,10 +32,18 @@ export default class GeocodeQuery {
     if (!text && !ip) {
       throw new Error('Either "text" or "ip" parameter is required.');
     }
-    this.south = south;
-    this.west = west;
-    this.north = north;
-    this.east = east;
+    if (
+      bounds &&
+      (!bounds.latitudeSW ||
+        !bounds.longitudeSW ||
+        !bounds.latitudeNE ||
+        !bounds.longitudeNE)
+    ) {
+      throw new Error(
+        'The "bounds" parameter must be an object with the keys: "latitudeSW", "longitudeSW", "latitudeNE", "longitudeNE".'
+      );
+    }
+    this.bounds = bounds;
     this.locale = locale;
     this.limit = limit;
   }
@@ -60,10 +56,7 @@ export default class GeocodeQuery {
     return {
       text: this.text,
       ip: this.ip,
-      south: this.south,
-      west: this.west,
-      north: this.north,
-      east: this.east,
+      bounds: this.bounds,
       locale: this.locale,
       limit: this.limit,
     };
@@ -83,18 +76,10 @@ export default class GeocodeQuery {
     });
   }
 
-  public withBounds(
-    south?: number,
-    west?: number,
-    north?: number,
-    east?: number
-  ): GeocodeQuery {
+  public withBounds(bounds: BoundingBox): GeocodeQuery {
     return (<typeof GeocodeQuery>this.constructor).create({
       ...this.toObject(),
-      south,
-      west,
-      north,
-      east,
+      bounds,
     });
   }
 
@@ -120,17 +105,8 @@ export default class GeocodeQuery {
     return this.ip;
   }
 
-  public getBounds(): undefined | Bounds {
-    if (!this.south || !this.west || !this.north || !this.east) {
-      return undefined;
-    }
-
-    return {
-      south: this.south,
-      west: this.west,
-      north: this.north,
-      east: this.east,
-    };
+  public getBounds(): undefined | BoundingBox {
+    return this.bounds;
   }
 
   public getLocale(): undefined | string {

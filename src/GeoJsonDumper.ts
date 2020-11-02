@@ -1,5 +1,11 @@
 import Geocoded from "Geocoded";
 import AdminLevel, { AdminLevelObject } from "AdminLevel";
+import {
+  BoundingBox,
+  Coordinates,
+  FlatBoundingBox,
+  FlatCoordinates,
+} from "types";
 
 export interface GeoJson {
   readonly type: "Feature";
@@ -9,20 +15,17 @@ export interface GeoJson {
       | string[]
       | number
       | boolean
+      | Coordinates
+      | BoundingBox
       | AdminLevel[]
       | AdminLevelObject[]
       | undefined;
   };
   readonly geometry: {
     readonly type: "Point";
-    readonly coordinates: [number | undefined, number | undefined];
+    readonly coordinates: FlatCoordinates;
   };
-  readonly bounds?: {
-    readonly south: number;
-    readonly west: number;
-    readonly north: number;
-    readonly east: number;
-  };
+  readonly bbox?: FlatBoundingBox;
 }
 
 export default class GeoJsonDumper {
@@ -31,28 +34,15 @@ export default class GeoJsonDumper {
     properties: {},
     geometry: {
       type: "Point",
-      coordinates: [undefined, undefined],
+      coordinates: [0, 0],
     },
   };
 
   public static dump(geocoded: Geocoded): GeoJson {
     let result = GeoJsonDumper.baseGeoJson;
-    result = {
-      ...result,
-      ...{
-        geometry: {
-          ...result.geometry,
-          coordinates: [geocoded.getLongitude(), geocoded.getLatitude()],
-        },
-      },
-    };
     const {
-      latitude,
-      longitude,
-      south,
-      west,
-      north,
-      east,
+      coordinates,
+      bounds,
       adminLevels,
       ...geocodedProperties
     } = geocoded.toObject();
@@ -63,6 +53,8 @@ export default class GeoJsonDumper {
         | string[]
         | number
         | boolean
+        | Coordinates
+        | BoundingBox
         | AdminLevel[]
         | AdminLevelObject[]
         | undefined;
@@ -80,8 +72,32 @@ export default class GeoJsonDumper {
     }
 
     result = { ...result, properties };
-    if (south && west && north && east) {
-      result = { ...result, bounds: { south, west, north, east } };
+
+    if (coordinates) {
+      result = {
+        ...result,
+        ...{
+          geometry: {
+            ...result.geometry,
+            coordinates: [
+              parseFloat(coordinates.longitude.toString()),
+              parseFloat(coordinates.latitude.toString()),
+            ],
+          },
+        },
+      };
+    }
+
+    if (bounds) {
+      result = {
+        ...result,
+        bbox: [
+          parseFloat(bounds.longitudeSW.toString()),
+          parseFloat(bounds.latitudeSW.toString()),
+          parseFloat(bounds.longitudeNE.toString()),
+          parseFloat(bounds.latitudeNE.toString()),
+        ],
+      };
     }
 
     return result;

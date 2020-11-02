@@ -10,8 +10,7 @@
 
 - `countryCodes`: to restrict the results to one or more countries (ISO 3166 alpha 2 country codes)
 - `excludePlaceIds`: for excluding some OpenStreetMap objects from the results
-- `viewBox` ([longitude 1, latitude 1, longitude 2, latitude 2]): the preferred area to find search results
-- `bounded` (only if `viewBox` is used): boolean to restrict the results to items within the view box
+- `bounded` (only if `bounds` is used): boolean to restrict the results to items within the bounds
 
 ## `geodecode` parameters
 

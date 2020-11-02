@@ -9,8 +9,8 @@ describe("Geocoder Factory", () => {
     expect(provider).toBeUndefined();
   });
 
-  it("expects createProvider method to return a Yandex Provider", () => {
-    const provider = ProviderFactory.createProvider("yandex");
+  it("expects createProvider method to return a GeoPlugin Provider", () => {
+    const provider = ProviderFactory.createProvider("geoplugin");
     expect(provider).toBeDefined();
   });
 

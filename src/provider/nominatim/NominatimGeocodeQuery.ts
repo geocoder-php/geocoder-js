@@ -1,10 +1,8 @@
 import { GeocodeQuery, GeocodeQueryObject } from "query";
-import { Box } from "types";
 
 export interface NominatimGeocodeQueryObject extends GeocodeQueryObject {
   readonly countryCodes?: string[];
   readonly excludePlaceIds?: number[];
-  readonly viewBox?: Box;
   readonly bounded?: boolean;
 }
 
@@ -13,27 +11,21 @@ export default class NominatimGeocodeQuery extends GeocodeQuery {
 
   private readonly excludePlaceIds?: number[];
 
-  private readonly viewBox?: Box;
-
   private readonly bounded?: boolean;
 
   protected constructor({
     countryCodes,
     excludePlaceIds,
-    viewBox,
     bounded,
+    bounds,
     ...geocodeQueryObject
   }: NominatimGeocodeQueryObject) {
-    super(geocodeQueryObject);
+    super({ bounds, ...geocodeQueryObject });
     this.countryCodes = countryCodes;
     this.excludePlaceIds = excludePlaceIds;
-    if (viewBox && viewBox.length !== 4) {
-      throw new Error('The "viewBox" parameter must be 4 numbers.');
-    }
-    this.viewBox = viewBox;
-    if (bounded && !viewBox) {
+    if (bounded && !bounds) {
       throw new Error(
-        'The "bounded" parameter can only be used with the "viewBox" parameter.'
+        'The "bounded" parameter can only be used with the "bounds" parameter.'
       );
     }
     this.bounded = bounded;
@@ -50,7 +42,6 @@ export default class NominatimGeocodeQuery extends GeocodeQuery {
       ...super.toObject(),
       countryCodes: this.countryCodes,
       excludePlaceIds: this.excludePlaceIds,
-      viewBox: this.viewBox,
       bounded: this.bounded,
     };
   }
@@ -69,14 +60,6 @@ export default class NominatimGeocodeQuery extends GeocodeQuery {
 
   public getExcludePlaceIds(): undefined | number[] {
     return this.excludePlaceIds;
-  }
-
-  public withViewBox(viewBox: Box): NominatimGeocodeQuery {
-    return new NominatimGeocodeQuery({ ...this.toObject(), viewBox });
-  }
-
-  public getViewBox(): undefined | Box {
-    return this.viewBox;
   }
 
   public withBounded(bounded: boolean): NominatimGeocodeQuery {

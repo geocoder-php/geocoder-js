@@ -10,7 +10,7 @@ yandexGeocoder.geocode(
 );
 
 yandexGeocoder.geodecode(
-  { latitude: "44.915", longitude: "-93.21", locale: "en-US" },
+  { coordinates: { latitude: "44.915", longitude: "-93.21" }, locale: "en-US" },
   (result) => {
     console.log(result);
   }

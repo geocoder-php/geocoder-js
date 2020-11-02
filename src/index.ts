@@ -1,15 +1,3 @@
-export interface Bounds {
-  readonly south: number | string;
-  readonly west: number | string;
-  readonly north: number | string;
-  readonly east: number | string;
-}
-
-export interface Coordinates {
-  readonly latitude: number | string;
-  readonly longitude: number | string;
-}
-
 export * from "provider";
 export * from "query";
 export * from "utils";
